@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.Diagnostics;
 
 namespace iFixit7
 {
@@ -56,6 +57,21 @@ namespace iFixit7
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
+            Console.WriteLine("BOBBY");
+            Debug.WriteLine("test 2");
+
+            /*
+            PanoramaItem pi = new PanoramaItem();
+            pi.Header = "asdasd";
+            pi.Content = null;
+
+            Panorama pan = new Panorama();
+            pan.Name = "THIS IS A NAMMMMMMEEEEE";
+            pan.Items.Add(pi);
+            */
+            //Panorama there = (Panorama)RootVisual;
+
 
         }
 

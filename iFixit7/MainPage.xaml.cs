@@ -15,10 +15,45 @@ namespace iFixit7
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        public Panorama BigPanoGetter { get; private set; }
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
+
+            //now add to the pano
+            PanoramaItem pi = null;
+            StackPanel sp = new StackPanel();
+            for (int i = 0; i < 5; i++)
+            {
+                pi = new PanoramaItem();
+                ListBox lb = new ListBox();
+                lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
+                pi.Content = lb;
+
+                TextBlock tb = null;
+                for (int j = 0; j < 10; j++)
+                {
+                    tb = new TextBlock();
+                    tb.Text = "I am list item " + j + "!";
+                    lb.Items.Add(tb);
+                }
+                
+                pi.Header = "Biggish " + i;
+
+                //BigPano.Items.Add(pi);
+                this.BigPano.Items.Add(pi);
+            }
+        }
+
+        void lb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //cast this to get the spected item (sender as ListBox).SelectedItem
+            NavigationService.Navigate(new Uri("the file.xaml", UriKind.Relative)); 
+            //make a xaml which we populate
+
+            throw new NotImplementedException();
         }
     }
 }

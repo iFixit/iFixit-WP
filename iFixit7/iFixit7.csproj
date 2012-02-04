@@ -79,6 +79,7 @@
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
+    <None Include="README" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">

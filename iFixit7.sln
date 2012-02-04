@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010 Express for Windows Phone
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iFixit7", "iFixit7\iFixit7.csproj", "{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{916A856B-1D3E-4BF6-B5A5-23D4C1C92A0F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

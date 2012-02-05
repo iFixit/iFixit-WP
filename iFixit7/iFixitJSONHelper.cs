@@ -71,7 +71,7 @@ namespace iFixit7
                         decipherAreasJSON(t);
                     }
                 }
-                callAreasAPI.Invoke(null, mTree);
+                //callAreasAPI.Invoke(null, mTree);
             }
             
         }
@@ -98,7 +98,7 @@ namespace iFixit7
                     IJEnumerable<JToken> devs = jt.Values();
                     foreach (JToken dev in devs)
                     {
-                        mTree.Add(new Node(dev.ToString()));
+                        mTree.Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());
                     }
                 }

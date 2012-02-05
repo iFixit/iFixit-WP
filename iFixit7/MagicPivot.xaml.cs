@@ -59,39 +59,13 @@ namespace iFixit7
                 //add the entire thing to the pivot
                 SmartPivot.Items.Add(pi);
             }
-
-            /*
-            PanoramaItem pi = null;
-            for (int i = 0; i < 5; i++)
-            {
-                pi = new PanoramaItem();
-                ListBox lb = new ListBox();
-                lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
-                pi.Content = lb;
-
-                TextBlock tb = null;
-                for (int j = 0; j < 10; j++)
-                {
-                    tb = new TextBlock();
-                    tb.Text = "I am list item " + j + "!";
-                    lb.Items.Add(tb);
-                }
-                
-                pi.Header = "Biggish " + i;
-
-                this.BigPano.Items.Add(pi);
-            }
-             */
         }
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
             string s = (sender as TextBlock).Text;
             //stash where we are about to navigate to...
-            App.setNextArea("bobby");
-
-            //stash where we are about to navigate to?
-            App.setNextArea("");
+            App.setNextArea(null);
 
             Debug.WriteLine("A MagicPivot is about to navigate....");
 

@@ -61,21 +61,22 @@ namespace iFixit7
 
         }
 
-        private static Object EntireAreaHierarchy, currentArea;
+        private static List<Node> EntireAreaHierarchy, currentArea;
         /* Allows each view to get its current hierarchical position? */
-        public static Object getNextArea()
+        public static List<Node> getNextArea()
         {
             return currentArea;
         }
 
         /* allows a view to stash its current place in the area hierarchy */
-        public static void setNextArea(Object last)
+        public static void setNextArea(List<Node> last)
         {
             currentArea = last;
         }
 
         /* set the entire view hierarchy */
-        public static void setEnitreAreaHierarchy(Object entire){
+        public static void setEnitreAreaHierarchy(List<Node> entire)
+        {
             EntireAreaHierarchy = entire;
         }
 

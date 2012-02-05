@@ -63,9 +63,32 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
+            Node got = null;
+            int count = 0;
+            int set = 0;
+            bool flag = false;
             string s = (sender as TextBlock).Text;
             //stash where we are about to navigate to...
-            App.setNextArea(null);
+            foreach (Node n in App.getEnitreAreaHierarchy().getChildrenList())
+            {
+                count = 0;
+                foreach (Node brand in n.getChildrenList())
+                {
+                    if (brand.getName().Equals(s))
+                    {
+                        got = n;
+                        set = count;
+                        flag = true;
+                    }
+
+                    if (!flag)
+                    count++;
+                    //Debug.WriteLine("looking at " + n.getName());
+                }
+                
+            }
+            
+            App.setNextArea(got, set);
 
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
             //make a xaml which we populate 
@@ -84,7 +107,7 @@ namespace iFixit7
             ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_AREAS);
         }
 
-        public void MainPage_callAreasAPI(MainPage sender, List<Node> tree)
+        public void MainPage_callAreasAPI(MainPage sender, Node tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
@@ -94,27 +117,29 @@ namespace iFixit7
             /* THIS IS ALL WRONG! But I am doing it for now..... */
             PanoramaItem pi = null;
             ListBox lb = null;
-            foreach (Node n in tree)
+            foreach (Node n in tree.getChildrenList())
             {
                 if(n.getChildrenList() != null) {
                     //Debug.WriteLine(">>" + n.getName());
                     pi = new PanoramaItem();
                     pi.Header = n.getName();
-
+                    lb = new ListBox();
                     pi.Content = lb;
 
                     ListBoxItem lbi = null;
                     TextBlock tb = null;
                     foreach (Node item in n.getChildrenList())
                     {
-                        Debug.WriteLine("got a child of " + n.getName());
+//                        Debug.WriteLine("got a child of " + n.getName());
 
                         lbi = new ListBoxItem();
                         tb = new TextBlock();
 
                         tb.Text = item.getName();
+                        tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
 
                         lbi.Content = tb;
+                        lb.Items.Add(lbi);
                     }
 
                     this.BigPano.Items.Add(pi);

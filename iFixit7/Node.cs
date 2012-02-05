@@ -14,10 +14,10 @@ namespace iFixit7
 {
     public class Node
     {
-        private List<Object> children = new List<Object>();
+        private List<Node> children = new List<Node>();
         private string name;
 
-        public Node(string Name, List<Object> Children = null)
+        public Node(string Name, List<Node> Children = null)
         {
             name = Name;
             children = Children;
@@ -28,7 +28,7 @@ namespace iFixit7
             return name;
         }
 
-        public List<Object> getChildrenList()
+        public List<Node> getChildrenList()
         {
             return children;
         }
@@ -43,12 +43,12 @@ namespace iFixit7
             name = Name;
         }
 
-        public void setChildrenList(List<Object> ChildrenList)
+        public void setChildrenList(List<Node> ChildrenList)
         {
             children = ChildrenList;
         }
 
-        public void setChildren(int childrenNum, Object Children)
+        public void setChildren(int childrenNum, Node Children)
         {
             children[childrenNum] = Children;
         }

@@ -25,9 +25,9 @@ namespace iFixit7
         public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");
         private static bool areas;
         private static string jsonResponse;
-        private static List<Node> mTree;
+        private static Node mTree = new Node("root", new List<Node>());
 
-        public delegate void AreaCallEventHandler(MainPage sender, List<Node> tree);
+        public delegate void AreaCallEventHandler(MainPage sender, Node tree);
         public event AreaCallEventHandler callAreasAPI;
 
 
@@ -67,12 +67,18 @@ namespace iFixit7
                     foreach (JProperty p in props)
                     {
                         //Debug.WriteLine(p.Name);
+                        if (p.Name.Equals("DEVICES"))
+                        {
+                            break;
+                        }
+                        Node curr = new Node(p.Name, new List<Node>());
+                        mTree.getChildrenList().Add(curr);
                         if (!p.HasValues)
                             break;
                         IJEnumerable<JToken> values = p.Values();
                         foreach (JToken t in values)
                         {
-                            decipherAreasJSON(t);
+                            decipherAreasJSON(t, curr);
                         }
                     }
                 } else {
@@ -144,20 +150,21 @@ namespace iFixit7
             
         }
 
-        private static void decipherAreasJSON(JToken jt)
+        private static void decipherAreasJSON(JToken jt, Node node)
         {
             if (jt is JProperty)
             {
                 if (jt.ToObject<JProperty>().Name != "DEVICES")
                 {
 //                    Debug.WriteLine(" " + jt.ToObject<JProperty>().Name);
-                    mTree.Add(new Node(jt.ToObject<JProperty>().Name, new List<Object>()));
+                    Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
+                    node.getChildrenList().Add(curr);
                     if (jt.HasValues)
                     {
                         IJEnumerable<JToken> values = jt.Values();
                         foreach (JToken val in values)
                         {
-                            decipherAreasJSON(val);
+                            decipherAreasJSON(val, curr);
                         }
                     }
                 }
@@ -166,7 +173,7 @@ namespace iFixit7
                     IJEnumerable<JToken> devs = jt.Values();
                     foreach (JToken dev in devs)
                     {
-                        mTree.Add(new Node(dev.ToString(), null));
+                        node.getChildrenList().Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());
                     }
                 }

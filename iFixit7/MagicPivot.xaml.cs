@@ -16,7 +16,8 @@ namespace iFixit7
 {
     public partial class MagicPivot : PhoneApplicationPage
     {
-        private Object areaShown = null;
+        private Node areaShown = null;
+        private int col = 0;
 
         private static int number;
 
@@ -28,15 +29,20 @@ namespace iFixit7
 
             //get the area we are about to navigate to, so we can build the view from it
             areaShown = App.getNextArea();
+            col = App.getCurrCol();
+
+            Debug.WriteLine("node we are navigating from is " + areaShown.getName());
 
             //now iterate across the tree we got, and build a view from it
             PivotItem pi = null;
             ListBox lb = null;
-            for (int i = 0; i < 4; i++)
+            //for (int i = 0; i < 4; i++)
+
+            foreach (Node n in areaShown.getChildrenList())
             {
                 //build a pivot item for each larger catagory
                 pi = new PivotItem();
-                pi.Header = "PItem " + i;
+                pi.Header = n.getName();
 
                 //add a list of content to that header
                 lb = new ListBox();
@@ -47,25 +53,31 @@ namespace iFixit7
 
                 //now add items to this list of content
                 TextBlock tb = null;
-                for (int j = 0; j < 25; j++)
+                //for (int j = 0; j < 25; j++)
+                if (n.getChildrenList() != null)
                 {
-                    tb = new TextBlock();
-                    tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-                    tb.Text = "I am some text, in a text block!";
+                    foreach (Node model in n.getChildrenList())
+                    {
+                        tb = new TextBlock();
+                        tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
+                        //tb.Text = "I am some text, in a text block!";
+                        tb.Text = model.getName();
 
-                    lb.Items.Add(tb);
+                        lb.Items.Add(tb);
+                    }
                 }
 
                 //add the entire thing to the pivot
                 SmartPivot.Items.Add(pi);
             }
+            Loaded += delegate { SmartPivot.SelectedIndex = col;};
         }
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
             string s = (sender as TextBlock).Text;
             //stash where we are about to navigate to...
-            App.setNextArea(null);
+            App.setNextArea(null, 0);
 
             Debug.WriteLine("A MagicPivot is about to navigate....");
 

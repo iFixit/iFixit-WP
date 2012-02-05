@@ -54,6 +54,17 @@ namespace iFixit7
             //    g.images.AddLast(new Uri("http://www.ifixit.com/igi/FN4ThHdXJENYggv1", UriKind.Absolute));
             //}
 
+            for (int i = 1; i <= 4; i++)
+            {
+                StepTemp st = new StepTemp(new List<jsonImage>(), new List<jsonLines>());
+                st.setStepNum(i);
+                st.addLine(new jsonLines("", 0, "Use a coin to rotate the battery-locking screw 90 degrees clockwise."));
+
+                st.addImage(new jsonImage(0, 0, "http://www.ifixit.com/igi/dLF6KygThyYNdyCS"));
+                st.addImage(new jsonImage(0, 0, "http://www.ifixit.com/igi/FN4ThHdXJENYggv1"));
+
+                ourGuide.steps.AddLast(st);
+            }
             PivotItem pi = null;
             ListBox lb = null;
             //foreach across all steps gs

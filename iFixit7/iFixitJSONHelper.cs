@@ -120,7 +120,7 @@ namespace iFixit7
                                                     IJEnumerable<JToken> lineVals = elem.Values();
                                                     jsonLines myLines = new jsonLines();
                                                     foreach (JToken val in lineVals) {
-                                                        if (val.ToObject<JObject>().TryGetValue("text"))
+                                                        if (val.ToObject<JProperty>().Name.Equals("text"))
                                                         {
                                                             myLines.setText(val.ToString());
                                                         }
@@ -166,7 +166,7 @@ namespace iFixit7
                     IJEnumerable<JToken> devs = jt.Values();
                     foreach (JToken dev in devs)
                     {
-                        mTree.(new Node(dev.ToString(), null));
+                        mTree.Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());
                     }
                 }

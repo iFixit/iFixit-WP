@@ -24,36 +24,35 @@ namespace iFixit7
 
             //now add to the pano
             PanoramaItem pi = null;
-            StackPanel sp = new StackPanel();
             for (int i = 0; i < 5; i++)
             {
                 pi = new PanoramaItem();
                 ListBox lb = new ListBox();
-                lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
                 pi.Content = lb;
 
                 TextBlock tb = null;
                 for (int j = 0; j < 10; j++)
                 {
                     tb = new TextBlock();
+                    tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
                     tb.Text = "I am list item " + j + "!";
                     lb.Items.Add(tb);
                 }
-                
+
                 pi.Header = "Biggish " + i;
 
-                //BigPano.Items.Add(pi);
                 this.BigPano.Items.Add(pi);
             }
         }
 
-        void lb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        void tb_Tap(object sender, GestureEventArgs e)
         {
-            //cast this to get the spected item (sender as ListBox).SelectedItem
-            NavigationService.Navigate(new Uri("the file.xaml", UriKind.Relative)); 
-            //make a xaml which we populate
+            string s = (sender as TextBlock).Text;
+            //stash where we are about to navigate to...
+            App.setNextArea("bobby");
 
-            throw new NotImplementedException();
+            NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
+            //make a xaml which we populate 
         }
     }
 }

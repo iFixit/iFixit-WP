@@ -17,7 +17,14 @@ namespace iFixit7
         private int orderby;
         private string text;
 
-        jsonImage(int imageId, int orderBy, string Text)
+        public jsonImage()
+        {
+            imageid = 0;
+            orderby = 0;
+            text = "";
+        }
+
+        public jsonImage(int imageId, int orderBy, string Text)
         {
             imageid = imageId;
             orderby = orderBy;

@@ -41,26 +41,26 @@ namespace iFixit7
             //add stuff from the API call to populate the view
 
             //FIXME HACK. REMOVE THIS
-            GuideStep g = null;
-            for (int i = 1; i <= 4; i++)
-            {
-                g = new GuideStep(i);
-                ourGuide.steps.AddLast(g);
+            //GuideStep g = null;
+            //for (int i = 1; i <= 4; i++)
+            //{
+            //    g = new StepTemp();
+            //    ourGuide.steps.AddLast(g);
 
-                g.index = i;
-                g.instructions = "Use a coin to rotate the battery-locking screw 90 degrees clockwise.";
+            //    g.index = i;
+            //    g.instructions = "Use a coin to rotate the battery-locking screw 90 degrees clockwise.";
 
-                g.images.AddLast(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS", UriKind.Absolute));
-                g.images.AddLast(new Uri("http://www.ifixit.com/igi/FN4ThHdXJENYggv1", UriKind.Absolute));
-            }
+            //    g.images.AddLast(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS", UriKind.Absolute));
+            //    g.images.AddLast(new Uri("http://www.ifixit.com/igi/FN4ThHdXJENYggv1", UriKind.Absolute));
+            //}
 
             PivotItem pi = null;
             ListBox lb = null;
             //foreach across all steps gs
-            foreach (GuideStep gs in ourGuide.steps)
+            foreach (StepTemp gs in ourGuide.steps)
             {
                 pi = new PivotItem();
-                pi.Header = "Step " + gs.index;
+                pi.Header = "Step " + gs.getStepNum();
 
                 //add a grid to put the guide in
                 lb = new ListBox();
@@ -70,18 +70,20 @@ namespace iFixit7
                 TextBlock tb = new TextBlock();
                 tb.MaxWidth = 480 - 30;
                 tb.TextWrapping = TextWrapping.Wrap;
-                tb.Text = gs.instructions;
+                // TODO FIXME: this is hardcoded to 0
+                tb.Text = gs.getLines(0).getText();
+                // TODO also use other methods
                 tb.Padding = new Thickness(0, 5, 0, 9);
 
                 lb.Items.Add(tb);
 
                 Image i = null;
                 ListBoxItem lbPadding = null;
-                foreach (Uri img in gs.images)
+                foreach (jsonImage img in gs.getImageList())
                 {
                     //load the image into i, then add it to the grid
                     i = new Image();
-                    i.Source = new BitmapImage(img);
+                    i.Source = new BitmapImage(new Uri(img.getText()));
 
                     lbPadding = new ListBoxItem();
                     lbPadding.Padding = new Thickness(0, 5, 0, 5);
@@ -98,11 +100,11 @@ namespace iFixit7
     class GuideHolder
     {
         public string deviceName { get; set; }
-        public LinkedList<GuideStep> steps { get; set; }
+        public LinkedList<StepTemp> steps { get; set; }
 
         public GuideHolder()
         {
-            steps = new LinkedList<GuideStep>();
+            steps = new LinkedList<StepTemp>();
         }
     }
 

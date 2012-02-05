@@ -19,8 +19,15 @@ namespace iFixit7
         private int stepNumber;
         private string title;
 
+        public StepTemp()
+        {
+            images = null;
+            lines = null;
+            stepNumber = -1;
+            title = "";
+        }
 
-        StepTemp(List<jsonImage> Images = null, List<jsonLines> Lines = null, int StepNumer = 0, string Title = null) //Default Values may not work!! Double check
+        public StepTemp(List<jsonImage> Images = null, List<jsonLines> Lines = null, int StepNumer = 0, string Title = null) //Default Values may not work!! Double check
         {
             images = Images;
             lines = Lines;

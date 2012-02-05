@@ -17,7 +17,14 @@ namespace iFixit7
         private int level;
         private string text;
 
-        jsonLines(string Bullet, int Level, string Text)
+        public jsonLines()
+        {
+            bullet = "";
+            level = 0;
+            text = "";
+        }
+
+        public jsonLines(string Bullet, int Level, string Text)
         {
             bullet = Bullet;
             level = Level;

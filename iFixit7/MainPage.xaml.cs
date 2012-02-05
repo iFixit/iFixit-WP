@@ -27,7 +27,7 @@ namespace iFixit7
         public MainPage()
         {
 
-            List<Node> myTree = iFixitJSONHelper.getAreas();
+            //List<Node> myTree = iFixitJSONHelper.getAreas();
             InitializeComponent();
 
             //now add to the pano

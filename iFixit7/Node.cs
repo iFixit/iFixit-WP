@@ -16,7 +16,8 @@ namespace iFixit7
     {
         private List<Object> children = new List<Object>();
         private string name;
-        Node(string Name, List<Object> Children = null)
+
+        public Node(string Name, List<Object> Children = null)
         {
             name = Name;
             children = Children;

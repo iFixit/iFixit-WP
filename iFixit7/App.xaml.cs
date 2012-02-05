@@ -57,23 +57,29 @@ namespace iFixit7
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
-            Console.WriteLine("BOBBY");
             Debug.WriteLine("test 2");
 
-            /*
-            PanoramaItem pi = new PanoramaItem();
-            pi.Header = "asdasd";
-            pi.Content = null;
-
-            Panorama pan = new Panorama();
-            pan.Name = "THIS IS A NAMMMMMMEEEEE";
-            pan.Items.Add(pi);
-            */
-            //Panorama there = (Panorama)RootVisual;
-
-
         }
+
+        private static Object EntireAreaHierarchy, currentArea;
+        /* Allows each view to get its current hierarchical position? */
+        public static Object getNextArea()
+        {
+            return currentArea;
+        }
+
+        /* allows a view to stash its current place in the area hierarchy */
+        public static void setNextArea(Object last)
+        {
+            currentArea = last;
+        }
+
+        /* set the entire view hierarchy */
+        public static void setEnitreAreaHierarchy(Object entire){
+            EntireAreaHierarchy = entire;
+        }
+
+
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated

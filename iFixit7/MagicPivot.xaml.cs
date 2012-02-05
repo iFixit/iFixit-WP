@@ -18,6 +18,8 @@ namespace iFixit7
     {
         private Object areaShown = null;
 
+        private static int number;
+
         public MagicPivot()
         {
             InitializeComponent();
@@ -41,13 +43,14 @@ namespace iFixit7
                 pi.Content = lb;
 
                 //add a handler for the list box, to handle clicks
-                lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
+                //lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
 
                 //now add items to this list of content
                 TextBlock tb = null;
                 for (int j = 0; j < 25; j++)
                 {
                     tb = new TextBlock();
+                    tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
                     tb.Text = "I am some text, in a text block!";
 
                     lb.Items.Add(tb);
@@ -81,22 +84,27 @@ namespace iFixit7
              */
         }
 
-        void lb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        void tb_Tap(object sender, GestureEventArgs e)
         {
+            string s = (sender as TextBlock).Text;
+            //stash where we are about to navigate to...
+            App.setNextArea("bobby");
+
             //stash where we are about to navigate to?
             App.setNextArea("");
 
-            Debug.WriteLine("we are navigating....");
-            //if this list box is an endpoint, then we need to navigate to a guide list, which is something else
+            Debug.WriteLine("A MagicPivot is about to navigate....");
 
-            //else, navigate to deeper in this hierarchy
-            NavigationService.Navigate(new Uri("/Redirector.xaml?TRASH=" + "123", UriKind.Relative));
+            //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call Guide
             
+            //NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + number++, UriKind.Relative));
+
+            NavigationService.Navigate(new Uri("/Guide.xaml?device=" + "iPhone+3G", UriKind.Relative));
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            Debug.WriteLine("We have been navigated to...");
+            Debug.WriteLine("A MagicPivot has been navigated to...");
         }
     }
 }

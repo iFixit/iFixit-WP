@@ -32,6 +32,7 @@ namespace iFixit7
         public static string IFIXIT_API_DEVICE_INFO = ("http://www.ifixit.com/api/0.1/device/");    //takes string name
 
         private Func<DeviceInfoHolder, bool> devInfoCallback = null;
+        private Func<GuideHolder, bool> guidePopulateCallback = null;
 
         public void populateDeviceInfo(string dev, Func<DeviceInfoHolder, bool> f)
         {
@@ -50,21 +51,32 @@ namespace iFixit7
             //this strea, has the string: e.Result. Read it out
             string res = new StreamReader(e.Result).ReadToEnd();
 
-            //Console.WriteLine("inside completed. Got [[ " + res);
-
             res = Uri.UnescapeDataString(res);
             DeviceInfoHolder di = JsonConvert.DeserializeObject<DeviceInfoHolder>(res);
 
-            this.devInfoCallback(di);
+            devInfoCallback(di);
         }
 
 
-
-
-
-        public static GuideHolder getGuide(int guideID)
+        public void populateGuideView(int guideID, Func<GuideHolder, bool> f)
         {
-            return null;
+            guidePopulateCallback = f;
+
+            //request
+            WebClient client = new WebClient();
+            MemoryStream stream = new MemoryStream();
+            client.OpenReadAsync(new Uri(IFIXIT_API_GUIDES + Uri.EscapeUriString(guideID.ToString())), stream);
+            client.OpenReadCompleted += new OpenReadCompletedEventHandler(GetGuideCompleted);
+            stream.Close();
+        }
+        private void GetGuideCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            string res = new StreamReader(e.Result).ReadToEnd();
+
+            res = Uri.UnescapeDataString(res);
+            GuideHolder di = JsonConvert.DeserializeObject<GuideHolder>(res);
+
+            guidePopulateCallback(di);
         }
     }
     /*
@@ -127,156 +139,96 @@ namespace iFixit7
      */
     public class GuideHolder
     {
-        public string guideTitle { get; set; }
-        public int guideID { get; set; }
-        public LinkedList<StepTemp> steps { get; set; }
-
-        public GuideHolder()
-        {
-            steps = new LinkedList<StepTemp>();
-        }
-
-        /*
-         * Takes all the data encoded in this GuideHolder and pours it into the passed in pivot
-         */
-        public void guideToView(Pivot parent)
-        {
-            if (parent == null)
-                return;
-
-            PivotItem pi = null;
-            ListBox lb = null;
-            //foreach across all steps gs
-            foreach (StepTemp gs in this.steps)
-            {
-                pi = new PivotItem();
-                pi.Header = "Step " + gs.getStepNum();
-
-                //add a grid to put the guide in
-                lb = new ListBox();
-                pi.Content = lb;
-
-                //fill in the grid
-                TextBlock tb = new TextBlock();
-                tb.MaxWidth = 480 - 30;
-                tb.TextWrapping = TextWrapping.Wrap;
-                // TODO FIXME: this is hardcoded to 0
-                tb.Text = gs.getLines(0).getText();
-                // TODO also use other methods
-                tb.Padding = new Thickness(0, 5, 0, 9);
-
-                lb.Items.Add(tb);
-
-                Image i = null;
-                ListBoxItem lbPadding = null;
-                foreach (jsonImage img in gs.getImageList())
-                {
-                    //load the image into i, then add it to the grid
-                    i = new Image();
-                    i.Source = new BitmapImage(new Uri(img.getText()));
-
-                    lbPadding = new ListBoxItem();
-                    lbPadding.Padding = new Thickness(0, 5, 0, 5);
-
-                    lb.Items.Add(i);
-                }
-
-                parent.Items.Add(pi);
-            }
-        }
-        /* Holds individual steps for a single guide */
-        private class GuideStep
-        {
-            //step #
-            public int index { get; set; }
-
-            //instructions for that step
-            public string instructions { get; set; }
-
-            //any images (as Uris)
-            public LinkedList<Uri> images { get; set; }
-
-            public GuideStep(int dex)
-            {
-                this.index = dex;
-                images = new LinkedList<Uri>();
-            }
-        }
+        public string device { get; set; }
+        public GHGuide guide { get; set; }
+        public string guideid { get; set; }
+        public string url { get; set; }
     }
-    
-    /*
-     * Different ways of wrapping the web request
-     */
-    /*
-    public class WebRequestExtensions
+    public class GHGuide
     {
-        private static AutoResetEvent _event = null;
-        private string resString;
+        public GHAuthor author { get; set; }
 
-        public string getReqResponse(string url)
-        {
-            _event = new AutoResetEvent(false);
+        public string[] categories { get; set; }
+        public string conclusion { get; set; }
 
-            WebClient client = new WebClient();
-            MemoryStream stream = new MemoryStream();
-            client.OpenReadAsync(new Uri(url), stream);
-            client.OpenReadCompleted += new OpenReadCompletedEventHandler(ReadCompleted);
-            stream.Close();
+        //public string device { get; set; }
+        //public string difficulty { get; set; }
 
-            Console.WriteLine("about to block for finish web req");
+        //public string[] documents { get; set; }
+        //public string[] flags { get; set; }
 
-            // block until async call is complete
-            //_event.WaitOne();
-            _event.WaitOne();
+        public string guideid { get; set; }
+        public GHImage image { get; set; }
 
-            return resString;
-        }
-        private void ReadCompleted(object sender, OpenReadCompletedEventArgs e)
-        {
-            //this strea, has the string: e.Result. Read it out
-            resString = new StreamReader(e.Result).ReadToEnd();
+        public string introduction { get; set; }
+        public string introduction_rendered { get; set; }
+        public string locale { get; set; }
 
-            Console.WriteLine("inside completed. Got [[ " + resString);
+        public GHPart[] parts { get; set; }
 
-            //JsonConvert.DeserializeObject<DeviceInfoHolder>(response);
-        }
+        public GHPrereq[] prereqs { get; set; }
 
-        /*
-        public static string HackedHttpGet(string url)
-        {
-            HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
-            string result = null;
-            //using (HttpWebResponse resp = req.GetResponse() as HttpWebResponse)
-            using (HttpWebResponse resp = req.g as HttpWebResponse)
-            {
-                StreamReader reader = new StreamReader(resp.GetResponseStream());
-                result = reader.ReadToEnd();
-            }
-            return result;
-        }
-        public static WebResponse GetResponse(this WebRequest request)
-        {
-            AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+        public GHStep[] steps { get; set; }
 
-            IAsyncResult asyncResult = request.BeginGetResponse(r => autoResetEvent.Set(), null);
+        public string subject { get; set; }
+        public string summary { get; set; }     //drop this? null?
+        public string time_required { get; set; }
+        public string title { get; set; }
 
-            // Wait until the call is finished
-            autoResetEvent.WaitOne();
+        public GHTool[] tools { get; set; }
 
-            return request.EndGetResponse(asyncResult);
-        }
-
-        public static Stream GetRequestStream(this WebRequest request)
-        {
-            AutoResetEvent autoResetEvent = new AutoResetEvent(false);
-
-            IAsyncResult asyncResult = request.BeginGetRequestStream(r => autoResetEvent.Set(), null);
-
-            // Wait until the call is finished
-            autoResetEvent.WaitOne();
-
-            return request.EndGetRequestStream(asyncResult);
-        }
+        public string type { get; set; }
     }
-    */
+    public class GHAuthor
+    {
+        public string text { get; set; }
+        public string userid { get; set; }
+    }
+    public class GHImage
+    {
+        public string imageid { get; set; }
+        public string text { get; set; }
+    }
+    public class GHPart
+    {
+        public string notes { get; set; }
+        public string text { get; set; }
+        public string thumbnail { get; set; }
+        public string url { get; set; }
+    }
+    public class GHPrereq
+    {
+        public string guideid { get; set; }
+        public string locale { get; set; }
+        public string text { get; set; }
+    }
+    public class GHTool
+    {
+        public string notes { get; set; }
+        public string text { get; set; }
+        public string thumbnail { get; set; }
+        public string url { get; set; }
+    }
+
+    //a step and its components
+    public class GHStep
+    {
+        public GHStepImage[] images { get; set; }
+        public GHStepLines[] lines { get; set; }
+
+        public string number { get; set; }
+        public string title { get; set; }
+    }
+    public class GHStepImage
+    {
+        public string imageid { get; set; }
+        public string orderby { get; set; }
+        public string text { get; set; }
+    }
+    public class GHStepLines
+    {
+        public string bullet { get; set; }
+        public string level { get; set; }
+        public string text { get; set; }
+    }
 }

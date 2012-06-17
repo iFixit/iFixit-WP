@@ -35,28 +35,64 @@ namespace iFixit7
             this.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
             GuideTitle.Text = this.guideTitle;
 
-            //FIXME API call here!
+            //api call. The callback will be fired to populate the view
+            JSONInterface2 ji = new JSONInterface2();
+            ji.populateGuideView(this.guideID, populateGuideUI);
+        }
+        public bool populateGuideUI(GuideHolder guide){
+            //now take the data from the object and populate the view!
 
-            /*
-            for (int i = 1; i <= 4; i++)
-            {
-                StepTemp st = new StepTemp(new List<jsonImage>(), new List<jsonLines>());
-                st.setStepNum(i);
-                st.addLine(new jsonLines("", 0, "Use a coin to rotate the battery-locking screw 90 degrees clockwise."));
+            //initial guide info tab
+            PivotItem infoTab = new PivotItem();
+            infoTab.Header = "Info";
+            this.GuidePivot.Items.Add(infoTab);
+            ListBox infoLB = new ListBox();
+            infoTab.Content = infoLB;
 
-                st.addImage(new jsonImage(0, 0, "http://www.ifixit.com/igi/dLF6KygThyYNdyCS"));
-                st.addImage(new jsonImage(0, 0, "http://www.ifixit.com/igi/FN4ThHdXJENYggv1"));
+            TextBlock infoT = new TextBlock();
+            infoT.Text = guide.guide.title;
+            infoLB.Items.Add(infoT);
 
-                ourGuide.steps.AddLast(st);
-            }
-             */
-            ourGuide.guideToView(GuidePivot);
+            infoT = new TextBlock();
+            infoT.Text = "Author: " + guide.guide.author.text;
+            infoLB.Items.Add(infoT);
 
-            /*
+            //button on bottom for opening the guide in the browser
+            HyperlinkButton hb = new HyperlinkButton();
+            hb.Content = "View this guide in a browser";
+            hb.NavigateUri = new Uri(guide.url);
+            hb.TargetName = "_blank";
+            hb.Padding = new Thickness(4, 4, 4, 4);
+            infoLB.Items.Add(hb);
+
+            //generate step tabs
+
+            return true;
+        }
+    }
+}
+    /*
+     
+    public class GuideHolder
+    {
+        public string guideTitle { get; set; }
+        public int guideID { get; set; }
+        public LinkedList<StepTemp> steps { get; set; }
+
+        public GuideHolder()
+        {
+            steps = new LinkedList<StepTemp>();
+        }
+
+        public void guideToView(Pivot parent)
+        {
+            if (parent == null)
+                return;
+
             PivotItem pi = null;
             ListBox lb = null;
             //foreach across all steps gs
-            foreach (StepTemp gs in ourGuide.steps)
+            foreach (StepTemp gs in this.steps)
             {
                 pi = new PivotItem();
                 pi.Header = "Step " + gs.getStepNum();
@@ -86,17 +122,30 @@ namespace iFixit7
 
                     lbPadding = new ListBoxItem();
                     lbPadding.Padding = new Thickness(0, 5, 0, 5);
-                    
+
                     lb.Items.Add(i);
                 }
 
-                GuidePivot.Items.Add(pi);
+                parent.Items.Add(pi);
             }
-             */
+        }
+        //steps
+        private class GuideStep
+        {
+            //step #
+            public int index { get; set; }
+
+            //instructions for that step
+            public string instructions { get; set; }
+
+            //any images (as Uris)
+            public LinkedList<Uri> images { get; set; }
+
+            public GuideStep(int dex)
+            {
+                this.index = dex;
+                images = new LinkedList<Uri>();
+            }
         }
     }
-    
-    
-
-    
-}
+*/

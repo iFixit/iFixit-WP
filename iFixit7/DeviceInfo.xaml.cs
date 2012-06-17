@@ -53,10 +53,12 @@ namespace iFixit7
             piInfo.Content = infoList;
 
             //add device image
-            Image infoImg = new Image();
-            //infoImg.Source = new BitmapImage(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS"));
-            infoImg.Source = new BitmapImage(new Uri(devInfo.image.text));
-            infoList.Items.Add(infoImg);
+            if (devInfo.image.text != null && devInfo.image.text != "")
+            {
+                Image infoImg = new Image();
+                infoImg.Source = new BitmapImage(new Uri(devInfo.image.text));
+                infoList.Items.Add(infoImg);
+            }
 
             //add description
             TextBlock infoDesc = new TextBlock();

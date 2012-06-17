@@ -1,0 +1,35 @@
+on guide page
+free images when leaving page!!!!! runs out of memory....
+	i helped it i think? but when guides have too many images it explodes...
+	
+seems to always select the bottom item in a list of devices...? do i ever allow it to do anything else? delegates?
+	works fine on the top level, so is it just selecting from the list of devices?
+	when you select a device from a valid list of devices, it selects bottom
+	
+	swapping to next area being n seemed to fix this? nope? but n is correct
+	
+cant deal with variable depth hierarchy...
+	need to be able to detect leaves, and ONLY THEN call deviceInfo! else just another magic pivot
+	if there are specific devices AND catagories on the same level, need to be able to handle both
+	
+	phone > cell phone > nokia phone | selects 1 device, needs to show another magic pivot
+	game console > microsoft game console > microsoft TV console | needs to show magic pivot with xbox, 360, etc. instead is one level too far
+	
+tools
+prereqs
+background? tab title?
+
+make device info (and guide?) into pano, not pivot
+
+fix navigation on guide page not going to correct device if you go back
+
+
+
+wish;
+users
+making guide text colored or something to match image labels
+detect if no network and fail
+some sort of local cache
+open images in browser window or something to zoom in [open in embedded browser?]
+new icon?
+new background on main page? (that high rez hammer?)

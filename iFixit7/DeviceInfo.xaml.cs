@@ -23,19 +23,26 @@ namespace iFixit7
             InitializeComponent();
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            //as far as I can think, this could only mean going back to the previous menus
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             //get the device name that was passed and stash it
             DeviceName.Text = this.NavigationContext.QueryString["device"];
 
-            Console.WriteLine("Showing device info for [" + DeviceName.Text + "]");
+            Debug.WriteLine("Showing device info for [" + DeviceName.Text + "]");
 
             //API call to get the entire contents of the device info and populate it it returns
             JSONInterface2 ji = new JSONInterface2();
             ji.populateDeviceInfo(DeviceName.Text, populateUI);
         }
         private bool populateUI(DeviceInfoHolder devInfo){
-            Console.WriteLine("filling in device info ui...");
+            Debug.WriteLine("filling in device info ui...");
 
             //Fill in the UI:
             //now generate 2 tabs. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
@@ -204,7 +211,7 @@ namespace iFixit7
             //and add the handler to make it navigate to a particular guide when tapped
             g.Tap += delegate(object sender, GestureEventArgs e)
             {
-                Debug.WriteLine("navigating to guide");
+                Debug.WriteLine("navigating to guide " + guideID + " title = " + title);
                 (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/Guide.xaml?guideID=" + guideID + "&guideTitle=" + title + "", UriKind.Relative));
             };
 

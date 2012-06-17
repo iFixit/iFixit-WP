@@ -34,10 +34,10 @@ namespace iFixit7
             //now iterate across the tree we got, and build a view from it
             PivotItem pi = null;
             ListBox lb = null;
-            //for (int i = 0; i < 4; i++)
-
-            foreach (Node n in areaShown.getChildrenList())
+            //foreach (Node n in areaShown.getChildrenList())
+            for(int dex = 0; dex < areaShown.getChildrenList().Count; dex++)
             {
+                Node n = areaShown.getChildrenList().ElementAt(dex);
                 //build a pivot item for each larger catagory
                 pi = new PivotItem();
                 pi.Header = n.getName();
@@ -54,22 +54,37 @@ namespace iFixit7
                 //for (int j = 0; j < 25; j++)
                 if (n.getChildrenList() != null)
                 {
-                    foreach (Node model in n.getChildrenList())
+                    //foreach (Node model in n.getChildrenList())
+                    for(int dex2 = 0; dex2 < n.getChildrenList().Count; dex2++)
                     {
+                        Node model = n.getChildrenList().ElementAt(dex2);
                         tb = new TextBlock();
 
                         //add a specuial handler to respond to being tapped
                         //tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
                         tb.Tap += delegate(object sender, GestureEventArgs e)
                         {
-                            Debug.WriteLine("A MagicPivot is about to navigate....");
+                            Debug.WriteLine("A MagicPivot is about to navigate, but to where?!");
 
-                            //what is this? works without it...
-                            App.setNextArea(null, 0);
+                            Debug.WriteLine("what index to store? dex = " + dex + " and dex2 = " + dex2);
 
-                            //FIXME ??
-                            //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call Guide
-                            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
+                            //FIXME finish this logic!
+                            //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call DeviceInfo
+                            if (model.getChildrenList() != null)
+                            {
+                                Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf");
+
+                                //set the next leaf to work off of
+                                //App.setNextArea(model, 0);
+                                App.setNextArea(n, 0);
+                                NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + model.getName(), UriKind.Relative));
+                            }
+                            else
+                            {
+                                //need to set some the index? if we change columns, we want the back button to return to the proper one...
+                                //App.setNextArea(n, SmartPivot.SelectedIndex);
+                                NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
+                            }
                         };
 
                         tb.Text = model.getName();
@@ -104,6 +119,28 @@ namespace iFixit7
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("A MagicPivot has been navigated to...");
+
+            //?
+            //App.setNextArea(null, 0);
+            Node sel = null;
+            if (App.getNextArea() != null)
+            {
+                if (App.getNextArea().getChildrenList() != null)
+                {
+                    sel = App.getNextArea().getChildrenList().ElementAt(App.getCurrCol());
+                }
+            }
+
+            //if we are about to switch to a tab index with no children, then actually redirect to a device info
+            if ((sel != null))
+            {
+                if (sel.getChildrenList() == null)
+                {
+                    Debug.WriteLine("we were navigating to a leaf. deviceinfo it");
+                    App.setNextArea(null, 0);
+                    NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + sel.getName(), UriKind.Relative));
+                }
+            }
         }
     }
 }

@@ -69,9 +69,6 @@ namespace iFixit7
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
         }
 
-        
-
-
         public void getAreas()
         {
             iFixitJSONHelper ifj = new iFixitJSONHelper();
@@ -95,7 +92,6 @@ namespace iFixit7
             foreach (Node n in tree.getChildrenList())
             {
                 if(n.getChildrenList() != null) {
-                    //Debug.WriteLine(">>" + n.getName());
                     pi = new PanoramaItem();
                     pi.Header = n.getName();
                     lb = new ListBox();
@@ -105,8 +101,6 @@ namespace iFixit7
                     TextBlock tb = null;
                     foreach (Node item in n.getChildrenList())
                     {
-//                        Debug.WriteLine("got a child of " + n.getName());
-
                         lbi = new ListBoxItem();
                         tb = new TextBlock();
 
@@ -121,7 +115,7 @@ namespace iFixit7
                 }
             }
 
-            Debug.WriteLine("finished adding to big pano?");
+            Debug.WriteLine("finished adding to big pano");
         }
     }
 }

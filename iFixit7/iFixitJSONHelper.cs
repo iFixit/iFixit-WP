@@ -30,19 +30,6 @@ namespace iFixit7
         public delegate void AreaCallEventHandler(MainPage sender, Node tree);
         public event AreaCallEventHandler callAreasAPI;
 
-
-//        public static List<Node> getAreas() {
-//            callAreasAPI += new AreaCallEventHandler(iFixitJSONHelper_callAreasAPI);
-//            doAPICallAsync(IFIXIT_API_AREAS);
-//            return mTree;
-//        }
-
-//        void iFixitJSONHelper_callAreasAPI(iFixitJSONHelper sender, List<Node> tree)
-//        {
-            // update the UI
-//            throw new NotImplementedException();
-//        }
-
         public void doAPICallAsync(string uri) {
             Uri site = new Uri(uri);
             areas = uri == IFIXIT_API_AREAS;

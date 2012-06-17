@@ -57,8 +57,6 @@ namespace iFixit7
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-            Debug.WriteLine("test 2");
-
         }
 
         private static Node EntireAreaHierarchy, currentArea;

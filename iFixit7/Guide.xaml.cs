@@ -20,14 +20,32 @@ namespace iFixit7
         string guideTitle;
         int guideID;
 
+        private List<Image> allImages;
+
         public Guide()
         {
             InitializeComponent();
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            //free images?
+            Debug.WriteLine("got " + allImages.Count + " images to free");
+            for (int i = 0; i < allImages.Count; i++ )
+            {
+                Image im = allImages.ElementAt(i);
+                this.GuidePivot.Items.Clear();
+                im = null;
+            }
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("A Guide has been navigated to. We are going to make API calls and do SCIENCE");
+
+            allImages = new List<Image>();
 
             //get the device name that was passed and stash it
             this.guideTitle = this.NavigationContext.QueryString["guideTitle"];
@@ -54,11 +72,13 @@ namespace iFixit7
             infoT.Text = guide.guide.title;
             infoT.TextAlignment = TextAlignment.Center;
             infoT.TextDecorations = TextDecorations.Underline;
+            infoT.TextWrapping = TextWrapping.Wrap;
             infoLB.Items.Add(infoT);
 
             //summary
             infoT = new TextBlock();
             infoT.Text = guide.guide.summary;
+            infoT.TextWrapping = TextWrapping.Wrap;
             infoLB.Items.Add(infoT);
 
             pad = new ListBoxItem();
@@ -86,6 +106,7 @@ namespace iFixit7
 
             infoT = new TextBlock();
             infoT.Text = "Author: " + guide.guide.author.text;
+            infoT.TextWrapping = TextWrapping.Wrap;
             infoLB.Items.Add(infoT);
 
             pad = new ListBoxItem();
@@ -133,6 +154,7 @@ namespace iFixit7
                     //load the image into i, then add it to the grid
                     i = new Image();
                     i.Source = new BitmapImage(new Uri(img.text));
+                    allImages.Add(i);
 
                     lbPadding = new ListBoxItem();
                     lbPadding.Padding = new Thickness(5);

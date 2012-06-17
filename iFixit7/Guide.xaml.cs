@@ -119,6 +119,7 @@ namespace iFixit7
             {
                 infoT = new TextBlock();
                 infoT.Text = "Tools Needed:";
+                infoT.FontStyle = FontStyles.Italic;
                 infoLB.Items.Add(infoT);
                 foreach (GHTool t in guide.guide.tools)
                 {
@@ -126,6 +127,27 @@ namespace iFixit7
                     infoT.Text = "-" + t.text;
                     if (t.notes != "")
                         infoT.Text += " (" + t.notes + ")";
+                    infoLB.Items.Add(infoT);
+                }
+
+                pad = new ListBoxItem();
+                pad.Padding = new Thickness(7);
+                infoLB.Items.Add(pad);
+            }
+
+            //add relevant parts
+            if (guide.guide.parts.Length > 0)
+            {
+                infoT = new TextBlock();
+                infoT.Text = "Relevant Parts:";
+                infoT.FontStyle = FontStyles.Italic;
+                infoLB.Items.Add(infoT);
+                foreach (GHPart p in guide.guide.parts)
+                {
+                    infoT = new TextBlock();
+                    infoT.Text = "-" + p.text;
+                    if (p.notes != "")
+                        infoT.Text += " (" + p.notes + ")";
                     infoLB.Items.Add(infoT);
                 }
 
@@ -161,6 +183,7 @@ namespace iFixit7
             ListBox backLB = new ListBox();
             backTab.Content = backLB;
             */
+
             //============
             //generate a tab for each step
             PivotItem pi = null;

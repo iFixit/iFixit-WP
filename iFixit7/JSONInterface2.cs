@@ -18,6 +18,8 @@ using Microsoft.Phone.Controls;
 using System.Windows.Media.Imaging;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using System.Text;
+using System.Reflection;
 
 namespace iFixit7
 {
@@ -49,10 +51,10 @@ namespace iFixit7
         private void GetDeviceInfoCompleted(object sender, OpenReadCompletedEventArgs e)
         {
             //this strea, has the string: e.Result. Read it out
-            string res = new StreamReader(e.Result).ReadToEnd();
+            string rawJSON = new StreamReader(e.Result).ReadToEnd();
 
-            res = Uri.UnescapeDataString(res);
-            DeviceInfoHolder di = JsonConvert.DeserializeObject<DeviceInfoHolder>(res);
+            //rawJSON = Uri.UnescapeDataString(rawJSON);
+            DeviceInfoHolder di = JsonConvert.DeserializeObject<DeviceInfoHolder>(rawJSON);
 
             devInfoCallback(di);
         }
@@ -71,12 +73,64 @@ namespace iFixit7
         }
         private void GetGuideCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            string res = new StreamReader(e.Result).ReadToEnd();
+            string rawJSON = new StreamReader(e.Result).ReadToEnd();
 
-            res = Uri.UnescapeDataString(res);
-            GuideHolder di = JsonConvert.DeserializeObject<GuideHolder>(res);
+            //rawJSON = Uri.UnescapeDataString(rawJSON);
+            GuideHolder gde = JsonConvert.DeserializeObject<GuideHolder>(rawJSON);
 
-            guidePopulateCallback(di);
+
+            //apply the URL unescaper and HTML stripper to all strings in the class
+            /*
+            var fields = typeof(GuideHolder).GetFields(System.Reflection.BindingFlags.GetField);
+            foreach (FieldInfo f in fields) {
+                var val = f.GetValue(gde);
+                if (val != null)
+                {
+                    if(val is string)
+                    {
+                        string str = (string)val;
+                        str = Uri.UnescapeDataString(str);
+                        str = StripTagsCharArray(str);
+                        val = str;
+                    }
+                }
+            }
+            */
+            //this DOES WORK. it just needs to be called on everything...
+            //gde.guide.steps[0].lines[4].text = StripTagsCharArray(gde.guide.steps[0].lines[4].text);
+
+            guidePopulateCallback(gde);
+        }
+
+        /*
+         * Strips HTML tags out of strings. Used to remove links and whatnot from comments
+         */
+        public static string StripTagsCharArray(string source)
+        {
+	        char[] array = new char[source.Length];
+	        int arrayIndex = 0;
+	        bool inside = false;
+
+	        for (int i = 0; i < source.Length; i++)
+	        {
+	            char let = source[i];
+	            if (let == '<')
+	            {
+		        inside = true;
+		        continue;
+	            }
+	            if (let == '>')
+	            {
+		        inside = false;
+		        continue;
+	            }
+	            if (!inside)
+	            {
+		        array[arrayIndex] = let;
+		        arrayIndex++;
+	            }
+	        }
+	        return new string(array, 0, arrayIndex);
         }
     }
     /*

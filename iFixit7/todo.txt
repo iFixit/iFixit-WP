@@ -1,25 +1,22 @@
-free images when leaving page! runs out of memory....
-	i helped it i think? but when guides have too many images it explodes...
-	for instance, the boxee box teardown
+free images when leaving page! runs out of memory eventually...
+	each guide tries to dump its cache when it is navigated away from. Cant tell if it works though
 
 if you navigate to a col, then go right or left and select a device. when you go back, it navigates back to the col you originally navigated to, not
 				the one you left. IE the back stack remembers the correct column, but then we manually navigate away from it
-	has this changed? seems to remember each you choose?
+	has this changed? seems to remember each you choose now?
 
-on guide page:
-tools
-prereqs
-background? tab title?
-
-fix navigation on guide page not going to correct device if you go back
+need to strip HTML (from links, which are usually relative and broken anyway) and un-HTML encode special characters
+	reflection to find all strings would be best, but I dont have that working yet
+	The methods to properly sanatize are in place though (in JSONInterface2.cs)
 
 
 
-wish;
+wishlist;
 users
-making guide text colored or something to match image labels
+making guide text colored (or have some other colored marker) to match image labels
+	color is already retreived, just need to translate to C# colors and set them
 detect if no network and fail
 some sort of local cache
 open images in browser window or something to zoom in [open in embedded browser?]
 new icon?
-new background on main page? (that high rez hammer?)
+new background on main page? (that high resolution hammer image?)

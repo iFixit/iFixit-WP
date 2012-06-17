@@ -152,7 +152,8 @@ namespace iFixit7
             //g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
             //g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
             g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(50) });
-            g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(35) });
+            //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(35) });
+            g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
 
             //add the title
             TextBlock tbTitle = new TextBlock();
@@ -169,7 +170,7 @@ namespace iFixit7
             //add the subject
             TextBlock tbSubject = new TextBlock();
             //tbSubject.MaxWidth = 480 - 30;
-            //tbSubject.TextWrapping = TextWrapping.Wrap;
+            tbSubject.TextWrapping = TextWrapping.Wrap;
             tbSubject.Text = this.subject;
             //tbSubject.Padding = new Thickness(0, 5, 0, 9);
             Grid.SetColumn(tbSubject, 0);

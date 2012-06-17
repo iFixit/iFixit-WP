@@ -65,10 +65,10 @@ namespace iFixit7
                             Debug.WriteLine("A MagicPivot is about to navigate....");
 
                             //what is this? works without it...
-                            //App.setNextArea(null, 0);
+                            App.setNextArea(null, 0);
 
+                            //FIXME ??
                             //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call Guide
-                            //NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + "iPhone+3G", UriKind.Relative));
                             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
                         };
 

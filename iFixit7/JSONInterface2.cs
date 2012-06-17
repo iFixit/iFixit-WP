@@ -152,7 +152,7 @@ namespace iFixit7
         public string conclusion { get; set; }
 
         //public string device { get; set; }
-        //public string difficulty { get; set; }
+        public string difficulty { get; set; }
 
         //public string[] documents { get; set; }
         //public string[] flags { get; set; }

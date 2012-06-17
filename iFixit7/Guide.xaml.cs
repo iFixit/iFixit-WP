@@ -17,7 +17,6 @@ namespace iFixit7
 {
     public partial class Guide : PhoneApplicationPage
     {
-        GuideHolder ourGuide = null;
         string guideTitle;
         int guideID;
 
@@ -41,6 +40,7 @@ namespace iFixit7
         }
         public bool populateGuideUI(GuideHolder guide){
             //now take the data from the object and populate the view!
+            ListBoxItem pad = null;
 
             //initial guide info tab
             PivotItem infoTab = new PivotItem();
@@ -49,23 +49,100 @@ namespace iFixit7
             ListBox infoLB = new ListBox();
             infoTab.Content = infoLB;
 
+            //title
             TextBlock infoT = new TextBlock();
             infoT.Text = guide.guide.title;
+            infoT.TextAlignment = TextAlignment.Center;
+            infoT.TextDecorations = TextDecorations.Underline;
             infoLB.Items.Add(infoT);
+
+            //summary
+            infoT = new TextBlock();
+            infoT.Text = guide.guide.summary;
+            infoLB.Items.Add(infoT);
+
+            pad = new ListBoxItem();
+            pad.Padding = new Thickness(5);
+            infoLB.Items.Add(pad);
+
+            if (guide.guide.difficulty != "")
+            {
+                infoT = new TextBlock();
+                infoT.Text = "Difficulty: " + guide.guide.difficulty;
+                infoLB.Items.Add(infoT);
+
+                pad = new ListBoxItem();
+                pad.Padding = new Thickness(5);
+                infoLB.Items.Add(pad);
+            }
+
+            infoT = new TextBlock();
+            infoT.Text = "Steps: " + guide.guide.steps.Length.ToString();
+            infoLB.Items.Add(infoT);
+
+            pad = new ListBoxItem();
+            pad.Padding = new Thickness(5);
+            infoLB.Items.Add(pad);
 
             infoT = new TextBlock();
             infoT.Text = "Author: " + guide.guide.author.text;
             infoLB.Items.Add(infoT);
+
+            pad = new ListBoxItem();
+            pad.Padding = new Thickness(5);
+            infoLB.Items.Add(pad);
 
             //button on bottom for opening the guide in the browser
             HyperlinkButton hb = new HyperlinkButton();
             hb.Content = "View this guide in a browser";
             hb.NavigateUri = new Uri(guide.url);
             hb.TargetName = "_blank";
-            hb.Padding = new Thickness(4, 4, 4, 4);
+            hb.Padding = new Thickness(8);
             infoLB.Items.Add(hb);
 
-            //generate step tabs
+            //generate a tab for each step
+            PivotItem pi = null;
+            ListBox lb = null;
+            int stepNum = 1;
+            foreach (GHStep step in guide.guide.steps)
+            {
+                pi = new PivotItem();
+                pi.Header = "Step " + stepNum;
+                stepNum++;
+
+                //add a grid to put the guide in
+                lb = new ListBox();
+                pi.Content = lb;
+
+                //fill in the grid
+                TextBlock tb = null;
+                foreach (GHStepLines line in step.lines){
+                    tb = new TextBlock();
+                    //tb.MaxWidth = 480 - 30;
+                    tb.TextWrapping = TextWrapping.Wrap;
+                    tb.Text = line.text;
+                    tb.Padding = new Thickness(0, 5, 0, 9);
+
+                    lb.Items.Add(tb);
+                }
+
+                Image i = null;
+                ListBoxItem lbPadding = null;
+                foreach (GHStepImage img in step.images)
+                {
+                    //load the image into i, then add it to the grid
+                    i = new Image();
+                    i.Source = new BitmapImage(new Uri(img.text));
+
+                    lbPadding = new ListBoxItem();
+                    lbPadding.Padding = new Thickness(5);
+
+                    lb.Items.Add(i);
+                    lb.Items.Add(lbPadding);
+                }
+
+                this.GuidePivot.Items.Add(pi);
+            }
 
             return true;
         }

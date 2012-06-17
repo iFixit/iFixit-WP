@@ -165,6 +165,7 @@ namespace iFixit7
             //tbTitle.MaxWidth = 480 - 30;
             //tbTitle.TextWrapping = TextWrapping.Wrap;
             tbTitle.Text = this.title;
+            tbTitle.TextWrapping = TextWrapping.Wrap;
             //tbTitle.Padding = new Thickness(0, 5, 0, 9);
             Grid.SetColumn(tbTitle, 0);
             Grid.SetColumnSpan(tbTitle, 2);

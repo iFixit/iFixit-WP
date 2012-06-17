@@ -30,15 +30,15 @@ namespace iFixit7
 
             Console.WriteLine("Showing device info for [" + DeviceName.Text + "]");
 
-            //API call to get the entire contents of the guide
-            //JSONInterface2 apiInterface = new JSONInterface2();
+            //API call to get the entire contents of the device info and populate it it returns
+            JSONInterface2 ji = new JSONInterface2();
+            ji.populateDeviceInfo(DeviceName.Text, populateUI);
+        }
+        private bool populateUI(DeviceInfoHolder devInfo){
+            Console.WriteLine("filling in device info ui...");
 
-            //parse it, and get the resulting GuideHolder
-
-            //add stuff from the API call to populate the view
-
-            //TODO FIXME
-            //now generate 2 tabs,. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
+            //Fill in the UI:
+            //now generate 2 tabs. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
             //when the user selects a guide, naviate to a Guide.xaml with the guide ID, and it will fetch the guide and display it
             PivotItem piInfo = new PivotItem();
             PivotItem piGuides = new PivotItem();
@@ -54,14 +54,15 @@ namespace iFixit7
 
             //add device image
             Image infoImg = new Image();
-            infoImg.Source = new BitmapImage(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS"));
+            //infoImg.Source = new BitmapImage(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS"));
+            infoImg.Source = new BitmapImage(new Uri(devInfo.image.text));
             infoList.Items.Add(infoImg);
 
             //add description
             TextBlock infoDesc = new TextBlock();
             infoDesc.MaxWidth = 480 - 30;
             infoDesc.TextWrapping = TextWrapping.Wrap;
-            infoDesc.Text = "I am a description. I can say things about, for instance an iPad, an iPhone, or even a windows phone!";
+            infoDesc.Text = devInfo.description;
             infoDesc.Padding = new Thickness(0, 5, 0, 9);
             infoList.Items.Add(infoDesc);
 
@@ -71,8 +72,17 @@ namespace iFixit7
             piGuides.Content = guideList;
 
             ListBoxItem lPad = null;
-
+            GuideEntry ge = null;
             //iterate through all guides, adding each one
+            foreach(DIGuides graw in devInfo.guides){
+                ge = new GuideEntry(graw);
+                guideList.Items.Add(ge.getRow());
+
+                lPad = new ListBoxItem();
+                lPad.Padding = new Thickness(5, 5, 5, 5);
+                guideList.Items.Add(lPad);
+            }
+            /*
             GuideEntry ge = new GuideEntry("a guide", "http://www.ifixit.com/igi/dLF6KygThyYNdyCS", "guide", "teardown", 1111);
             guideList.Items.Add(ge.getRow());
             lPad = new ListBoxItem();
@@ -85,6 +95,9 @@ namespace iFixit7
             guideList.Items.Add(lPad);
 
             guideList.Items.Add(ge.getRow());
+             * */
+
+            return true;
         }
     }
 
@@ -100,6 +113,14 @@ namespace iFixit7
         string type;
         int guideID;
 
+        public GuideEntry(DIGuides dg)
+        {
+            title = dg.title;
+            thumb = new Uri(dg.thumbnail);
+            subject = dg.subject;
+            type = dg.type;
+            guideID = int.Parse(dg.guideid);
+        }
         public GuideEntry(string itit, string imgUrl, string isub, string itype, int gid)
         {
             title = itit;

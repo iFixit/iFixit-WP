@@ -18,6 +18,8 @@ namespace iFixit7
     public partial class Guide : PhoneApplicationPage
     {
         GuideHolder ourGuide = null;
+        string guideTitle;
+        int guideID;
 
         public Guide()
         {
@@ -28,36 +30,14 @@ namespace iFixit7
         {
             Debug.WriteLine("A Guide has been navigated to. We are going to make API calls and do SCIENCE");
 
-            ourGuide = new GuideHolder();
-
             //get the device name that was passed and stash it
-            ourGuide.guideTitle = this.NavigationContext.QueryString["guideTitle"];
-            Console.WriteLine("id was " + this.NavigationContext.QueryString["guideID"]);
-            ourGuide.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
-            GuideTitle.Text = ourGuide.guideTitle;
+            this.guideTitle = this.NavigationContext.QueryString["guideTitle"];
+            this.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
+            GuideTitle.Text = this.guideTitle;
 
-            //API call to get the entire contents of the guide
+            //FIXME API call here!
 
-            //parse it, and get the resulting GuideHolder
-
-            //add stuff from the API call to populate the view
-
-            //
-
-            //FIXME HACK. REMOVE THIS
-            //GuideStep g = null;
-            //for (int i = 1; i <= 4; i++)
-            //{
-            //    g = new StepTemp();
-            //    ourGuide.steps.AddLast(g);
-
-            //    g.index = i;
-            //    g.instructions = "Use a coin to rotate the battery-locking screw 90 degrees clockwise.";
-
-            //    g.images.AddLast(new Uri("http://www.ifixit.com/igi/dLF6KygThyYNdyCS", UriKind.Absolute));
-            //    g.images.AddLast(new Uri("http://www.ifixit.com/igi/FN4ThHdXJENYggv1", UriKind.Absolute));
-            //}
-
+            /*
             for (int i = 1; i <= 4; i++)
             {
                 StepTemp st = new StepTemp(new List<jsonImage>(), new List<jsonLines>());
@@ -69,7 +49,9 @@ namespace iFixit7
 
                 ourGuide.steps.AddLast(st);
             }
+             */
             ourGuide.guideToView(GuidePivot);
+
             /*
             PivotItem pi = null;
             ListBox lb = null;
@@ -114,81 +96,7 @@ namespace iFixit7
         }
     }
     
-    /* holds an entire guide */
-    class GuideHolder
-    {
-        public string guideTitle { get; set; }
-        public int guideID { get; set; }
-        public LinkedList<StepTemp> steps { get; set; }
+    
 
-        public GuideHolder()
-        {
-            steps = new LinkedList<StepTemp>();
-        }
-
-        /*
-         * Takes all the data encoded in this GuideHolder and pours it into the passed in pivot
-         */
-        public void guideToView(Pivot parent){
-            PivotItem pi = null;
-            ListBox lb = null;
-            //foreach across all steps gs
-            foreach (StepTemp gs in this.steps)
-            {
-                pi = new PivotItem();
-                pi.Header = "Step " + gs.getStepNum();
-
-                //add a grid to put the guide in
-                lb = new ListBox();
-                pi.Content = lb;
-
-                //fill in the grid
-                TextBlock tb = new TextBlock();
-                tb.MaxWidth = 480 - 30;
-                tb.TextWrapping = TextWrapping.Wrap;
-                // TODO FIXME: this is hardcoded to 0
-                tb.Text = gs.getLines(0).getText();
-                // TODO also use other methods
-                tb.Padding = new Thickness(0, 5, 0, 9);
-
-                lb.Items.Add(tb);
-
-                Image i = null;
-                ListBoxItem lbPadding = null;
-                foreach (jsonImage img in gs.getImageList())
-                {
-                    //load the image into i, then add it to the grid
-                    i = new Image();
-                    i.Source = new BitmapImage(new Uri(img.getText()));
-
-                    lbPadding = new ListBoxItem();
-                    lbPadding.Padding = new Thickness(0, 5, 0, 5);
-
-                    lb.Items.Add(i);
-                }
-
-                parent.Items.Add(pi);
-            }
-        }
-
-    }
-
-    /* Holds individual steps */
-    class GuideStep
-    {
-        //step #
-        public int index { get; set; }
-
-        //instructions for that step
-        public string instructions { get; set; }
-
-        //any images (as Uris)
-        public LinkedList<Uri> images { get; set; }
-
-        public GuideStep(int dex)
-        {
-            this.index = dex;
-            images = new LinkedList<Uri>();
-        }
-    }
+    
 }

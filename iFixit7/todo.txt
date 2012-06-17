@@ -1,20 +1,12 @@
-on guide page
-free images when leaving page!!!!! runs out of memory....
+free images when leaving page! runs out of memory....
 	i helped it i think? but when guides have too many images it explodes...
-	
-seems to always select the bottom item in a list of devices...? do i ever allow it to do anything else? delegates?
-	works fine on the top level, so is it just selecting from the list of devices?
-	when you select a device from a valid list of devices, it selects bottom
-	
-	swapping to next area being n seemed to fix this? nope? but n is correct
-	
-cant deal with variable depth hierarchy...
-	need to be able to detect leaves, and ONLY THEN call deviceInfo! else just another magic pivot
-	if there are specific devices AND catagories on the same level, need to be able to handle both
-	
-	phone > cell phone > nokia phone | selects 1 device, needs to show another magic pivot
-	game console > microsoft game console > microsoft TV console | needs to show magic pivot with xbox, 360, etc. instead is one level too far
-	
+	for instance, the boxee box teardown
+
+if you navigate to a col, then go right or left and select a device. when you go back, it navigates back to the col you originally navigated to, not
+				the one you left. IE the back stack remembers the correct column, but then we manually navigate away from it
+	has this changed? seems to remember each you choose?
+
+on guide page:
 tools
 prereqs
 background? tab title?

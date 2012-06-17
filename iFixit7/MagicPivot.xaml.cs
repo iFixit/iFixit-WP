@@ -58,6 +58,8 @@ namespace iFixit7
                     for(int dex2 = 0; dex2 < n.getChildrenList().Count; dex2++)
                     {
                         Node model = n.getChildrenList().ElementAt(dex2);
+                        int curIndex = dex2;
+
                         tb = new TextBlock();
 
                         //add a specuial handler to respond to being tapped
@@ -72,17 +74,17 @@ namespace iFixit7
                             //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call DeviceInfo
                             if (model.getChildrenList() != null)
                             {
-                                Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf");
+                                Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf. Its index = " + curIndex);
 
                                 //set the next leaf to work off of
                                 //App.setNextArea(model, 0);
-                                App.setNextArea(n, 0);
+                                App.setNextArea(n, curIndex);
                                 NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + model.getName(), UriKind.Relative));
                             }
                             else
                             {
                                 //need to set some the index? if we change columns, we want the back button to return to the proper one...
-                                //App.setNextArea(n, SmartPivot.SelectedIndex);
+                                //App.setNextArea(n, -1);
                                 NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
                             }
                         };
@@ -123,7 +125,7 @@ namespace iFixit7
             //?
             //App.setNextArea(null, 0);
             Node sel = null;
-            if (App.getNextArea() != null)
+            if (App.getNextArea() != null && App.getCurrCol() > -1)
             {
                 if (App.getNextArea().getChildrenList() != null)
                 {
@@ -132,7 +134,7 @@ namespace iFixit7
             }
 
             //if we are about to switch to a tab index with no children, then actually redirect to a device info
-            if ((sel != null))
+            if (sel != null)
             {
                 if (sel.getChildrenList() == null)
                 {
@@ -140,6 +142,11 @@ namespace iFixit7
                     App.setNextArea(null, 0);
                     NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + sel.getName(), UriKind.Relative));
                 }
+            }
+            else
+            {
+                //back one more
+                NavigationService.GoBack();
             }
         }
     }

@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using System.Windows.Data;
 
 namespace iFixit7
 {
@@ -153,7 +154,9 @@ namespace iFixit7
                 {
                     //load the image into i, then add it to the grid
                     i = new Image();
+                    i.Width = 480;
                     i.Source = new BitmapImage(new Uri(img.text));
+
                     allImages.Add(i);
 
                     lbPadding = new ListBoxItem();

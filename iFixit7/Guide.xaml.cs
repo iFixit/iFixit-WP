@@ -13,6 +13,8 @@ using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Data;
+using Microsoft.Phone;
+using System.IO;
 
 namespace iFixit7
 {
@@ -32,12 +34,17 @@ namespace iFixit7
         {
             base.OnNavigatedFrom(e);
 
+            //empty the pivot
+            this.GuidePivot.Items.Clear();
+
             //free images?
             Debug.WriteLine("got " + allImages.Count + " images to free");
             for (int i = 0; i < allImages.Count; i++ )
             {
                 Image im = allImages.ElementAt(i);
-                this.GuidePivot.Items.Clear();
+
+                //(im as BitmapImage).UriSource = null;
+                im.Source = null;
                 im = null;
             }
         }
@@ -108,21 +115,24 @@ namespace iFixit7
             infoLB.Items.Add(pad);
 
             //add all listed tools
-            infoT = new TextBlock();
-            infoT.Text = "Tools Needed:";
-            infoLB.Items.Add(infoT);
-            foreach (GHTool t in guide.guide.tools)
+            if (guide.guide.tools.Length > 0)
             {
                 infoT = new TextBlock();
-                infoT.Text = "-" + t.text;
-                if (t.notes != "")
-                    infoT.Text += " (" + t.notes + ")";
+                infoT.Text = "Tools Needed:";
                 infoLB.Items.Add(infoT);
-            }
+                foreach (GHTool t in guide.guide.tools)
+                {
+                    infoT = new TextBlock();
+                    infoT.Text = "-" + t.text;
+                    if (t.notes != "")
+                        infoT.Text += " (" + t.notes + ")";
+                    infoLB.Items.Add(infoT);
+                }
 
-            pad = new ListBoxItem();
-            pad.Padding = new Thickness(7);
-            infoLB.Items.Add(pad);
+                pad = new ListBoxItem();
+                pad.Padding = new Thickness(7);
+                infoLB.Items.Add(pad);
+            }
 
 
             infoT = new TextBlock();
@@ -184,8 +194,15 @@ namespace iFixit7
                 {
                     //load the image into i, then add it to the grid
                     i = new Image();
-                    i.Width = 480;
-                    i.Source = new BitmapImage(new Uri(img.text));
+                    //i.Width = 480;
+                    i.Source = new BitmapImage(new Uri(img.text + ".standard"));
+
+                    //the new stuff
+                    //i = new Image();
+                    //i.Source = new BitmapImage();
+                    //(i.Source as BitmapImage).UriSource = new Uri(img.text);
+                    //System.IO.StreamReader sr = new System.IO.StreamReader(img.text);
+                    //i.Source = PictureDecoder.DecodeJpeg(null, 192, 256);
 
                     allImages.Add(i);
 

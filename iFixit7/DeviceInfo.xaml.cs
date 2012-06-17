@@ -63,7 +63,7 @@ namespace iFixit7
             if (devInfo.image.text != null && devInfo.image.text != "")
             {
                 Image infoImg = new Image();
-                infoImg.Source = new BitmapImage(new Uri(devInfo.image.text));
+                infoImg.Source = new BitmapImage(new Uri(devInfo.image.text + ".standard"));
                 infoList.Items.Add(infoImg);
             }
 
@@ -91,20 +91,6 @@ namespace iFixit7
                 lPad.Padding = new Thickness(5, 5, 5, 5);
                 guideList.Items.Add(lPad);
             }
-            /*
-            GuideEntry ge = new GuideEntry("a guide", "http://www.ifixit.com/igi/dLF6KygThyYNdyCS", "guide", "teardown", 1111);
-            guideList.Items.Add(ge.getRow());
-            lPad = new ListBoxItem();
-            lPad.Padding = new Thickness(5, 5, 5, 5);
-            guideList.Items.Add(lPad);
-
-            guideList.Items.Add(ge.getRow());
-            lPad = new ListBoxItem();
-            lPad.Padding = new Thickness(5, 5, 5, 5);
-            guideList.Items.Add(lPad);
-
-            guideList.Items.Add(ge.getRow());
-             * */
 
             return true;
         }
@@ -125,6 +111,7 @@ namespace iFixit7
         public GuideEntry(DIGuides dg)
         {
             title = dg.title;
+            //these are already .thumbnails
             thumb = new Uri(dg.thumbnail);
             subject = dg.subject;
             type = dg.type;

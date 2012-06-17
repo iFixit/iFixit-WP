@@ -33,13 +33,13 @@ namespace iFixit7
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             //get the device name that was passed and stash it
-            DeviceName.Text = this.NavigationContext.QueryString["device"];
+            InfoPano.Title = this.NavigationContext.QueryString["device"];
 
-            Debug.WriteLine("Showing device info for [" + DeviceName.Text + "]");
+            Debug.WriteLine("Showing device info for [" + InfoPano.Title + "]");
 
             //API call to get the entire contents of the device info and populate it it returns
             JSONInterface2 ji = new JSONInterface2();
-            ji.populateDeviceInfo(DeviceName.Text, populateUI);
+            ji.populateDeviceInfo(InfoPano.Title.ToString(), populateUI);
         }
         private bool populateUI(DeviceInfoHolder devInfo){
             Debug.WriteLine("filling in device info ui...");
@@ -51,8 +51,8 @@ namespace iFixit7
             PivotItem piGuides = new PivotItem();
 
             //reverse order to reverse order of tabs
-            GuidePivot.Items.Add(piInfo);
-            GuidePivot.Items.Add(piGuides);
+            InfoPano.Items.Add(piInfo);
+            InfoPano.Items.Add(piGuides);
 
             //now fill in the tabs, starting with info
             piInfo.Header = "Information";
@@ -154,9 +154,9 @@ namespace iFixit7
             //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(180) });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(160) });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
 
             //add 2 rows
             //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(100) });
@@ -170,9 +170,9 @@ namespace iFixit7
             //add the title
             TextBlock tbTitle = new TextBlock();
             //tbTitle.MaxWidth = 480 - 30;
-            //tbTitle.TextWrapping = TextWrapping.Wrap;
             tbTitle.Text = this.title;
             tbTitle.TextWrapping = TextWrapping.Wrap;
+            tbTitle.FontWeight = FontWeights.Bold;
             //tbTitle.Padding = new Thickness(0, 5, 0, 9);
             Grid.SetColumn(tbTitle, 0);
             Grid.SetColumnSpan(tbTitle, 2);
@@ -214,6 +214,8 @@ namespace iFixit7
                 Debug.WriteLine("navigating to guide " + guideID + " title = " + title);
                 (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/Guide.xaml?guideID=" + guideID + "&guideTitle=" + title + "", UriKind.Relative));
             };
+
+            //g.Background = new SolidColorBrush(Colors.DarkGray);
 
             return g;
         }

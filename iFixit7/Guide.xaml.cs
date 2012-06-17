@@ -72,7 +72,7 @@ namespace iFixit7
             TextBlock infoT = new TextBlock();
             infoT.Text = guide.guide.title;
             infoT.TextAlignment = TextAlignment.Center;
-            infoT.TextDecorations = TextDecorations.Underline;
+            infoT.FontWeight = FontWeights.Bold;
             infoT.TextWrapping = TextWrapping.Wrap;
             infoLB.Items.Add(infoT);
 

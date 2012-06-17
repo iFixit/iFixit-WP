@@ -11,8 +11,6 @@ tools
 prereqs
 background? tab title?
 
-make device info (and guide?) into pano, not pivot
-
 fix navigation on guide page not going to correct device if you go back
 
 

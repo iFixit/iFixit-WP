@@ -35,30 +35,6 @@ namespace iFixit7
 
             //make the JSON request for areas, and fill in the UI in the handler...
             getAreas();
-
-            //now add to the pano
-            /*
-            PanoramaItem pi = null;
-            for (int i = 0; i < 5; i++)
-            {
-                pi = new PanoramaItem();
-                ListBox lb = new ListBox();
-                pi.Content = lb;
-
-                TextBlock tb = null;
-                for (int j = 0; j < 10; j++)
-                {
-                    tb = new TextBlock();
-                    tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-                    tb.Text = "I am list item " + j + "!";
-                    lb.Items.Add(tb);
-                }
-
-                pi.Header = "Biggish " + i;
-
-                this.BigPano.Items.Add(pi);
-            }
-             */
         }
 
         void tb_Tap(object sender, GestureEventArgs e)
@@ -87,11 +63,10 @@ namespace iFixit7
                 }
                 
             }
-            
+            //set a handle for where to navigate next
             App.setNextArea(got, set);
 
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
-            //make a xaml which we populate 
         }
 
         
@@ -147,35 +122,6 @@ namespace iFixit7
             }
 
             Debug.WriteLine("finished adding to big pano?");
-
-            //now add to the pano
-            /*
-            PanoramaItem pi = null;
-            for (int i = 0; i < 5; i++)
-            {
-                pi = new PanoramaItem();
-                ListBox lb = new ListBox();
-                pi.Content = lb;
-
-                TextBlock tb = null;
-                for (int j = 0; j < 10; j++)
-                {
-                    tb = new TextBlock();
-                    tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-                    tb.Text = "I am list item " + j + "!";
-                    lb.Items.Add(tb);
-                }
-
-                pi.Header = "Biggish " + i;
-
-                this.BigPano.Items.Add(pi);
-            }
-             */
         }
-
-
-
-
-
     }
 }

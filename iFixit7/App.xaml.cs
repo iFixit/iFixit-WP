@@ -91,7 +91,9 @@ namespace iFixit7
             return EntireAreaHierarchy;
         }
 
-
+        public NavigationService getNavigationService(){
+            return null;
+        }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated

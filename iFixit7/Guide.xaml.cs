@@ -31,14 +31,18 @@ namespace iFixit7
             ourGuide = new GuideHolder();
 
             //get the device name that was passed and stash it
-            ourGuide.deviceName = this.NavigationContext.QueryString["device"];
-            DeviceName.Text = ourGuide.deviceName;
+            ourGuide.guideTitle = this.NavigationContext.QueryString["guideTitle"];
+            Console.WriteLine("id was " + this.NavigationContext.QueryString["guideID"]);
+            ourGuide.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
+            GuideTitle.Text = ourGuide.guideTitle;
 
             //API call to get the entire contents of the guide
 
             //parse it, and get the resulting GuideHolder
 
             //add stuff from the API call to populate the view
+
+            //
 
             //FIXME HACK. REMOVE THIS
             //GuideStep g = null;
@@ -65,6 +69,8 @@ namespace iFixit7
 
                 ourGuide.steps.AddLast(st);
             }
+            ourGuide.guideToView(GuidePivot);
+            /*
             PivotItem pi = null;
             ListBox lb = null;
             //foreach across all steps gs
@@ -104,19 +110,67 @@ namespace iFixit7
 
                 GuidePivot.Items.Add(pi);
             }
+             */
         }
     }
     
     /* holds an entire guide */
     class GuideHolder
     {
-        public string deviceName { get; set; }
+        public string guideTitle { get; set; }
+        public int guideID { get; set; }
         public LinkedList<StepTemp> steps { get; set; }
 
         public GuideHolder()
         {
             steps = new LinkedList<StepTemp>();
         }
+
+        /*
+         * Takes all the data encoded in this GuideHolder and pours it into the passed in pivot
+         */
+        public void guideToView(Pivot parent){
+            PivotItem pi = null;
+            ListBox lb = null;
+            //foreach across all steps gs
+            foreach (StepTemp gs in this.steps)
+            {
+                pi = new PivotItem();
+                pi.Header = "Step " + gs.getStepNum();
+
+                //add a grid to put the guide in
+                lb = new ListBox();
+                pi.Content = lb;
+
+                //fill in the grid
+                TextBlock tb = new TextBlock();
+                tb.MaxWidth = 480 - 30;
+                tb.TextWrapping = TextWrapping.Wrap;
+                // TODO FIXME: this is hardcoded to 0
+                tb.Text = gs.getLines(0).getText();
+                // TODO also use other methods
+                tb.Padding = new Thickness(0, 5, 0, 9);
+
+                lb.Items.Add(tb);
+
+                Image i = null;
+                ListBoxItem lbPadding = null;
+                foreach (jsonImage img in gs.getImageList())
+                {
+                    //load the image into i, then add it to the grid
+                    i = new Image();
+                    i.Source = new BitmapImage(new Uri(img.getText()));
+
+                    lbPadding = new ListBoxItem();
+                    lbPadding.Padding = new Thickness(0, 5, 0, 5);
+
+                    lb.Items.Add(i);
+                }
+
+                parent.Items.Add(pi);
+            }
+        }
+
     }
 
     /* Holds individual steps */

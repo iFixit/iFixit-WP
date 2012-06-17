@@ -72,8 +72,12 @@
     <Compile Include="Guide.xaml.cs">
       <DependentUpon>Guide.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeviceInfo.xaml.cs">
+      <DependentUpon>DeviceInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="iFixitJSONHelper.cs" />
     <Compile Include="jsonImage.cs" />
+    <Compile Include="JSONInterface2.cs" />
     <Compile Include="jsonLines.cs" />
     <Compile Include="MagicPivot.xaml.cs">
       <DependentUpon>MagicPivot.xaml</DependentUpon>
@@ -91,6 +95,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="Guide.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeviceInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

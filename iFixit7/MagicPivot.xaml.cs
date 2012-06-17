@@ -19,8 +19,6 @@ namespace iFixit7
         private Node areaShown = null;
         private int col = 0;
 
-        private static int number;
-
         public MagicPivot()
         {
             InitializeComponent();
@@ -59,8 +57,21 @@ namespace iFixit7
                     foreach (Node model in n.getChildrenList())
                     {
                         tb = new TextBlock();
-                        tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-                        //tb.Text = "I am some text, in a text block!";
+
+                        //add a specuial handler to respond to being tapped
+                        //tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
+                        tb.Tap += delegate(object sender, GestureEventArgs e)
+                        {
+                            Debug.WriteLine("A MagicPivot is about to navigate....");
+
+                            //what is this? works without it...
+                            //App.setNextArea(null, 0);
+
+                            //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call Guide
+                            //NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + "iPhone+3G", UriKind.Relative));
+                            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
+                        };
+
                         tb.Text = model.getName();
 
                         lb.Items.Add(tb);
@@ -73,6 +84,7 @@ namespace iFixit7
             Loaded += delegate { SmartPivot.SelectedIndex = col;};
         }
 
+        /*
         void tb_Tap(object sender, GestureEventArgs e)
         {
             string s = (sender as TextBlock).Text;
@@ -85,8 +97,9 @@ namespace iFixit7
             
             //NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + number++, UriKind.Relative));
 
-            NavigationService.Navigate(new Uri("/Guide.xaml?device=" + "iPhone+3G", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + "iPhone+3G", UriKind.Relative));
         }
+         */
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {

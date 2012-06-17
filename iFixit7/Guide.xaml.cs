@@ -52,6 +52,7 @@ namespace iFixit7
             this.guideTitle = this.NavigationContext.QueryString["guideTitle"];
             this.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
             GuideTitle.Text = this.guideTitle;
+            GuideTitle.TextWrapping = TextWrapping.Wrap;
 
             //api call. The callback will be fired to populate the view
             JSONInterface2 ji = new JSONInterface2();
@@ -61,6 +62,7 @@ namespace iFixit7
             //now take the data from the object and populate the view!
             ListBoxItem pad = null;
 
+            //============
             //initial guide info tab
             PivotItem infoTab = new PivotItem();
             infoTab.Header = "Info";
@@ -102,8 +104,26 @@ namespace iFixit7
             infoLB.Items.Add(infoT);
 
             pad = new ListBoxItem();
-            pad.Padding = new Thickness(5);
+            pad.Padding = new Thickness(7);
             infoLB.Items.Add(pad);
+
+            //add all listed tools
+            infoT = new TextBlock();
+            infoT.Text = "Tools Needed:";
+            infoLB.Items.Add(infoT);
+            foreach (GHTool t in guide.guide.tools)
+            {
+                infoT = new TextBlock();
+                infoT.Text = "-" + t.text;
+                if (t.notes != "")
+                    infoT.Text += " (" + t.notes + ")";
+                infoLB.Items.Add(infoT);
+            }
+
+            pad = new ListBoxItem();
+            pad.Padding = new Thickness(7);
+            infoLB.Items.Add(pad);
+
 
             infoT = new TextBlock();
             infoT.Text = "Author: " + guide.guide.author.text;
@@ -122,6 +142,16 @@ namespace iFixit7
             hb.Padding = new Thickness(8);
             infoLB.Items.Add(hb);
 
+            //============
+            //prereqs and whatnot tab
+            /*
+            PivotItem backTab = new PivotItem();
+            backTab.Header = "Info";
+            this.GuidePivot.Items.Add(backTab);
+            ListBox backLB = new ListBox();
+            backTab.Content = backLB;
+            */
+            //============
             //generate a tab for each step
             PivotItem pi = null;
             ListBox lb = null;

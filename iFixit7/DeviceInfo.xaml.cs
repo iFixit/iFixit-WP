@@ -51,8 +51,8 @@ namespace iFixit7
             PivotItem piGuides = new PivotItem();
 
             //reverse order to reverse order of tabs
-            InfoPano.Items.Add(piInfo);
             InfoPano.Items.Add(piGuides);
+            InfoPano.Items.Add(piInfo);
 
             //now fill in the tabs, starting with info
             piInfo.Header = "Information";

@@ -39,34 +39,34 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
-            Node got = null;
-            int count = 0;
-            int set = 0;
-            bool flag = false;
-            string s = (sender as TextBlock).Text;
-            //stash where we are about to navigate to...
-            foreach (Node n in App.getEnitreAreaHierarchy().getChildrenList())
-            {
-                count = 0;
-                foreach (Node brand in n.getChildrenList())
-                {
-                    if (brand.getName().Equals(s))
-                    {
-                        got = n;
-                        set = count;
-                        flag = true;
-                    }
+            //Node got = null;
+            //int count = 0;
+            //int set = 0;
+            //bool flag = false;
+            //string s = (sender as TextBlock).Text;
+            ////stash where we are about to navigate to...
+            //foreach (Group n in App.getEnitreAreaHierarchy().Groups)
+            //{
+            //    count = 0;
+            //    foreach (Node brand in n.getChildrenList())
+            //    {
+            //        if (brand.getName().Equals(s))
+            //        {
+            //            got = n;
+            //            set = count;
+            //            flag = true;
+            //        }
 
-                    if (!flag)
-                    count++;
-                    //Debug.WriteLine("looking at " + n.getName());
-                }
+            //        if (!flag)
+            //        count++;
+            //        //Debug.WriteLine("looking at " + n.getName());
+            //    }
                 
-            }
-            //set a handle for where to navigate next
-            App.setNextArea(got, set);
+            //}
+            ////set a handle for where to navigate next
+            //App.setNextArea(got, set);
 
-            NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
         }
 
         public void getAreas()
@@ -79,7 +79,8 @@ namespace iFixit7
             ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_AREAS);
         }
 
-        public void MainPage_callAreasAPI(MainPage sender, Node tree)
+        // callAreasAPI
+        public void MainPage_callAreasAPI(MainPage sender, Group tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
@@ -89,22 +90,33 @@ namespace iFixit7
             /* THIS IS ALL WRONG! But I am doing it for now..... */
             PanoramaItem pi = null;
             ListBox lb = null;
-            foreach (Node n in tree.getChildrenList())
+            foreach (Group n in tree.Groups)
             {
-                if(n.getChildrenList() != null) {
+                if(n.Groups != null) {
                     pi = new PanoramaItem();
-                    pi.Header = n.getName();
+                    pi.Header = n.Name;
                     lb = new ListBox();
                     pi.Content = lb;
 
                     ListBoxItem lbi = null;
                     TextBlock tb = null;
-                    foreach (Node item in n.getChildrenList())
+                    foreach (Group item in n.Groups)
                     {
                         lbi = new ListBoxItem();
                         tb = new TextBlock();
 
-                        tb.Text = item.getName();
+                        tb.Text = item.Name;
+                        tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
+
+                        lbi.Content = tb;
+                        lb.Items.Add(lbi);
+                    }
+                    foreach (Device item in n.Devices)
+                    {
+                        lbi = new ListBoxItem();
+                        tb = new TextBlock();
+
+                        tb.Text = item.Name;
                         tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
 
                         lbi.Content = tb;

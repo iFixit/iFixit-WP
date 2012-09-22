@@ -16,7 +16,7 @@ namespace iFixit7
 {
     public partial class MagicPivot : PhoneApplicationPage
     {
-        private Node areaShown = null;
+        private Group areaShown = null;
         private int col = 0;
 
         public MagicPivot()
@@ -29,18 +29,20 @@ namespace iFixit7
             areaShown = App.getNextArea();
             col = App.getCurrCol();
 
-            Debug.WriteLine("node we are navigating from is " + areaShown.getName());
+            Debug.WriteLine("node we are navigating from is " + areaShown.Name);
 
             //now iterate across the tree we got, and build a view from it
             PivotItem pi = null;
             ListBox lb = null;
             //foreach (Node n in areaShown.getChildrenList())
-            for(int dex = 0; dex < areaShown.getChildrenList().Count; dex++)
+            //for (int dex = 0; dex < areaShown.getChildrenList().Count; dex++)
+            for (int dex = 0; dex < areaShown.Groups.Count; dex++)
             {
-                Node n = areaShown.getChildrenList().ElementAt(dex);
+                //Node n = areaShown.getChildrenList().ElementAt(dex);
+                Group n = areaShown.Groups.ElementAt(dex);
                 //build a pivot item for each larger catagory
                 pi = new PivotItem();
-                pi.Header = n.getName();
+                pi.Header = n.Name;
 
                 //add a list of content to that header
                 lb = new ListBox();
@@ -52,12 +54,12 @@ namespace iFixit7
                 //now add items to this list of content
                 TextBlock tb = null;
                 //for (int j = 0; j < 25; j++)
-                if (n.getChildrenList() != null)
+                if (n.Groups != null)
                 {
                     //foreach (Node model in n.getChildrenList())
-                    for(int dex2 = 0; dex2 < n.getChildrenList().Count; dex2++)
+                    for(int dex2 = 0; dex2 < n.Groups.Count; dex2++)
                     {
-                        Node model = n.getChildrenList().ElementAt(dex2);
+                        Group model = n.Groups.ElementAt(dex2);
                         int curIndex = dex2;
 
                         tb = new TextBlock();
@@ -72,24 +74,24 @@ namespace iFixit7
 
                             //FIXME finish this logic!
                             //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call DeviceInfo
-                            if (model.getChildrenList() != null)
+                            if (model.Groups != null)
                             {
-                                Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf. Its index = " + curIndex);
+                                //Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf. Its index = " + curIndex);
 
                                 //set the next leaf to work off of
                                 //App.setNextArea(model, 0);
                                 App.setNextArea(n, curIndex);
-                                NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + model.getName(), UriKind.Relative));
+                                NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + model.Name, UriKind.Relative));
                             }
                             else
                             {
                                 //need to set some the index? if we change columns, we want the back button to return to the proper one...
                                 //App.setNextArea(n, -1);
-                                NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.getName(), UriKind.Relative));
+                                NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.Name, UriKind.Relative));
                             }
                         };
 
-                        tb.Text = model.getName();
+                        tb.Text = model.Name;
 
                         lb.Items.Add(tb);
                     }
@@ -124,23 +126,25 @@ namespace iFixit7
 
             //?
             //App.setNextArea(null, 0);
-            Node sel = null;
+            //Node sel = null;
+            Group sel = null;
             if (App.getNextArea() != null && App.getCurrCol() > -1)
             {
-                if (App.getNextArea().getChildrenList() != null)
+                if (App.getNextArea().Groups != null)
                 {
-                    sel = App.getNextArea().getChildrenList().ElementAt(App.getCurrCol());
+                    //sel = App.getNextArea().getChildrenList().ElementAt(App.getCurrCol());
+                    sel = App.getNextArea().Groups.ElementAt(App.getCurrCol());
                 }
             }
 
             //if we are about to switch to a tab index with no children, then actually redirect to a device info
             if (sel != null)
             {
-                if (sel.getChildrenList() == null)
+                if (sel.Devices == null)
                 {
                     Debug.WriteLine("we were navigating to a leaf. deviceinfo it");
                     App.setNextArea(null, 0);
-                    NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + sel.getName(), UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + sel.Name, UriKind.Relative));
                 }
             }
             else

@@ -21,6 +21,25 @@ namespace iFixit7
     [Table]
     public class Device : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        private string _name;
+        [Column]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    NotifyPropertyChanging("Name");
+                    _name = value;
+                    NotifyPropertyChanged("Name");
+                }
+            }
+        }
+
         private string _description;
 
         [Column]

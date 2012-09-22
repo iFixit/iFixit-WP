@@ -133,6 +133,11 @@ namespace iFixit7
 	        return new string(array, 0, arrayIndex);
         }
     }
+
+    /*
+     * 
+     */
+
     /*
      * Holds the result from a query for device info. There are a number of classes needed to make up
      * a single device info model.

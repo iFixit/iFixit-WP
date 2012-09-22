@@ -25,9 +25,10 @@ namespace iFixit7
         public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");
         private static bool areas;
         private static string jsonResponse;
-        private static Node mTree = new Node("root", new List<Node>());
+        //private static Node mTree = new Node("root", new List<Node>());
+        private static Group mRootGroup = new Group();
 
-        public delegate void AreaCallEventHandler(MainPage sender, Node tree);
+        public delegate void AreaCallEventHandler(MainPage sender, Group tree);
         public event AreaCallEventHandler callAreasAPI;
 
         public void doAPICallAsync(string uri) {
@@ -58,8 +59,16 @@ namespace iFixit7
                         {
                             break;
                         }
-                        Node curr = new Node(p.Name, new List<Node>());
-                        mTree.getChildrenList().Add(curr);
+                        //Node curr = new Node(p.Name, new List<Node>());
+                        Group curr = new Group();
+                        curr.Name = p.Name;
+                        curr.Groups = new List<Group>();
+                        if (mRootGroup.Groups == null)
+                        {
+                            mRootGroup.Groups = new List<Group>();
+                        }
+                        mRootGroup.Groups.Add(curr);
+                        //mTree.getChildrenList().Add(curr);
                         if (!p.HasValues)
                             break;
                         IJEnumerable<JToken> values = p.Values();
@@ -132,20 +141,26 @@ namespace iFixit7
                         }
                     }
                 }
-                this.callAreasAPI.Invoke(null, mTree);
+                this.callAreasAPI.Invoke(null, mRootGroup);
             }
             
         }
 
-        private static void decipherAreasJSON(JToken jt, Node node)
+        //private static void decipherAreasJSON(JToken jt, Node node)
+        private static void decipherAreasJSON(JToken jt, Group group)
         {
             if (jt is JProperty)
             {
                 if (jt.ToObject<JProperty>().Name != "DEVICES")
                 {
 //                    Debug.WriteLine(" " + jt.ToObject<JProperty>().Name);
-                    Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
-                    node.getChildrenList().Add(curr);
+                    // since it's not a device, it must be a group
+                    //Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
+                    Group curr = new Group();
+                    curr.Name = jt.ToObject<JProperty>().Name;
+                    curr.Groups = new List<Group>();
+                    group.Groups.Add(curr);
+                    //node.getChildrenList().Add(curr);
                     if (jt.HasValues)
                     {
                         IJEnumerable<JToken> values = jt.Values();
@@ -155,12 +170,20 @@ namespace iFixit7
                         }
                     }
                 }
+                // these are devices
                 else
                 {
                     IJEnumerable<JToken> devs = jt.Values();
                     foreach (JToken dev in devs)
                     {
-                        node.getChildrenList().Add(new Node(dev.ToString(), null));
+                        Device d = new Device();
+                        d.Name = dev.ToString();
+                        if (group.Devices == null)
+                        {
+                            group.Devices = new List<Device>();
+                        }
+                        group.Devices.Add(d);
+                        //node.getChildrenList().Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());
                     }
                 }

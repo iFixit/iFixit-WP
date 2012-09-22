@@ -21,6 +21,31 @@ namespace iFixit7
     [Table]
     public class Group : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public Group()
+        {
+            _groups = new List<Group>();
+            _devices = new List<Device>();
+        }
+
+        private string _name;
+        [Column]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    NotifyPropertyChanging("Name");
+                    _name = value;
+                    NotifyPropertyChanged("Name");
+                }
+            }
+        }
+
         private List<Group> _groups;
 
         [Column]

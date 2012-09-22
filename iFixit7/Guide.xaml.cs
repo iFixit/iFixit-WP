@@ -18,14 +18,14 @@ using System.IO;
 
 namespace iFixit7
 {
-    public partial class Guide : PhoneApplicationPage
+    public partial class GuideView : PhoneApplicationPage
     {
         string guideTitle;
         int guideID;
 
         private List<Image> allImages;
 
-        public Guide()
+        public GuideView()
         {
             InitializeComponent();
         }

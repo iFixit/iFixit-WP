@@ -16,7 +16,7 @@ namespace iFixit7
 {
     public partial class MagicPivot : PhoneApplicationPage
     {
-        private Group areaShown = null;
+        private Category areaShown = null;
         private int col = 0;
 
         public MagicPivot()
@@ -36,10 +36,10 @@ namespace iFixit7
             ListBox lb = null;
             //foreach (Node n in areaShown.getChildrenList())
             //for (int dex = 0; dex < areaShown.getChildrenList().Count; dex++)
-            for (int dex = 0; dex < areaShown.Groups.Count; dex++)
+            for (int dex = 0; dex < areaShown.Categories.Count; dex++)
             {
                 //Node n = areaShown.getChildrenList().ElementAt(dex);
-                Group n = areaShown.Groups.ElementAt(dex);
+                Category n = areaShown.Categories.ElementAt(dex);
                 //build a pivot item for each larger catagory
                 pi = new PivotItem();
                 pi.Header = n.Name;
@@ -54,12 +54,12 @@ namespace iFixit7
                 //now add items to this list of content
                 TextBlock tb = null;
                 //for (int j = 0; j < 25; j++)
-                if (n.Groups != null)
+                if (n.Categories != null)
                 {
                     //foreach (Node model in n.getChildrenList())
-                    for(int dex2 = 0; dex2 < n.Groups.Count; dex2++)
+                    for(int dex2 = 0; dex2 < n.Categories.Count; dex2++)
                     {
-                        Group model = n.Groups.ElementAt(dex2);
+                        Category model = n.Categories.ElementAt(dex2);
                         int curIndex = dex2;
 
                         tb = new TextBlock();
@@ -74,7 +74,7 @@ namespace iFixit7
 
                             //FIXME finish this logic!
                             //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call DeviceInfo
-                            if (model.Groups != null)
+                            if (model.Categories != null)
                             {
                                 //Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf. Its index = " + curIndex);
 
@@ -127,13 +127,13 @@ namespace iFixit7
             //?
             //App.setNextArea(null, 0);
             //Node sel = null;
-            Group sel = null;
+            Category sel = null;
             if (App.getNextArea() != null && App.getCurrCol() > -1)
             {
-                if (App.getNextArea().Groups != null)
+                if (App.getNextArea().Categories != null)
                 {
                     //sel = App.getNextArea().getChildrenList().ElementAt(App.getCurrCol());
-                    sel = App.getNextArea().Groups.ElementAt(App.getCurrCol());
+                    sel = App.getNextArea().Categories.ElementAt(App.getCurrCol());
                 }
             }
 

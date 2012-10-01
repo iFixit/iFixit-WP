@@ -34,7 +34,7 @@ namespace iFixit7
             InitializeComponent();
 
             //make the JSON request for areas, and fill in the UI in the handler...
-            getAreas();
+            //getAreas();
         }
 
         void tb_Tap(object sender, GestureEventArgs e)
@@ -69,30 +69,20 @@ namespace iFixit7
             //NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + s, UriKind.Relative));
         }
 
-        public void getAreas()
-        {
-            iFixitJSONHelper ifj = new iFixitJSONHelper();
-
-            Debug.WriteLine("about to get areas....");
-
-            ifj.callAreasAPI += new iFixitJSONHelper.AreaCallEventHandler(MainPage_callAreasAPI);
-            ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_AREAS);
-        }
-
         // callAreasAPI
-        public void MainPage_callAreasAPI(MainPage sender, Group tree)
+/*        public void MainPage_callAreasAPI(MainPage sender, Category tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
             App.setEnitreAreaHierarchy(tree);
 
 
-            /* THIS IS ALL WRONG! But I am doing it for now..... */
+            // THIS IS ALL WRONG! But I am doing it for now..... 
             PanoramaItem pi = null;
             ListBox lb = null;
-            foreach (Group n in tree.Groups)
+            foreach (Category n in tree.Categories)
             {
-                if(n.Groups != null) {
+                if(n.Categories != null) {
                     pi = new PanoramaItem();
                     pi.Header = n.Name;
                     lb = new ListBox();
@@ -100,7 +90,7 @@ namespace iFixit7
 
                     ListBoxItem lbi = null;
                     TextBlock tb = null;
-                    foreach (Group item in n.Groups)
+                    foreach (Category item in n.Categories)
                     {
                         lbi = new ListBoxItem();
                         tb = new TextBlock();
@@ -129,5 +119,6 @@ namespace iFixit7
 
             Debug.WriteLine("finished adding to big pano");
         }
+*/
     }
 }

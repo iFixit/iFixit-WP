@@ -18,6 +18,16 @@ namespace iFixit7
 {
     public partial class App : Application
     {
+        // Specify the local database connection string.
+        public static string DBConnectionString = "Data Source=isostore:/ToDo.sdf";
+        CategoryDataContext mDB;
+        // The static ViewModel, to be used across the application.
+        //private static ToDoViewModel viewModel;
+        //public static ToDoViewModel ViewModel
+        //{
+        //    get { return viewModel; }
+        //}
+
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -57,34 +67,57 @@ namespace iFixit7
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
+            getAreas();
+            // Create the database if it does not exist.
+            using (mDB = new CategoryDataContext(DBConnectionString))
+            {
+                if (mDB.DatabaseExists() == false)
+                {
+                    // Create the local database.
+                    mDB.CreateDatabase();
+
+                    //// Prepopulate the categories.
+                    //db.Categories.InsertOnSubmit(new Category { Name = "root" });
+
+                    //// Save categories to the database.
+                    //db.SubmitChanges();
+                }
+            }
+
+            // Create the ViewModel object.
+            //viewModel = new ToDoViewModel(DBConnectionString);
+
+            // Query the local database and load observable collections.
+            //viewModel.LoadCollectionsFromDatabase();
         }
 
-        private static Group EntireAreaHierarchy, currentArea;
+        private static Category EntireAreaHierarchy, currentArea;
         private static int currentCol;
         /* Allows each view to get its current hierarchical position? */
         public static int getCurrCol()
         {
             return currentCol;
         }
-        public static Group getNextArea()
+        public static Category getNextArea()
         {
             return currentArea;
         }
 
         /* allows a view to stash its current place in the area hierarchy */
-        public static void setNextArea(Group last, int tag)
+        public static void setNextArea(Category last, int tag)
         {
             currentArea = last;
             currentCol = tag;
         }
 
         /* set the entire view hierarchy */
-        public static void setEnitreAreaHierarchy(Group entire)
-        {
-            EntireAreaHierarchy = entire;
-        }
+        //public static void setEnitreAreaHierarchy(Category entire)
+        //{
+        //    EntireAreaHierarchy = entire;
+        //}
 
-        public static Group getEnitreAreaHierarchy()
+        public static Category getEnitreAreaHierarchy()
         {
             return EntireAreaHierarchy;
         }
@@ -135,6 +168,27 @@ namespace iFixit7
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+        }
+
+        public void getAreas()
+        {
+            iFixitJSONHelper ifj = new iFixitJSONHelper();
+
+            Debug.WriteLine("about to get areas....");
+
+            ifj.callAreasAPI += new iFixitJSONHelper.AreaCallEventHandler(App_callAreasAPI);
+            ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_CATEGORIES);
+        }
+
+        public void App_callAreasAPI(MainPage sender, Category tree)
+        {
+            Debug.WriteLine("we got a tree, right? PROCESS IT");
+
+            // Prepopulate the categories.
+            mDB.CategoriesTable.InsertOnSubmit(tree);
+
+            // Save categories to the database.
+            mDB.SubmitChanges();
         }
 
         #region Phone application initialization

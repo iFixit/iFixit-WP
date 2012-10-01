@@ -21,19 +21,22 @@ namespace iFixit7
 {
     public class iFixitJSONHelper
     {
-        public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/0.1/areas";
+        // Use the 1.0 api
+        public static string IFIXIT_API_CATEGORIES = "http://www.ifixit.com/api/1.0/categories";
+        // public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/0.1/areas";
         public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");
-        private static bool areas;
+        public static string IFIXIT_CATEGORY_OBJECT_KEY = "CATEGORIES";
+        private static bool categories;
         private static string jsonResponse;
         //private static Node mTree = new Node("root", new List<Node>());
-        private static Group mRootGroup = new Group();
+        private static Category mRootGroup = new Category();
 
-        public delegate void AreaCallEventHandler(MainPage sender, Group tree);
+        public delegate void AreaCallEventHandler(MainPage sender, Category tree);
         public event AreaCallEventHandler callAreasAPI;
 
         public void doAPICallAsync(string uri) {
             Uri site = new Uri(uri);
-            areas = uri == IFIXIT_API_AREAS;
+            categories = uri == IFIXIT_API_CATEGORIES;
 
             WebClient client = new WebClient();
             MemoryStream stream = new MemoryStream();
@@ -50,24 +53,25 @@ namespace iFixit7
                 jsonResponse = reader.ReadToEnd();
                 JObject jo = JObject.Parse(jsonResponse);
                 //Debug.WriteLine(jo.ToString());
-                if (areas) {
+                if (categories) {
                     IEnumerable<JProperty> props = jo.Properties();
                     foreach (JProperty p in props)
                     {
                         //Debug.WriteLine(p.Name);
-                        if (p.Name.Equals("DEVICES"))
+                        // You found a leaf node
+                        if (p.Name.Equals(IFIXIT_CATEGORY_OBJECT_KEY))
                         {
                             break;
                         }
                         //Node curr = new Node(p.Name, new List<Node>());
-                        Group curr = new Group();
+                        Category curr = new Category();
                         curr.Name = p.Name;
-                        curr.Groups = new List<Group>();
-                        if (mRootGroup.Groups == null)
+                        curr.Categories = new List<Category>();
+                        if (mRootGroup.Categories == null)
                         {
-                            mRootGroup.Groups = new List<Group>();
+                            mRootGroup.Categories = new List<Category>();
                         }
-                        mRootGroup.Groups.Add(curr);
+                        mRootGroup.Categories.Add(curr);
                         //mTree.getChildrenList().Add(curr);
                         if (!p.HasValues)
                             break;
@@ -147,19 +151,19 @@ namespace iFixit7
         }
 
         //private static void decipherAreasJSON(JToken jt, Node node)
-        private static void decipherAreasJSON(JToken jt, Group group)
+        private static void decipherAreasJSON(JToken jt, Category group)
         {
             if (jt is JProperty)
             {
-                if (jt.ToObject<JProperty>().Name != "DEVICES")
+                if (jt.ToObject<JProperty>().Name != IFIXIT_CATEGORY_OBJECT_KEY)
                 {
 //                    Debug.WriteLine(" " + jt.ToObject<JProperty>().Name);
                     // since it's not a device, it must be a group
                     //Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
-                    Group curr = new Group();
+                    Category curr = new Category();
                     curr.Name = jt.ToObject<JProperty>().Name;
-                    curr.Groups = new List<Group>();
-                    group.Groups.Add(curr);
+                    curr.Categories = new List<Category>();
+                    group.Categories.Add(curr);
                     //node.getChildrenList().Add(curr);
                     if (jt.HasValues)
                     {

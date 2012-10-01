@@ -18,13 +18,29 @@ using System.Collections.Generic;
 
 namespace iFixit7
 {
-    [Table]
-    public class Group : INotifyPropertyChanged, INotifyPropertyChanging
+    public class CategoryDataContext : DataContext
     {
-        public Group()
+        // Pass the connection string to the base class.
+        public CategoryDataContext(string connectionString)
+            : base(connectionString)
+        { }
+
+        // Specify a table for the categories.
+        public Table<Category> CategoriesTable;
+    }
+
+    [Table]
+    public class Category : INotifyPropertyChanged, INotifyPropertyChanging
+    {
+        public Category()
         {
-            _groups = new List<Group>();
+            _categories = new List<Category>();
             _devices = new List<Device>();
+        }
+
+        public Category(string name) : this()
+        {
+            _name = name;
         }
 
         private string _name;
@@ -46,22 +62,22 @@ namespace iFixit7
             }
         }
 
-        private List<Group> _groups;
+        private List<Category> _categories;
 
         [Column]
-        public List<Group> Groups
+        public List<Category> Categories
         {
             get
             {
-                return _groups;
+                return _categories;
             }
             set
             {
-                if (_groups != value)
+                if (_categories != value)
                 {
-                    NotifyPropertyChanging("Groups");
-                    _groups = value;
-                    NotifyPropertyChanged("Groups");
+                    NotifyPropertyChanging("Categories");
+                    _categories = value;
+                    NotifyPropertyChanged("Categories");
                 }
             }
         }

@@ -71,7 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Device.cs" />
-    <Compile Include="Group.cs" />
+    <Compile Include="Category.cs" />
     <Compile Include="Guide.cs" />
     <Compile Include="Step.cs" />
     <Compile Include="Guide.xaml.cs">

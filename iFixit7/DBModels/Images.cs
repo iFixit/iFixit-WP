@@ -2,29 +2,22 @@
  * The DB table to hold info about all images.
  */
 
-using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-// databasey things
-using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 
 namespace iFixit7
 {
     [Table]
-    public class Image : INotifyPropertyChanged, INotifyPropertyChanging
+    public class Images : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        //the primary key
+        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
         private string _baseUrl;
         [Column]
         public string baseUrl

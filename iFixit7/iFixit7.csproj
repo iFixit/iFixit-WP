@@ -70,9 +70,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DBModels\Device.cs" />
+    <Compile Include="DBModels\Topic.cs" />
     <Compile Include="DBModels\Category.cs" />
     <Compile Include="DBModels\Guide.cs" />
+    <Compile Include="DBModels\Images.cs" />
     <Compile Include="DBModels\Step.cs" />
     <Compile Include="Guide.xaml.cs">
       <DependentUpon>Guide.xaml</DependentUpon>

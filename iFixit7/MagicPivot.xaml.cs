@@ -140,7 +140,7 @@ namespace iFixit7
             //if we are about to switch to a tab index with no children, then actually redirect to a device info
             if (sel != null)
             {
-                if (sel.Devices == null)
+                if (sel.Topics.Count == 0)
                 {
                     Debug.WriteLine("we were navigating to a leaf. deviceinfo it");
                     App.setNextArea(null, 0);

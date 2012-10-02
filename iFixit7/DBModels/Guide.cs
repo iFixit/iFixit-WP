@@ -1,28 +1,24 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 // databasey things
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
 
 namespace iFixit7
 {
     [Table]
     public class Guide : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private string _information;
+        //the primary key
+        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int id
+        {
+            get { return id; }
+            set { id = value; }
+        }
 
+        private string _information;
         [Column]
         public string Information
         {
@@ -41,8 +37,8 @@ namespace iFixit7
             }
         }
 
+        /*
         private List<Step> _steps;
-
         [Column]
         public List<Step> Steps
         {
@@ -60,6 +56,7 @@ namespace iFixit7
                 }
             }
         }
+         * */
 
         // Version column aids update performance.
         [Column(IsVersion = true)]

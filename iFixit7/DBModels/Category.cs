@@ -1,47 +1,78 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 // databasey things
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
 namespace iFixit7
 {
-    public class CategoryDataContext : DataContext
-    {
-        // Pass the connection string to the base class.
-        public CategoryDataContext(string connectionString)
-            : base(connectionString)
-        { }
-
-        // Specify a table for the categories.
-        public Table<Category> CategoriesTable;
-    }
-
     [Table]
     public class Category : INotifyPropertyChanged, INotifyPropertyChanging
     {
         public Category()
         {
+            //no initialization needed for 1->many's, right?
+            /*
             _categories = new List<Category>();
-            _devices = new List<Device>();
+            _devices = new List<Topic>();
+             */
+            _Categories = new EntitySet<Category>();
+            _ColID = new EntityRef<Category>();
+            _Topics = new EntitySet<Topic>();
         }
 
         public Category(string name) : this()
         {
             _name = name;
         }
+
+        //the primary key
+        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        //sub-categories collection
+        //See: http://msdn.microsoft.com/en-us/library/Bb386950(v=VS.90).aspx#Y1000
+        private EntitySet<Category> _Categories;
+        [Association(Storage = "_Categories", OtherKey = "ColID")]
+        public EntitySet<Category> Categories
+        {
+            get { return this._Categories; }
+            set {
+                NotifyPropertyChanging("Categories");
+                this._Categories.Assign(value);
+                NotifyPropertyChanged("Categories");
+            }
+        }
+
+        //counterpart of the above collection
+        [Column]
+        private EntityRef<Category> _ColID;
+        [Association(Storage = "_ColID", ThisKey = "ColID")]
+        public Category ColID
+        {
+            get { return this._ColID.Entity; }
+            set { this._ColID.Entity = value; }
+        }
+
+        //sub-topics
+        private EntitySet<Topic> _Topics;
+        [Association(Storage = "_Topics", OtherKey = "TopID")]
+        public EntitySet<Topic> Topics
+        {
+            get { return this._Topics; }
+            set
+            {
+                NotifyPropertyChanging("Topics");
+                this._Topics.Assign(value);
+                NotifyPropertyChanged("Topics");
+            }
+        }
+
 
         private string _name;
         [Column]
@@ -62,6 +93,11 @@ namespace iFixit7
             }
         }
 
+        // Version column aids update performance.
+        [Column(IsVersion = true)]
+        private Binary _version;
+
+        /*
         private List<Category> _categories;
 
         [Column]
@@ -82,10 +118,10 @@ namespace iFixit7
             }
         }
 
-        private List<Device> _devices;
+        private List<Topic> _devices;
 
         [Column]
-        public List<Device> Devices
+        public List<Topic> Devices
         {
             get
             {
@@ -101,10 +137,7 @@ namespace iFixit7
                 }
             }
         }
-
-        // Version column aids update performance.
-        [Column(IsVersion = true)]
-        private Binary _version;
+        */
 
         #region INotifyPropertyChanged Members
 

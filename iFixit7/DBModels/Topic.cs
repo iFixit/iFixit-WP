@@ -1,26 +1,53 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 // databasey things
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
 namespace iFixit7
 {
     [Table]
-    public class Device : INotifyPropertyChanged, INotifyPropertyChanging
+    public class Topic : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public Topic()
+        {
+            //_Guides = new EntitySet<Guide>();
+            _TopID = new EntityRef<Category>();
+        }
+
+        //the primary key
+        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        //sub-guides
+        /*
+        private EntitySet<Guide> _Guides;
+        [Association(Storage = "_Guides", OtherKey = "id")]
+        public EntitySet<Guide> Guides
+        {
+            get { return this._Guides; }
+            set
+            {
+                NotifyPropertyChanging("Guides");
+                this._Guides.Assign(value);
+                NotifyPropertyChanged("Guides");
+            }
+        }
+         */
+
+        private EntityRef<Category> _TopID;
+        [Association(Storage = "_TopID", ThisKey = "TopID")]
+        public Category TopID
+        {
+            get { return this._TopID.Entity; }
+            set { this._TopID.Entity = value; }
+        }
+
         private string _name;
         [Column]
         public string Name
@@ -41,7 +68,6 @@ namespace iFixit7
         }
 
         private string _description;
-
         [Column]
         public string Description
         {
@@ -60,8 +86,27 @@ namespace iFixit7
             }
         }
 
-        private string _imageUrl;
+        //a 1-1 ref for the image associated with this topic
+        private EntityRef<Images> _Image;
+        [Association(Storage = "_Image", ThisKey = "id")]
+        public Images Image
+        {
+            get { return this._Image.Entity; }
+            set
+            {
+                NotifyPropertyChanging("Image");
+                this._Image.Entity = value;
+                NotifyPropertyChanged("Image");
+            }
+        }
 
+
+        // Version column aids update performance.
+        [Column(IsVersion = true)]
+        private Binary _version;
+
+        /*
+        private string _imageUrl;
         [Column]
         public string ImageURL
         {
@@ -79,7 +124,9 @@ namespace iFixit7
                 }
             }
         }
+         */
 
+        /*
         private List<Guide> _guides;
 
         [Column]
@@ -99,10 +146,7 @@ namespace iFixit7
                 }
             }
         }
-    
-        // Version column aids update performance.
-        [Column(IsVersion = true)]
-        private Binary _version;
+        */
 
         #region INotifyPropertyChanged Members
 

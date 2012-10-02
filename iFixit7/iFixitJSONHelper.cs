@@ -66,11 +66,9 @@ namespace iFixit7
                         //Node curr = new Node(p.Name, new List<Node>());
                         Category curr = new Category();
                         curr.Name = p.Name;
-                        curr.Categories = new List<Category>();
-                        if (mRootGroup.Categories == null)
-                        {
-                            mRootGroup.Categories = new List<Category>();
-                        }
+                        //FIXME
+                        //curr.Categories = new List<Category>();
+
                         mRootGroup.Categories.Add(curr);
                         //mTree.getChildrenList().Add(curr);
                         if (!p.HasValues)
@@ -162,7 +160,9 @@ namespace iFixit7
                     //Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
                     Category curr = new Category();
                     curr.Name = jt.ToObject<JProperty>().Name;
-                    curr.Categories = new List<Category>();
+                    //FIXME
+                    //curr.Categories = new List<Category>();
+                    
                     group.Categories.Add(curr);
                     //node.getChildrenList().Add(curr);
                     if (jt.HasValues)
@@ -180,13 +180,17 @@ namespace iFixit7
                     IJEnumerable<JToken> devs = jt.Values();
                     foreach (JToken dev in devs)
                     {
-                        Device d = new Device();
+                        Topic d = new Topic();
                         d.Name = dev.ToString();
+                        /*
                         if (group.Devices == null)
                         {
-                            group.Devices = new List<Device>();
+                            group.Devices = new List<Topic>();
                         }
-                        group.Devices.Add(d);
+                         */
+                        //group.Devices.Add(d);
+                        group.Topics.Add(d);
+                        
                         //node.getChildrenList().Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());
                     }

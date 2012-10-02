@@ -19,8 +19,7 @@ namespace iFixit7
     public partial class App : Application
     {
         // Specify the local database connection string.
-        public static string DBConnectionString = "Data Source=isostore:/ToDo.sdf";
-        CategoryDataContext mDB;
+        private const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
 
         iFixitJSONHelper ifj;
 
@@ -71,9 +70,12 @@ namespace iFixit7
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            //this has asynchroneous components that will run while the UI loads and whatnot
             getAreas();
+
             // Create the database if it does not exist.
-            using (mDB = new CategoryDataContext(DBConnectionString))
+            //the using statement guarntees that setup and teardown will always happen, and properly
+            using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
             {
                 if (mDB.DatabaseExists() == false)
                 {
@@ -183,15 +185,24 @@ namespace iFixit7
             ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_CATEGORIES);
         }
 
+        //FIXME closes while at breakpoint... Internet says VS2010 express does not support cross thread debugging,
+        //is that it? http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402572(v=vs.92).aspx >> I dont think so
+        //I think something is NULL and is being evaluated. It does not crash if you do not try to expand the tree variable
+        //maybe some uninitialized database stuff?
         public void App_callAreasAPI(MainPage sender, Category tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
-            // Prepopulate the categories.
-            mDB.CategoriesTable.InsertOnSubmit(tree);
+            //open up a new DB connection for this transaction
+            using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
+            {
+                // Prepopulate the categories.
+                //FIXME this explodes!
+                mDB.CategoriesTable.InsertOnSubmit(tree);
 
-            // Save categories to the database.
-            mDB.SubmitChanges();
+                // Save categories to the database.
+                mDB.SubmitChanges();
+            }
         }
 
         #region Phone application initialization

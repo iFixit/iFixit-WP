@@ -21,6 +21,9 @@ namespace iFixit7
         // Specify the local database connection string.
         public static string DBConnectionString = "Data Source=isostore:/ToDo.sdf";
         CategoryDataContext mDB;
+
+        iFixitJSONHelper ifj;
+
         // The static ViewModel, to be used across the application.
         //private static ToDoViewModel viewModel;
         //public static ToDoViewModel ViewModel
@@ -172,7 +175,7 @@ namespace iFixit7
 
         public void getAreas()
         {
-            iFixitJSONHelper ifj = new iFixitJSONHelper();
+            ifj = new iFixitJSONHelper();
 
             Debug.WriteLine("about to get areas....");
 

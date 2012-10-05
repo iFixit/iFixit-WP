@@ -10,12 +10,6 @@ namespace iFixit7
     [Table]
     public class Topic : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        public Topic()
-        {
-            //_Guides = new EntitySet<Guide>();
-            _TopID = new EntityRef<Category>();
-        }
-
         //the primary key
         [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int id
@@ -40,13 +34,17 @@ namespace iFixit7
         }
          */
 
-        private EntityRef<Category> _TopID;
-        [Association(Storage = "_TopID", ThisKey = "TopID")]
-        public Category TopID
+        //The M side of the 1:M of categories to guides
+        [Column(Name = "Category")] private int? topID;
+        private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
+        [Association(Name = "CategoryToTopic", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "topID")]
+        public Category ParentCategory
         {
-            get { return this._TopID.Entity; }
-            set { this._TopID.Entity = value; }
+            get { return this._ParentCategory.Entity; }
+            set { this._ParentCategory.Entity = value; }
         }
+
+
 
         private string _name;
         [Column]

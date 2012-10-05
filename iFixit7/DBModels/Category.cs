@@ -7,25 +7,15 @@ using System.Collections.Generic;
 
 namespace iFixit7
 {
-    [Table]
+    [Table (Name = "AllCategories")]
     public class Category : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        public Category()
-        {
-            //no initialization needed for 1->many's, right?
-            /*
-            _categories = new List<Category>();
-            _devices = new List<Topic>();
-             */
-            _Categories = new EntitySet<Category>();
-            _ColID = new EntityRef<Category>();
-            _Topics = new EntitySet<Topic>();
-        }
-
+        /*
         public Category(string name) : this()
         {
             _name = name;
         }
+         * */
 
         //the primary key
         [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
@@ -35,11 +25,13 @@ namespace iFixit7
             set { id = value; }
         }
 
-        //sub-categories collection
+
+        
+        //the 1 side of the 1:M collection of categories
         //See: http://msdn.microsoft.com/en-us/library/Bb386950(v=VS.90).aspx#Y1000
-        private EntitySet<Category> _Categories;
-        [Association(Storage = "_Categories", OtherKey = "ColID")]
-        public EntitySet<Category> Categories
+        private EntitySet<Category> _Categories = new EntitySet<Category>();
+        [Association(Name = "CategoryCategories", Storage = "_Categories", OtherKey = "categoryId", ThisKey = "id")]
+        public ICollection<Category> Categories
         {
             get { return this._Categories; }
             set {
@@ -47,22 +39,36 @@ namespace iFixit7
                 this._Categories.Assign(value);
                 NotifyPropertyChanged("Categories");
             }
+
         }
 
-        //counterpart of the above collection
+        //FIXME uncommenting this causes the mystery explosion in CreateDatabase
+        //"Unable to determine SQL type for 'System.Data.Linq.EntityRef`1[iFixit7.Category]'."
+        
+        //the M side side of the 1:M of categories
+        //FIXME do we need this? can we use id again? NO, need this here!
+        [Column(Name = "Category")] private int? categoryId;
         [Column]
-        private EntityRef<Category> _ColID;
-        [Association(Storage = "_ColID", ThisKey = "ColID")]
-        public Category ColID
+        private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
+        //not IsForeignKey = true, ?
+        [Association(Name = "CategoryCategories", IsForeignKey = false, Storage = "_ParentCategory", ThisKey = "categoryId")]
+        public Category ParentCategory
         {
-            get { return this._ColID.Entity; }
-            set { this._ColID.Entity = value; }
+            get { return this._ParentCategory.Entity; }
+            set {
+                NotifyPropertyChanging("ParentCategory");
+                this._ParentCategory.Entity = value;
+                NotifyPropertyChanged("ParentCategory");
+            }
         }
 
-        //sub-topics
-        private EntitySet<Topic> _Topics;
-        [Association(Storage = "_Topics", OtherKey = "TopID")]
-        public EntitySet<Topic> Topics
+
+
+
+        //1 side of 1:M for topics
+        private EntitySet<Topic> _Topics = new EntitySet<Topic>();
+        [Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "id", OtherKey = "topID")]
+        public ICollection<Topic> Topics
         {
             get { return this._Topics; }
             set
@@ -72,6 +78,7 @@ namespace iFixit7
                 NotifyPropertyChanged("Topics");
             }
         }
+
 
 
         private string _name;

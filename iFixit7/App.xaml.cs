@@ -80,14 +80,22 @@ namespace iFixit7
                 if (mDB.DatabaseExists() == false)
                 {
                     // Create the local database.
+                    //"Unable to determine SQL type for 'System.Data.Linq.EntityRef`1[iFixit7.Category]'."
                     mDB.CreateDatabase();
 
-                    //// Prepopulate the categories.
+                    // Prepopulate the categories.
                     //db.Categories.InsertOnSubmit(new Category { Name = "root" });
 
-                    //// Save categories to the database.
-                    //db.SubmitChanges();
+                    // Save categories to the database.
+                    mDB.SubmitChanges();
                 }
+                else
+                {
+                    mDB.DeleteDatabase();
+                    mDB.CreateDatabase();
+                    mDB.SubmitChanges();
+                }
+                //FIXME remove above
             }
 
             // Create the ViewModel object.

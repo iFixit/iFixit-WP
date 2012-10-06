@@ -10,64 +10,71 @@ namespace iFixit7
     [Table (Name = "AllCategories")]
     public class Category : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        /*
+        public Category()
+        {
+        }
+        
         public Category(string name) : this()
         {
             _name = name;
         }
-         * */
 
         //the primary key
-        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
-        public int id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+        [Column( AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
 
 
         
         //the 1 side of the 1:M collection of categories
         //See: http://msdn.microsoft.com/en-us/library/Bb386950(v=VS.90).aspx#Y1000
-        private EntitySet<Category> _Categories = new EntitySet<Category>();
-        [Association(Name = "CategoryCategories", Storage = "_Categories", OtherKey = "categoryId", ThisKey = "id")]
-        public ICollection<Category> Categories
-        {
-            get { return this._Categories; }
-            set {
-                NotifyPropertyChanging("Categories");
-                this._Categories.Assign(value);
-                NotifyPropertyChanged("Categories");
-            }
+        //private EntitySet<Category> _Categories = new EntitySet<Category>();
+        //[Association(Name = "CategoryCategories", Storage = "_Categories", OtherKey = "categoryId", ThisKey = "id")]
+        //public ICollection<Category> Categories
+        //{
+        //    get { return this._Categories; }
+        //    set {
+        //        NotifyPropertyChanging("Categories");
+        //        this._Categories.Assign(value);
+        //        NotifyPropertyChanged("Categories");
+        //    }
 
-        }
+        //}
 
         //FIXME uncommenting this causes the mystery explosion in CreateDatabase
         //"Unable to determine SQL type for 'System.Data.Linq.EntityRef`1[iFixit7.Category]'."
         
         //the M side side of the 1:M of categories
         //FIXME do we need this? can we use id again? NO, need this here!
-        [Column(Name = "Category")] private int? categoryId;
-        [Column]
-        private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
-        //not IsForeignKey = true, ?
-        [Association(Name = "CategoryCategories", IsForeignKey = false, Storage = "_ParentCategory", ThisKey = "categoryId")]
-        public Category ParentCategory
+        [Column(Name = "IFI_Category")] private int? categoryId;
+        private EntitySet<Category> _categories = new EntitySet<Category>();
+        [Association(Name = "FK_Category_Category", Storage = "_categories",
+            OtherKey = "categoryId", ThisKey = "Id")]
+        public ICollection<Category> Categories
         {
-            get { return this._ParentCategory.Entity; }
-            set {
-                NotifyPropertyChanging("ParentCategory");
-                this._ParentCategory.Entity = value;
-                NotifyPropertyChanged("ParentCategory");
-            }
+            get { return _categories; }
+            set { _categories.Assign(value); }
         }
+
+        //[Column]
+        //private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
+        ////not IsForeignKey = true, ?
+        //[Association(Name = "CategoryCategories", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "categoryId")]
+        //public Category ParentCategory
+        //{
+        //    get { return this._ParentCategory.Entity; }
+        //    set {
+        //        NotifyPropertyChanging("ParentCategory");
+        //        this._ParentCategory.Entity = value;
+        //        NotifyPropertyChanged("ParentCategory");
+        //    }
+        //}
 
 
 
 
         //1 side of 1:M for topics
         private EntitySet<Topic> _Topics = new EntitySet<Topic>();
-        [Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "id", OtherKey = "topID")]
+        [Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "Id", OtherKey = "topID")]
         public ICollection<Topic> Topics
         {
             get { return this._Topics; }

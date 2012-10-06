@@ -25,7 +25,7 @@ namespace iFixit7
         public static string IFIXIT_API_CATEGORIES = "http://www.ifixit.com/api/1.0/categories";
         // public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/0.1/areas";
         public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");
-        public static string IFIXIT_CATEGORY_OBJECT_KEY = "CATEGORIES";
+        public static string IFIXIT_CATEGORY_OBJECT_KEY = "TOPICS";
         private static bool categories;
         private static string jsonResponse;
         //private static Node mTree = new Node("root", new List<Node>());

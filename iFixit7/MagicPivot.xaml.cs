@@ -144,7 +144,7 @@ namespace iFixit7
                 {
                     Debug.WriteLine("we were navigating to a leaf. deviceinfo it");
                     App.setNextArea(null, 0);
-                    NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + sel.Name, UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/deviceinfo.xaml?device=" + sel.Name, UriKind.Relative));
                 }
             }
             else

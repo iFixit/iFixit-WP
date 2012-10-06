@@ -91,9 +91,9 @@ namespace iFixit7
                 }
                 else
                 {
-                    mDB.DeleteDatabase();
-                    mDB.CreateDatabase();
-                    mDB.SubmitChanges();
+                    //mDB.DeleteDatabase();
+                    //mDB.CreateDatabase();
+                    //mDB.SubmitChanges();
                 }
                 //FIXME remove above
             }
@@ -210,6 +210,7 @@ namespace iFixit7
 
                 // Save categories to the database.
                 mDB.SubmitChanges();
+                Debug.WriteLine(tree.Name);
             }
         }
 

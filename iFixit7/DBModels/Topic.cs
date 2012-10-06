@@ -11,12 +11,8 @@ namespace iFixit7
     public class Topic : INotifyPropertyChanged, INotifyPropertyChanging
     {
         //the primary key
-        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
-        public int id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+        [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
 
         //sub-guides
         /*
@@ -34,15 +30,16 @@ namespace iFixit7
         }
          */
 
-        //The M side of the 1:M of categories to guides
-        [Column(Name = "Category")] private int? topID;
-        private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
-        [Association(Name = "CategoryToTopic", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "topID")]
-        public Category ParentCategory
-        {
-            get { return this._ParentCategory.Entity; }
-            set { this._ParentCategory.Entity = value; }
-        }
+        ////The M side of the 1:M of categories to guides
+        [Column(Name = "topID")]
+        private int? topID;
+        //private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
+        //[Association(Name = "CategoryToTopic", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "topID")]
+        //public Category ParentCategory
+        //{
+        //    get { return this._ParentCategory.Entity; }
+        //    set { this._ParentCategory.Entity = value; }
+        //}
 
 
 
@@ -84,19 +81,19 @@ namespace iFixit7
             }
         }
 
-        //a 1-1 ref for the image associated with this topic
-        private EntityRef<Images> _Image;
-        [Association(Storage = "_Image", ThisKey = "id")]
-        public Images Image
-        {
-            get { return this._Image.Entity; }
-            set
-            {
-                NotifyPropertyChanging("Image");
-                this._Image.Entity = value;
-                NotifyPropertyChanged("Image");
-            }
-        }
+        ////a 1-1 ref for the image associated with this topic
+        //private EntityRef<Images> _Image;
+        //[Association(Storage = "_Image", ThisKey = "id")]
+        //public Images Image
+        //{
+        //    get { return this._Image.Entity; }
+        //    set
+        //    {
+        //        NotifyPropertyChanging("Image");
+        //        this._Image.Entity = value;
+        //        NotifyPropertyChanged("Image");
+        //    }
+        //}
 
 
         // Version column aids update performance.

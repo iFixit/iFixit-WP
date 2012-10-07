@@ -131,7 +131,7 @@
     <None Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SplashScreenImage.jpg" />
+    <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="iFixit_I - Square - Box.png" />

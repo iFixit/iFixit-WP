@@ -28,14 +28,16 @@ namespace iFixit7
         public static string IFIXIT_CATEGORY_OBJECT_KEY = "TOPICS";
         private static bool categories;
         private static string jsonResponse;
-        //private static Node mTree = new Node("root", new List<Node>());
-        private static Category mRootGroup = new Category();
 
-        public delegate void AreaCallEventHandler(MainPage sender, Category tree);
+        private static Category mRootGroup = new Category("root");
+
+        public delegate void AreaCallEventHandler( Category tree);
         public event AreaCallEventHandler callAreasAPI;
 
         public void doAPICallAsync(string uri) {
             Uri site = new Uri(uri);
+
+            //FIXME this scares me... Do we need it if we only use this for categories now?
             categories = uri == IFIXIT_API_CATEGORIES;
 
             WebClient client = new WebClient();
@@ -52,25 +54,22 @@ namespace iFixit7
             {
                 jsonResponse = reader.ReadToEnd();
                 JObject jo = JObject.Parse(jsonResponse);
-                //Debug.WriteLine(jo.ToString());
+
+                //if we are processing a categories call (always yes now?)
                 if (categories) {
                     IEnumerable<JProperty> props = jo.Properties();
                     foreach (JProperty p in props)
                     {
-                        //Debug.WriteLine(p.Name);
                         // You found a leaf node
                         if (p.Name.Equals(IFIXIT_CATEGORY_OBJECT_KEY))
                         {
                             break;
                         }
-                        //Node curr = new Node(p.Name, new List<Node>());
-                        Category curr = new Category();
-                        curr.Name = p.Name;
-                        //FIXME
-                        //curr.Categories = new List<Category>();
+                        Category curr = new Category(p.Name);
 
                         mRootGroup.Categories.Add(curr);
                         //mTree.getChildrenList().Add(curr);
+
                         if (!p.HasValues)
                             break;
                         IJEnumerable<JToken> values = p.Values();
@@ -79,7 +78,11 @@ namespace iFixit7
                             decipherAreasJSON(t, curr);
                         }
                     }
-                } else {
+                //FIXME do we actually use this? Is this replaced with JSONInterface2?
+                }
+                #region else
+                else
+                {
                     IEnumerable<JProperty> props = jo.Properties();
                     foreach (JProperty p in props)
                     {
@@ -88,8 +91,10 @@ namespace iFixit7
                             IJEnumerable<JToken> values = p.Values();
                             foreach (JToken t in values)
                             {
-                                if (t is JProperty) {
-                                    if (t.ToObject<JProperty>().Name.Equals("steps")) {
+                                if (t is JProperty) 
+                                {
+                                    if (t.ToObject<JProperty>().Name.Equals("steps")) 
+                                    {
                                         //Debug.WriteLine(t.ToString());
                                         IJEnumerable<JToken> steps = t.Values();
                                         foreach (JToken step in steps)
@@ -143,11 +148,16 @@ namespace iFixit7
                         }
                     }
                 }
-                this.callAreasAPI.Invoke(null, mRootGroup);
+                #endregion
+
+                this.callAreasAPI.Invoke(mRootGroup);
             }
             
         }
 
+        /*
+         * Gets all the sub-categories (or topics?) of jt, and hangs them under node?
+         */
         //private static void decipherAreasJSON(JToken jt, Node node)
         private static void decipherAreasJSON(JToken jt, Category group)
         {
@@ -156,13 +166,12 @@ namespace iFixit7
                 if (jt.ToObject<JProperty>().Name != IFIXIT_CATEGORY_OBJECT_KEY)
                 {
 //                    Debug.WriteLine(" " + jt.ToObject<JProperty>().Name);
+
                     // since it's not a device, it must be a group
                     //Node curr = new Node(jt.ToObject<JProperty>().Name, new List<Node>());
-                    Category curr = new Category();
-                    curr.Name = jt.ToObject<JProperty>().Name;
-                    //FIXME
-                    //curr.Categories = new List<Category>();
+                    Category curr = new Category(jt.ToObject<JProperty>().Name);
                     
+                    //FIXME this is where we add to the 1:M, right?
                     group.Categories.Add(curr);
                     //node.getChildrenList().Add(curr);
                     if (jt.HasValues)

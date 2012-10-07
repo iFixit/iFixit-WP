@@ -19,7 +19,7 @@ namespace iFixit7
     public partial class App : Application
     {
         // Specify the local database connection string.
-        private const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
+        public const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
 
         iFixitJSONHelper ifj;
 
@@ -77,25 +77,17 @@ namespace iFixit7
             //the using statement guarntees that setup and teardown will always happen, and properly
             using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
             {
-                if (mDB.DatabaseExists() == false)
+                if (mDB.DatabaseExists() == true)
                 {
-                    // Create the local database.
-                    //"Unable to determine SQL type for 'System.Data.Linq.EntityRef`1[iFixit7.Category]'."
-                    mDB.CreateDatabase();
-
-                    // Prepopulate the categories.
-                    //db.Categories.InsertOnSubmit(new Category { Name = "root" });
-
-                    // Save categories to the database.
-                    mDB.SubmitChanges();
+                    //FIXME until we add code to remove duplicates, this is the easiest solution
+                    mDB.DeleteDatabase();
                 }
-                else
-                {
-                    //mDB.DeleteDatabase();
-                    //mDB.CreateDatabase();
-                    //mDB.SubmitChanges();
-                }
-                //FIXME remove above
+
+                // Create the local database.
+                mDB.CreateDatabase();
+
+                // Save categories to the database.
+                mDB.SubmitChanges();
             }
 
             // Create the ViewModel object.
@@ -193,25 +185,46 @@ namespace iFixit7
             ifj.doAPICallAsync(iFixitJSONHelper.IFIXIT_API_CATEGORIES);
         }
 
-        //FIXME closes while at breakpoint... Internet says VS2010 express does not support cross thread debugging,
-        //is that it? http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402572(v=vs.92).aspx >> I dont think so
-        //I think something is NULL and is being evaluated. It does not crash if you do not try to expand the tree variable
-        //maybe some uninitialized database stuff?
-        public void App_callAreasAPI(MainPage sender, Category tree)
+        //the callback hook that gets fired when the area hierarchy is finally retreived
+        public void App_callAreasAPI(Category tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
             //open up a new DB connection for this transaction
             using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
             {
-                // Prepopulate the categories.
-                //FIXME this explodes!
+                // Prepopulate the categories
+                //FIXME probably need to do duplicate checking here?
                 mDB.CategoriesTable.InsertOnSubmit(tree);
 
                 // Save categories to the database.
                 mDB.SubmitChanges();
                 Debug.WriteLine(tree.Name);
+
+                //this works here!
+                /*
+                IQueryable<Category> query =
+                    from cats in mDB.CategoriesTable
+                    where cats.Name == "root"
+                    select cats;
+                Debug.WriteLine("starting to print results");
+                Category cc = query.FirstOrDefault();
+                foreach (Category c in cc.Categories)
+                {
+                    Debug.WriteLine(">" + c.Name);
+                }
+                */
             }
+
+            //FIXME swap to root visual of main page here?
+            //RootVisual = new MainPage();
+            //connect the data binding
+            //sender.initDataBinding();
+
+            //cant do these, invalid cast
+            //((MainPage)App.Current.RootVisual).initDataBinding();
+            //((MainPage)RootVisual).initDataBinding();
+
         }
 
         #region Phone application initialization

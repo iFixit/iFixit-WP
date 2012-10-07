@@ -22,7 +22,17 @@
         </Grid.RowDefinitions>
 
         <!--Our pano-->
-        <controls:Panorama Title="Guides" x:Name="BigPano" Grid.RowSpan="2">
+        <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1">
+            <ListBox x:Name="CatagoryList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <!-- the thing after Binding is exactly the name of the variable to sample-->
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </controls:Panorama>
     </Grid>
  

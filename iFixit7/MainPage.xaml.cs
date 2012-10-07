@@ -26,15 +26,70 @@ namespace iFixit7
         //public delegate void AreaCallEventHandler(iFixitJSONHelper sender, List<Node> tree);
         //public static event AreaCallEventHandler callAreasAPI;
 
+        //see http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh407286(v=vs.88).aspx
+        //for data binding info
+
+        //private iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString);
+
         // Constructor
         public MainPage()
         {
-
-            //List<Node> myTree = iFixitJSONHelper.getAreas();
             InitializeComponent();
 
-            //make the JSON request for areas, and fill in the UI in the handler...
-            //getAreas();
+            //data binding is called elsewhere?
+            //initDataBinding();
+
+            //what about this? I think both are fair
+            using (iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString))
+            {
+                /*
+                //select the categories under the root node
+                DataContext = from cats in dbHand.CategoriesTable
+                              where cats.Name == "root"
+                              select cats.Categories;
+                */
+
+                //for testing. Should get all categories ever
+                DataContext = from cats in dbHand.CategoriesTable
+                              select cats;
+            }
+        }
+
+        public void initDataBinding(){
+            //setup the data binding stuff
+            using (iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString))
+            {
+                this.CatagoryList.ItemsSource = from cats in dbHand.CategoriesTable
+                                                select cats;
+                /*
+                this.CatagoryList.ItemsSource =
+                    from cats in dbHand.CategoriesTable
+                    where cats.Name == "root"
+                    select cats.Categories;
+                */
+
+                /*
+                //query for objects in root. This finds 'root', but the 1:M's are empty
+                IQueryable<Category> query =
+                    from cats in dbHand.CategoriesTable
+                    where cats.Name == "root"
+                    select cats;
+
+                Debug.WriteLine("starting to print results");
+                foreach (Category c in query)
+                {
+                    Debug.WriteLine(">" + c.Name);
+                }
+
+                Category upperCategories = query.FirstOrDefault();
+
+                //set the returned list as the data source
+                if (upperCategories != null)
+                {
+                    this.CatagoryList.ItemsSource = upperCategories.Categories;
+                }
+                */
+            }
         }
 
         void tb_Tap(object sender, GestureEventArgs e)
@@ -70,7 +125,8 @@ namespace iFixit7
         }
 
         // callAreasAPI
-/*        public void MainPage_callAreasAPI(MainPage sender, Category tree)
+        /*
+        public void MainPage_callAreasAPI(MainPage sender, Category tree)
         {
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 

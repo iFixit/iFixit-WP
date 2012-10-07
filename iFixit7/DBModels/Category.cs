@@ -13,7 +13,6 @@ namespace iFixit7
         public Category()
         {
         }
-        
         public Category(string name) : this()
         {
             _name = name;
@@ -49,10 +48,15 @@ namespace iFixit7
         private EntitySet<Category> _categories = new EntitySet<Category>();
         [Association(Name = "FK_Category_Category", Storage = "_categories",
             OtherKey = "categoryId", ThisKey = "Id")]
+        //should these be 'ObservableCollection's?
         public ICollection<Category> Categories
         {
             get { return _categories; }
-            set { _categories.Assign(value); }
+            set {
+                NotifyPropertyChanging("Categories");
+                _categories.Assign(value);
+                NotifyPropertyChanged("Categories");
+            }
         }
 
         //[Column]
@@ -88,7 +92,7 @@ namespace iFixit7
 
 
 
-        private string _name;
+        private string _name = "";
         [Column]
         public string Name
         {

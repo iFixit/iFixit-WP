@@ -28,7 +28,7 @@
                     <DataTemplate>
                         <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
                             <!-- the thing after Binding is exactly the name of the variable to sample-->
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" />
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontSize="36"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

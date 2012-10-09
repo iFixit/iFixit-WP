@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -14,10 +15,68 @@ using System.Diagnostics;
 
 namespace iFixit7
 {
+    public class MagicPivotViewModel
+    {
+        //column index
+        public int TabIndex { get; set; }
+
+        //collection of column names
+        public ObservableCollection<Category> ColumnHeaders { get; set; }
+
+        //names
+        //FIXME need to notify changed
+        public string ParentName { get; set; }
+        public string SelectedName { get; set; }
+
+        public MagicPivotViewModel(string pName, string selName)
+        {
+            TabIndex = 0;
+            ColumnHeaders = new ObservableCollection<Category>();
+
+            this.ParentName = pName;
+            this.SelectedName = selName;
+
+            Debug.WriteLine("Made a new MagicPivot View Model with parent = " + pName + " & cur = " + selName);
+
+            //force all data to update
+            UpdateData();
+        }
+
+        /*
+         * Update the data and index
+         */
+        public void UpdateData()
+        {
+            //run a query to fill the list of column headers
+            //FIXME need to notify changed
+            IQueryable<Category> query =
+                from cats in App.mDB.CategoriesTable
+                where cats.Name == ParentName
+                select cats;
+
+            int index = 0;
+            foreach (Category c in query.FirstOrDefault().Categories)
+            {
+                Debug.WriteLine("Got Cat " + c.Name);
+
+                this.ColumnHeaders.Add(c);
+
+                if (c.Name == SelectedName)
+                {
+                    TabIndex = index;
+                }
+                index++;
+            }
+
+            Debug.WriteLine("tab index = " + TabIndex);
+        }
+    }
     public partial class MagicPivot : PhoneApplicationPage
     {
-        private Category areaShown = null;
-        private int col = 0;
+        private MagicPivotViewModel vm = null;
+
+        private String navParentName;
+        private String navSelectedName;
 
         public MagicPivot()
         {
@@ -25,6 +84,9 @@ namespace iFixit7
 
             Debug.WriteLine("starting a new magic pivot...");
 
+
+            #region dead
+            /*
             //get the area we are about to navigate to, so we can build the view from it
             areaShown = App.getNextArea();
             col = App.getCurrCol();
@@ -101,11 +163,29 @@ namespace iFixit7
                 SmartPivot.Items.Add(pi);
             }
             Loaded += delegate { SmartPivot.SelectedIndex = col;};
+             * 
+             * */
+            #endregion
         }
 
-        /*
+        private void setupBinding(){
+            //instantiate view model
+            vm = new MagicPivotViewModel(navParentName, navSelectedName);
+
+            //set data context to the view model
+            this.DataContext = vm;
+
+            //set tab index via VM
+            //set columns via VM
+            //set column content via VM.columnstuff
+
+            this.SmartPivot.ItemsSource = vm.ColumnHeaders;
+        }
+
         void tb_Tap(object sender, GestureEventArgs e)
         {
+            Debug.WriteLine("MagicPivot item tapped");
+            /*
             string s = (sender as TextBlock).Text;
             //stash where we are about to navigate to...
             App.setNextArea(null, 0);
@@ -117,13 +197,22 @@ namespace iFixit7
             //NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + number++, UriKind.Relative));
 
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + "iPhone+3G", UriKind.Relative));
+             */
         }
-         */
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+
             Debug.WriteLine("A MagicPivot has been navigated to...");
 
+            //get parameters
+            navParentName = NavigationContext.QueryString["CategoryParent"];
+            navSelectedName = NavigationContext.QueryString["SelectedCategory"];
+
+            setupBinding();
+
+            /*
             //?
             //App.setNextArea(null, 0);
             //Node sel = null;
@@ -152,6 +241,7 @@ namespace iFixit7
                 //back one more
                 NavigationService.GoBack();
             }
+             * */
         }
     }
 }

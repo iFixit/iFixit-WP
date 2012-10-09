@@ -100,12 +100,12 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
-            //Node got = null;
-            //int count = 0;
-            //int set = 0;
-            //bool flag = false;
+
             string s = (sender as StackPanel).Tag as String;
-            Debug.WriteLine("tapped >" + s);
+            Debug.WriteLine("tapped > [" + s + "]");
+
+            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + "root" + "&SelectedCategory=" + s, UriKind.Relative));
+
             ////stash where we are about to navigate to...
             //foreach (Group n in App.getEnitreAreaHierarchy().Groups)
             //{

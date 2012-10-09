@@ -18,9 +18,17 @@ namespace iFixit7
 {
     public partial class DeviceInfo : PhoneApplicationPage
     {
+        public TopicInfoViewModel vm;
+
+        private string navTopicName;
+
         public DeviceInfo()
         {
             InitializeComponent();
+
+            vm = new TopicInfoViewModel(navTopicName);
+
+            this.DataContext = vm;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -33,13 +41,17 @@ namespace iFixit7
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             //get the device name that was passed and stash it
-            InfoPano.Title = this.NavigationContext.QueryString["device"];
+            this.navTopicName = this.NavigationContext.QueryString["Topic"];
 
-            Debug.WriteLine("Showing device info for [" + InfoPano.Title + "]");
+            Debug.WriteLine("Showing device info for [" + navTopicName + "]");
 
+            InfoPano.Title = navTopicName;
+
+            /*
             //API call to get the entire contents of the device info and populate it it returns
             JSONInterface2 ji = new JSONInterface2();
             ji.populateDeviceInfo(InfoPano.Title.ToString(), populateUI);
+             * */
         }
         private bool populateUI(DeviceInfoHolder devInfo){
             Debug.WriteLine("filling in device info ui...");
@@ -93,6 +105,16 @@ namespace iFixit7
             }
 
             return true;
+        }
+    }
+
+    public class TopicInfoViewModel
+    {
+        public String Name { get; set; }
+
+        public TopicInfoViewModel(string name)
+        {
+            this.Name = name;
         }
     }
 

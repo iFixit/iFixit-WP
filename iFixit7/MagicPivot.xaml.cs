@@ -33,88 +33,6 @@ namespace iFixit7
             Debug.WriteLine("starting a new magic pivot...");
 
             this.SmartPivot.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-
-            #region dead
-            /*
-            //get the area we are about to navigate to, so we can build the view from it
-            areaShown = App.getNextArea();
-            col = App.getCurrCol();
-
-            Debug.WriteLine("node we are navigating from is " + areaShown.Name);
-
-            //now iterate across the tree we got, and build a view from it
-            PivotItem pi = null;
-            ListBox lb = null;
-            //foreach (Node n in areaShown.getChildrenList())
-            //for (int dex = 0; dex < areaShown.getChildrenList().Count; dex++)
-            for (int dex = 0; dex < areaShown.Categories.Count; dex++)
-            {
-                //Node n = areaShown.getChildrenList().ElementAt(dex);
-                Category n = areaShown.Categories.ElementAt(dex);
-                //build a pivot item for each larger catagory
-                pi = new PivotItem();
-                pi.Header = n.Name;
-
-                //add a list of content to that header
-                lb = new ListBox();
-                pi.Content = lb;
-
-                //add a handler for the list box, to handle clicks
-                //lb.SelectionChanged += new SelectionChangedEventHandler(lb_SelectionChanged);
-
-                //now add items to this list of content
-                TextBlock tb = null;
-                //for (int j = 0; j < 25; j++)
-                if (n.Categories != null)
-                {
-                    //foreach (Node model in n.getChildrenList())
-                    for(int dex2 = 0; dex2 < n.Categories.Count; dex2++)
-                    {
-                        Category model = n.Categories.ElementAt(dex2);
-                        int curIndex = dex2;
-
-                        tb = new TextBlock();
-
-                        //add a specuial handler to respond to being tapped
-                        //tb.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
-                        tb.Tap += delegate(object sender, GestureEventArgs e)
-                        {
-                            Debug.WriteLine("A MagicPivot is about to navigate, but to where?!");
-
-                            Debug.WriteLine("what index to store? dex = " + dex + " and dex2 = " + dex2);
-
-                            //FIXME finish this logic!
-                            //figure out if it is a product (needs list of guides), individual guide, or another catagory. If catagory, call Magic. Else, call DeviceInfo
-                            if (model.Categories != null)
-                            {
-                                //Debug.WriteLine("this node has " + model.getChildrenList().Count + " children. It is called " + model.getName() + " and we think it is no leaf. Its index = " + curIndex);
-
-                                //set the next leaf to work off of
-                                //App.setNextArea(model, 0);
-                                App.setNextArea(n, curIndex);
-                                NavigationService.Navigate(new Uri("/MagicPivot.xaml?page=" + model.Name, UriKind.Relative));
-                            }
-                            else
-                            {
-                                //need to set some the index? if we change columns, we want the back button to return to the proper one...
-                                //App.setNextArea(n, -1);
-                                NavigationService.Navigate(new Uri("/DeviceInfo.xaml?device=" + model.Name, UriKind.Relative));
-                            }
-                        };
-
-                        tb.Text = model.Name;
-
-                        lb.Items.Add(tb);
-                    }
-                }
-
-                //add the entire thing to the pivot
-                SmartPivot.Items.Add(pi);
-            }
-            Loaded += delegate { SmartPivot.SelectedIndex = col;};
-             * 
-             * */
-            #endregion
         }
 
         private void setupBinding()
@@ -134,11 +52,19 @@ namespace iFixit7
             //get the parent
             MagicPivotViewModel.ColumnContent col = vm.Columns[vm.TabIndex];
             string parent = col.ColumnHeader;
+            string type = col.findType(selected);
+
+            //if we are about to navigate to a topic (leaf), navigate to a device info page
+            if (type == MagicPivot.MagicTypeTopic)
+            {
+                NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + selected,
+                UriKind.Relative));
+            }
 
             //FIXME need to figure out what the type is!
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
                 "&SelectedCategory=" + selected +
-                "&SelectedType=" + col.findType(selected),
+                "&SelectedType=" + type,
                 UriKind.Relative));
         }
 
@@ -153,7 +79,6 @@ namespace iFixit7
             navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
             navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
 
-            //if the type is a topic, immediately navigate to a device info page?
             Debug.WriteLine("magic pivot got a type = " + navSelectedType);
 
             setupBinding();

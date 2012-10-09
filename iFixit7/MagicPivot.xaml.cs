@@ -39,9 +39,17 @@ namespace iFixit7
                     where cats.Name == ColumnHeader
                     select cats;
 
+                //add all sub categories
                 foreach (Category c in query.FirstOrDefault().Categories)
                 {
                     Debug.WriteLine("col content " + c.Name);
+                    ColContent.Add(c.Name);
+                }
+
+                //add all topics
+                foreach (Topic c in query.FirstOrDefault().Topics)
+                {
+                    Debug.WriteLine("col content topic " + c.Name);
                     ColContent.Add(c.Name);
                 }
             }

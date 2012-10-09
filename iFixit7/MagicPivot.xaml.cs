@@ -23,6 +23,9 @@ namespace iFixit7
         private String navSelectedName;
         private String navSelectedType;
 
+        public const string MagicTypeCategory = "category";
+        public const string MagicTypeTopic = "topic";
+
         public MagicPivot()
         {
             InitializeComponent();
@@ -129,12 +132,13 @@ namespace iFixit7
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 
             //get the parent
-            string parent = vm.Columns[vm.TabIndex].ColumnHeader;
+            MagicPivotViewModel.ColumnContent col = vm.Columns[vm.TabIndex];
+            string parent = col.ColumnHeader;
 
             //FIXME need to figure out what the type is!
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
                 "&SelectedCategory=" + selected +
-                "&SelectedType=" + "category",
+                "&SelectedType=" + col.findType(selected),
                 UriKind.Relative));
         }
 
@@ -153,37 +157,6 @@ namespace iFixit7
             Debug.WriteLine("magic pivot got a type = " + navSelectedType);
 
             setupBinding();
-
-            /*
-            //?
-            //App.setNextArea(null, 0);
-            //Node sel = null;
-            Category sel = null;
-            if (App.getNextArea() != null && App.getCurrCol() > -1)
-            {
-                if (App.getNextArea().Categories != null)
-                {
-                    //sel = App.getNextArea().getChildrenList().ElementAt(App.getCurrCol());
-                    sel = App.getNextArea().Categories.ElementAt(App.getCurrCol());
-                }
-            }
-
-            //if we are about to switch to a tab index with no children, then actually redirect to a device info
-            if (sel != null)
-            {
-                if (sel.Topics.Count == 0)
-                {
-                    Debug.WriteLine("we were navigating to a leaf. deviceinfo it");
-                    App.setNextArea(null, 0);
-                    NavigationService.Navigate(new Uri("/deviceinfo.xaml?device=" + sel.Name, UriKind.Relative));
-                }
-            }
-            else
-            {
-                //back one more
-                NavigationService.GoBack();
-            }
-             * */
         }
     }
 
@@ -198,12 +171,33 @@ namespace iFixit7
             public string ColumnHeader {get; set;}
             public ObservableCollection<string> ColContent {get; set;}
 
+            private List<string> AllCategories;
+            private List<string> AllTopics;
+
             public ColumnContent(Category c)
             {
                 this.ColumnHeader = c.Name;
 
                 ColContent = new ObservableCollection<string>();
+
+                AllCategories = new List<string>();
+                AllTopics = new List<string>();
             }
+
+            /*
+             * A strange hack that takes a string, figures out if its a category or topic, and returns a string
+             * indicating which
+             */
+            public string findType(string q)
+            {
+                if (AllCategories.Contains(q))
+                    return MagicPivot.MagicTypeCategory;
+                else if (AllTopics.Contains(q))
+                    return MagicPivot.MagicTypeTopic;
+                else
+                    return "";
+            }
+
             public void setColumnContent()
             {
                 IQueryable<Category> query =
@@ -216,6 +210,7 @@ namespace iFixit7
                 {
                     Debug.WriteLine("col content " + c.Name);
                     ColContent.Add(c.Name);
+                    AllCategories.Add(c.Name);
                 }
 
                 //add all topics
@@ -223,6 +218,7 @@ namespace iFixit7
                 {
                     Debug.WriteLine("col content topic " + c.Name);
                     ColContent.Add(c.Name);
+                    AllTopics.Add(c.Name);
                 }
             }
         }
@@ -232,7 +228,6 @@ namespace iFixit7
 
         //collection of column content
         public ObservableCollection<ColumnContent> Columns { get; set; }
-
 
         //names
         //FIXME need to notify changed

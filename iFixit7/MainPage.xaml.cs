@@ -106,5 +106,13 @@ namespace iFixit7
 
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + "root" + "&SelectedCategory=" + s, UriKind.Relative));
         }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            //Clear selected index when navigated to
+            this.CatagoryList.SelectedIndex = -1;
+        }
     }
 }

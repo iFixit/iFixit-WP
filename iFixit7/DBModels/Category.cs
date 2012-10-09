@@ -20,7 +20,10 @@ namespace iFixit7
 
         //the primary key
         [Column( AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
-        public int Id { get; set; }
+        public int Id
+        {
+            get; set;
+        }
 
 
         

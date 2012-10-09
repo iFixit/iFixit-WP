@@ -32,7 +32,7 @@ namespace iFixit7
 
         ////The M side of the 1:M of categories to guides
         [Column(Name = "topID")]
-        private int? topID;
+        private int? topID { get; set; }
         //private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
         //[Association(Name = "CategoryToTopic", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "topID")]
         //public Category ParentCategory

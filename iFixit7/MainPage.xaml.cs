@@ -49,9 +49,11 @@ namespace iFixit7
                               select cats.Categories;
                 */
 
-                //for testing. Should get all categories ever
-                DataContext = from cats in dbHand.CategoriesTable
-                              select cats;
+                ////for testing. Should get all categories ever
+                //IQueryable<Category> query = from cats in dbHand.CategoriesTable
+                //              select cats;
+
+                //this.CatagoryList.ItemsSource = query;
             }
         }
 
@@ -98,7 +100,8 @@ namespace iFixit7
             //int count = 0;
             //int set = 0;
             //bool flag = false;
-            //string s = (sender as TextBlock).Text;
+            string s = (sender as StackPanel).Tag as String;
+            Debug.WriteLine("tapped >" + s);
             ////stash where we are about to navigate to...
             //foreach (Group n in App.getEnitreAreaHierarchy().Groups)
             //{

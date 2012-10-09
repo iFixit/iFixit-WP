@@ -41,6 +41,7 @@ namespace iFixit7
         /// </summary>
         public App()
         {
+
             // Global handler for uncaught exceptions. 
             UnhandledException += Application_UnhandledException;
 
@@ -205,19 +206,23 @@ namespace iFixit7
                 /*
                 IQueryable<Category> query =
                     from cats in mDB.CategoriesTable
-                    where cats.Name == "root"
-                    select cats;
+                              select cats;
                 Debug.WriteLine("starting to print results");
-                Category cc = query.FirstOrDefault();
-                foreach (Category c in cc.Categories)
+                //Category cc = query.FirstOrDefault();
+                foreach (Category c in query)
                 {
                     Debug.WriteLine(">" + c.Name);
                 }
                 */
-            }
+                //for testing. Should get all categories ever
+                IQueryable<Category> query = from cats in mDB.CategoriesTable
+                                             where cats.Name == "root"
+                                             select cats;
 
+                ((MainPage)RootFrame.Content).CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
+            }
+            
             //FIXME swap to root visual of main page here?
-            //RootVisual = new MainPage();
             //connect the data binding
             //sender.initDataBinding();
 

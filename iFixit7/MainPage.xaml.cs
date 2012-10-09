@@ -29,7 +29,7 @@ namespace iFixit7
         //see http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh407286(v=vs.88).aspx
         //for data binding info
 
-        //private iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString);
+        private iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString);
 
         // Constructor
         public MainPage()
@@ -40,14 +40,13 @@ namespace iFixit7
             //initDataBinding();
 
             //what about this? I think both are fair
+            /*
             using (iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString))
             {
-                /*
                 //select the categories under the root node
                 DataContext = from cats in dbHand.CategoriesTable
                               where cats.Name == "root"
                               select cats.Categories;
-                */
 
                 ////for testing. Should get all categories ever
                 //IQueryable<Category> query = from cats in dbHand.CategoriesTable
@@ -55,43 +54,48 @@ namespace iFixit7
 
                 //this.CatagoryList.ItemsSource = query;
             }
+        */
         }
 
         public void initDataBinding(){
             //setup the data binding stuff
-            using (iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString))
+            /*
+            this.CatagoryList.ItemsSource = from cats in dbHand.CategoriesTable
+                                            select cats;
+            */
+            /*
+            this.CatagoryList.ItemsSource =
+                from cats in dbHand.CategoriesTable
+                where cats.Name == "root"
+                select cats.Categories;
+            */
+            IQueryable<Category> query =
+                from cats in App.mDB.CategoriesTable
+                where cats.Name == "root"
+                select cats;
+            this.CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
+
+            /*
+            //query for objects in root. This finds 'root', but the 1:M's are empty
+            IQueryable<Category> query =
+                from cats in dbHand.CategoriesTable
+                where cats.Name == "root"
+                select cats;
+
+            Debug.WriteLine("starting to print results");
+            foreach (Category c in query)
             {
-                this.CatagoryList.ItemsSource = from cats in dbHand.CategoriesTable
-                                                select cats;
-                /*
-                this.CatagoryList.ItemsSource =
-                    from cats in dbHand.CategoriesTable
-                    where cats.Name == "root"
-                    select cats.Categories;
-                */
-
-                /*
-                //query for objects in root. This finds 'root', but the 1:M's are empty
-                IQueryable<Category> query =
-                    from cats in dbHand.CategoriesTable
-                    where cats.Name == "root"
-                    select cats;
-
-                Debug.WriteLine("starting to print results");
-                foreach (Category c in query)
-                {
-                    Debug.WriteLine(">" + c.Name);
-                }
-
-                Category upperCategories = query.FirstOrDefault();
-
-                //set the returned list as the data source
-                if (upperCategories != null)
-                {
-                    this.CatagoryList.ItemsSource = upperCategories.Categories;
-                }
-                */
+                Debug.WriteLine(">" + c.Name);
             }
+
+            Category upperCategories = query.FirstOrDefault();
+
+            //set the returned list as the data source
+            if (upperCategories != null)
+            {
+                this.CatagoryList.ItemsSource = upperCategories.Categories;
+            }
+            */
         }
 
         void tb_Tap(object sender, GestureEventArgs e)

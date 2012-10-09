@@ -21,7 +21,8 @@ namespace iFixit7
         // Specify the local database connection string.
         public const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
 
-        iFixitJSONHelper ifj;
+        private iFixitJSONHelper ifj;
+        public static iFixitDataContext mDB;
 
         // The static ViewModel, to be used across the application.
         //private static ToDoViewModel viewModel;
@@ -76,19 +77,21 @@ namespace iFixit7
 
             // Create the database if it does not exist.
             //the using statement guarntees that setup and teardown will always happen, and properly
-            using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
+            using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
             {
-                if (mDB.DatabaseExists() == true)
+                if (tDB.DatabaseExists() == true)
                 {
                     //FIXME until we add code to remove duplicates, this is the easiest solution
-                    mDB.DeleteDatabase();
+                    tDB.DeleteDatabase();
+
+                    //MessageBox.Show("Loading data for the first time. This may take a moment...");
                 }
 
                 // Create the local database.
-                mDB.CreateDatabase();
+                tDB.CreateDatabase();
 
                 // Save categories to the database.
-                mDB.SubmitChanges();
+                tDB.SubmitChanges();
             }
 
             // Create the ViewModel object.
@@ -192,44 +195,23 @@ namespace iFixit7
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
             //open up a new DB connection for this transaction
-            using (iFixitDataContext mDB = new iFixitDataContext(DBConnectionString))
-            {
-                // Prepopulate the categories
-                //FIXME probably need to do duplicate checking here?
-                mDB.CategoriesTable.InsertOnSubmit(tree);
+            mDB = new iFixitDataContext(DBConnectionString);
 
-                // Save categories to the database.
-                mDB.SubmitChanges();
-                Debug.WriteLine(tree.Name);
+            // Prepopulate the categories
+            //FIXME probably need to do duplicate checking here?
+            mDB.CategoriesTable.InsertOnSubmit(tree);
 
-                //this works here!
-                /*
-                IQueryable<Category> query =
-                    from cats in mDB.CategoriesTable
-                              select cats;
-                Debug.WriteLine("starting to print results");
-                //Category cc = query.FirstOrDefault();
-                foreach (Category c in query)
-                {
-                    Debug.WriteLine(">" + c.Name);
-                }
-                */
-                //for testing. Should get all categories ever
-                IQueryable<Category> query = from cats in mDB.CategoriesTable
-                                             where cats.Name == "root"
-                                             select cats;
+            // Save categories to the database.
+            mDB.SubmitChanges();
 
-                ((MainPage)RootFrame.Content).CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
-            }
-            
-            //FIXME swap to root visual of main page here?
-            //connect the data binding
-            //sender.initDataBinding();
-
-            //cant do these, invalid cast
-            //((MainPage)App.Current.RootVisual).initDataBinding();
-            //((MainPage)RootVisual).initDataBinding();
-
+            /*
+            IQueryable<Category> query = from cats in mDB.CategoriesTable
+                                            where cats.Name == "root"
+                                            select cats;
+            //FIXME this is kindof evil... The main app should not be able/have to do this
+            ((MainPage)RootFrame.Content).CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
+                * */
+            (RootFrame.Content as MainPage).initDataBinding();
         }
 
         #region Phone application initialization

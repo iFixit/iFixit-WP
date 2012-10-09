@@ -100,11 +100,13 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
-
             string s = (sender as StackPanel).Tag as String;
-            Debug.WriteLine("tapped > [" + s + "]");
+            Debug.WriteLine("main page tapped > [" + s + "]");
 
-            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + "root" + "&SelectedCategory=" + s, UriKind.Relative));
+            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +
+                "&SelectedCategory=" + s +
+                "&SelectedType=" + "category",
+                UriKind.Relative));
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

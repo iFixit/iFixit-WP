@@ -21,12 +21,15 @@ namespace iFixit7
 
         private String navParentName;
         private String navSelectedName;
+        private String navSelectedType;
 
         public MagicPivot()
         {
             InitializeComponent();
 
             Debug.WriteLine("starting a new magic pivot...");
+
+            this.SmartPivot.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
 
             #region dead
             /*
@@ -122,11 +125,17 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
-            string s = (sender as StackPanel).Tag as String;
-            Debug.WriteLine("MagicPivot item tapped");
-            Debug.WriteLine("tapped > [" + s + "]");
+            string selected = (e.OriginalSource as TextBlock).Text as String;
+            Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 
-            //NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + "root" + "&SelectedCategory=" + s, UriKind.Relative));
+            //get the parent
+            string parent = vm.Columns[vm.TabIndex].ColumnHeader;
+
+            //FIXME need to figure out what the type is!
+            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
+                "&SelectedCategory=" + selected +
+                "&SelectedType=" + "category",
+                UriKind.Relative));
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -136,8 +145,12 @@ namespace iFixit7
             Debug.WriteLine("A MagicPivot has been navigated to...");
 
             //get parameters
-            navParentName = NavigationContext.QueryString["CategoryParent"];
-            navSelectedName = NavigationContext.QueryString["SelectedCategory"];
+            navParentName = NavigationContext.QueryString[App.MagicParentTag];
+            navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
+            navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
+
+            //if the type is a topic, immediately navigate to a device info page?
+            Debug.WriteLine("magic pivot got a type = " + navSelectedType);
 
             setupBinding();
 

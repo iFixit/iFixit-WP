@@ -21,6 +21,12 @@ namespace iFixit7
         // Specify the local database connection string.
         public const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
 
+        //some constants
+        public const string RootCategoryName = "root";
+        public const string MagicParentTag = "CategoryParent";
+        public const string MagicSelectedTag = "SelectedCategory";
+        public const string MagicTypeTag = "SelectedType";
+
         private iFixitJSONHelper ifj;
         public static iFixitDataContext mDB;
 

@@ -16,22 +16,26 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot Name="SmartPivot" SelectedIndex="{Binding TabIndex, Mode=TwoWay}" ItemsSource="{Binding ColumnHeaders}">
+        <controls:Pivot Name="SmartPivot" SelectedIndex="{Binding TabIndex, Mode=TwoWay}" ItemsSource="{Binding Columns}">
             
+            <!-- this is the header -->
             <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding ColumnHeader}"/>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>
 
+            <!-- this is for each item underneath -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="0,0,0,17" Width="432">
-                        <TextBlock Text="{Binding Name, Mode=OneWay}"/>
-                    </StackPanel>
+                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}">
+                        <TextBlock Text="{Binding ., Mode=OneWay}"/>
+                    </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>
-            
+
+
+
         </controls:Pivot>
     </Grid>
 

@@ -17,11 +17,42 @@ namespace iFixit7
 {
     public class MagicPivotViewModel
     {
+        /*
+         * what goes inside each column in the collection of them
+         */
+        public class ColumnContent
+        {
+            //FIXME need to notify changed?
+            public string ColumnHeader {get; set;}
+            public ObservableCollection<string> ColContent {get; set;}
+
+            public ColumnContent(Category c)
+            {
+                this.ColumnHeader = c.Name;
+
+                ColContent = new ObservableCollection<string>();
+            }
+            public void setColumnContent()
+            {
+                IQueryable<Category> query =
+                    from cats in App.mDB.CategoriesTable
+                    where cats.Name == ColumnHeader
+                    select cats;
+
+                foreach (Category c in query.FirstOrDefault().Categories)
+                {
+                    Debug.WriteLine("col content " + c.Name);
+                    ColContent.Add(c.Name);
+                }
+            }
+        }
+
         //column index
         public int TabIndex { get; set; }
 
-        //collection of column names
-        public ObservableCollection<Category> ColumnHeaders { get; set; }
+        //collection of column content
+        public ObservableCollection<ColumnContent> Columns { get; set; }
+
 
         //names
         //FIXME need to notify changed
@@ -31,7 +62,7 @@ namespace iFixit7
         public MagicPivotViewModel(string pName, string selName)
         {
             TabIndex = 0;
-            ColumnHeaders = new ObservableCollection<Category>();
+            Columns = new ObservableCollection<ColumnContent>();
 
             this.ParentName = pName;
             this.SelectedName = selName;
@@ -59,7 +90,9 @@ namespace iFixit7
             {
                 Debug.WriteLine("Got Cat " + c.Name);
 
-                this.ColumnHeaders.Add(c);
+                ColumnContent cc = new ColumnContent(c);
+                this.Columns.Add(cc);
+                cc.setColumnContent();
 
                 if (c.Name == SelectedName)
                 {
@@ -179,7 +212,8 @@ namespace iFixit7
             //set columns via VM
             //set column content via VM.columnstuff
 
-            this.SmartPivot.ItemsSource = vm.ColumnHeaders;
+            //this.SmartPivot.ItemsSource = vm.ColumnHeaders;
+            //this.SmartPivot.Items = vm.ColumnHeaders[TabIndex].Categories;
         }
 
         void tb_Tap(object sender, GestureEventArgs e)

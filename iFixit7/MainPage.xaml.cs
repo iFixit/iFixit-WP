@@ -71,6 +71,9 @@ namespace iFixit7
                 where top.Populated == true
                 select top;
             this.CachedList.ItemsSource = queryCached;
+
+            //clear the loading bar when we are done loading data
+            this.LoadingBar.IsVisible = false;
         }
 
         /*

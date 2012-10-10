@@ -21,7 +21,7 @@
             <!-- this is the header -->
             <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding ColumnHeader}"/>
+                    <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>
 
@@ -29,7 +29,7 @@
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem">
-                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap"/>
+                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap" Style="{StaticResource PhoneTextLargeStyle}"/>
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

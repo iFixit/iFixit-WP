@@ -58,46 +58,24 @@ namespace iFixit7
         }
 
         public void initDataBinding(){
-            //setup the data binding stuff
-            /*
-            this.CatagoryList.ItemsSource = from cats in dbHand.CategoriesTable
-                                            select cats;
-            */
-            /*
-            this.CatagoryList.ItemsSource =
-                from cats in dbHand.CategoriesTable
-                where cats.Name == "root"
-                select cats.Categories;
-            */
-            IQueryable<Category> query =
+            //setup the data binding stuff for live column
+            IQueryable<Category> queryCats =
                 from cats in App.mDB.CategoriesTable
                 where cats.Name == "root"
                 select cats;
-            this.CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
+            this.CatagoryList.ItemsSource = queryCats.FirstOrDefault().Categories;
 
-            /*
-            //query for objects in root. This finds 'root', but the 1:M's are empty
-            IQueryable<Category> query =
-                from cats in dbHand.CategoriesTable
-                where cats.Name == "root"
-                select cats;
-
-            Debug.WriteLine("starting to print results");
-            foreach (Category c in query)
-            {
-                Debug.WriteLine(">" + c.Name);
-            }
-
-            Category upperCategories = query.FirstOrDefault();
-
-            //set the returned list as the data source
-            if (upperCategories != null)
-            {
-                this.CatagoryList.ItemsSource = upperCategories.Categories;
-            }
-            */
+            //and binding for the cached column
+            IQueryable<Topic> queryCached =
+                from top in App.mDB.TopicsTable
+                where top.Populated == true
+                select top;
+            this.CachedList.ItemsSource = queryCached;
         }
 
+        /*
+         * Fires when something in the live list is tapped
+         */
         void tb_Tap(object sender, GestureEventArgs e)
         {
             string s = (sender as StackPanel).Tag as String;
@@ -109,6 +87,17 @@ namespace iFixit7
                 UriKind.Relative));
         }
 
+        /*
+         * Fires when a cached entry is tapped
+         */
+        private void Cached_Tap(object sender, GestureEventArgs e)
+        {
+            string s = (sender as TextBlock).Tag as String;
+            Debug.WriteLine("main page tapped CACHED > [" + s + "]");
+            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s,
+                UriKind.Relative));
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -116,5 +105,7 @@ namespace iFixit7
             //Clear selected index when navigated to
             this.CatagoryList.SelectedIndex = -1;
         }
+
+        
     }
 }

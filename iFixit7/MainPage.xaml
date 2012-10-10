@@ -23,17 +23,32 @@
         </Grid.RowDefinitions>
 
         <!--Our pano-->
-        <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1">
-            <ListBox x:Name="CatagoryList">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
+        <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1" >
+            <!-- Each element at this level is a different column -->
+            <StackPanel>
+                <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                <ListBox x:Name="CatagoryList">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
+                                <!-- the thing after Binding is exactly the name of the variable to sample-->
+                                <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                <ListBox x:Name="CachedList">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
                             <!-- the thing after Binding is exactly the name of the variable to sample-->
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontSize="36"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" Style="{StaticResource PhoneTextLargeStyle}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </controls:Panorama>
     </Grid>
  

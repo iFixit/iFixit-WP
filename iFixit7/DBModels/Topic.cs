@@ -33,14 +33,6 @@ namespace iFixit7
         ////The M side of the 1:M of categories to guides
         [Column(Name = "topID")]
         private int? topID { get; set; }
-        //private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
-        //[Association(Name = "CategoryToTopic", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "topID")]
-        //public Category ParentCategory
-        //{
-        //    get { return this._ParentCategory.Entity; }
-        //    set { this._ParentCategory.Entity = value; }
-        //}
-
 
 
         private string _name;
@@ -81,20 +73,28 @@ namespace iFixit7
             }
         }
 
-        ////a 1-1 ref for the image associated with this topic
-        //private EntityRef<Images> _Image;
-        //[Association(Storage = "_Image", ThisKey = "id")]
-        //public Images Image
-        //{
-        //    get { return this._Image.Entity; }
-        //    set
-        //    {
-        //        NotifyPropertyChanging("Image");
-        //        this._Image.Entity = value;
-        //        NotifyPropertyChanged("Image");
-        //    }
-        //}
 
+        /*
+         * A column to store if this topic has been populated from the web yet (AKA cached)
+         */
+        private bool _populated = false;
+        [Column]
+        public bool Populated
+        {
+            get
+            {
+                return _populated;
+            }
+            set
+            {
+                if (_populated != value)
+                {
+                    NotifyPropertyChanging("Populated");
+                    _populated = value;
+                    NotifyPropertyChanged("Populated");
+                }
+            }
+        }
 
         // Version column aids update performance.
         [Column(IsVersion = true)]

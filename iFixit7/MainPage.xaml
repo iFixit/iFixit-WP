@@ -24,6 +24,15 @@
 
         <!--Our pano-->
         <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1" >
+            <!-- restyle the panorama title -->
+            <controls:Panorama.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               FontSize="{StaticResource PhoneFontSizeHuge}"
+                               Margin="0,0,0,-60" />
+                </DataTemplate>
+            </controls:Panorama.TitleTemplate>
+            
             <!-- Each element at this level is a different column -->
             <StackPanel>
                 <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>

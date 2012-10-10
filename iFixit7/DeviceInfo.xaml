@@ -13,6 +13,7 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
+    
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -23,6 +24,31 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <controls:Panorama Title="{Binding Name, Mode=OneWay}" x:Name="InfoPano" Grid.RowSpan="1">
+            <!-- restyle the panorama title -->
+            <controls:Panorama.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}"
+                               Margin="0,50,0,0" />
+                </DataTemplate>
+            </controls:Panorama.TitleTemplate>
+            
+            <!-- Each element at this level is a different column -->
+            <StackPanel>
+                <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                <ListBox x:Name="CachedList">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <!-- the thing after Binding is exactly the name of the variable to sample-->
+                            <TextBlock Text="a guide" Style="{StaticResource PhoneTextLargeStyle}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </controls:Panorama>
     </Grid>
 </phone:PhoneApplicationPage>

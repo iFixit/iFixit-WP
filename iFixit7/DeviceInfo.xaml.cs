@@ -52,6 +52,9 @@ namespace iFixit7
             JSONInterface2 ji = new JSONInterface2();
             ji.populateDeviceInfo(InfoPano.Title.ToString(), populateUI);
              * */
+
+            //clear the loading bar when we are done loading data
+            //this.LoadingBar.IsVisible = false;
         }
         private bool populateUI(DeviceInfoHolder devInfo){
             Debug.WriteLine("filling in device info ui...");

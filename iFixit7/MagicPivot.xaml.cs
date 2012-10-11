@@ -140,7 +140,7 @@ namespace iFixit7
                 //add all sub categories
                 foreach (Category c in query.FirstOrDefault().Categories)
                 {
-                    Debug.WriteLine("col content " + c.Name);
+                    //Debug.WriteLine("col content " + c.Name);
                     ColContent.Add(c.Name);
                     AllCategories.Add(c.Name);
                 }
@@ -148,7 +148,7 @@ namespace iFixit7
                 //add all topics
                 foreach (Topic c in query.FirstOrDefault().Topics)
                 {
-                    Debug.WriteLine("col content topic " + c.Name);
+                    //Debug.WriteLine("col content topic " + c.Name);
                     ColContent.Add(c.Name);
                     AllTopics.Add(c.Name);
                 }
@@ -195,7 +195,7 @@ namespace iFixit7
             int index = 0;
             foreach (Category c in query.FirstOrDefault().Categories)
             {
-                Debug.WriteLine("Got Cat " + c.Name);
+                //Debug.WriteLine("Got Cat " + c.Name);
 
                 ColumnContent cc = new ColumnContent(c);
                 this.Columns.Add(cc);

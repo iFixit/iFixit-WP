@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -18,7 +19,7 @@ namespace iFixit7
 {
     public partial class DeviceInfo : PhoneApplicationPage
     {
-        public TopicInfoViewModel vm;
+        public TopicInfoViewModel infoVM;
 
         private string navTopicName;
 
@@ -26,9 +27,11 @@ namespace iFixit7
         {
             InitializeComponent();
 
-            vm = new TopicInfoViewModel(navTopicName);
+            infoVM = new TopicInfoViewModel(navTopicName);
 
-            this.DataContext = vm;
+            //this.DataContext = vm;
+            this.InfoStack.DataContext = infoVM;
+            this.GuidesStack.DataContext = infoVM;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -50,16 +53,53 @@ namespace iFixit7
             //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
             //on its own when the operation completes
             JSONInterface2 ji = new JSONInterface2();
-            ji.populateDeviceInfo(InfoPano.Title.ToString(), populateUI);
-
-            //clear the loading bar when we are done loading data
-            //this.LoadingBar.IsVisible = false;
+            ji.populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
         }
-        private bool populateUI(DeviceInfoHolder devInfo){
-            Debug.WriteLine("filling in device info ui...");
+
+        /*
+         * Insert the data from the JSON parser into the database
+         */
+        private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo){
+            Topic top = null;
+            Debug.WriteLine("putting device info into DB...");
+
+            //try to get a topic of this name from the DB
+            //if it fails, make a new one. if it works, update the old
+            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == devInfo.title);
+            if (top == null)
+            {
+                Debug.WriteLine("\tgenerated new topic");
+                top = new Topic();
+            }
+
+            //translate devInfo in a Topic()
+            //name is already the same
+            top.Description = devInfo.description;
+            top.ImageURL = devInfo.image.text;
+            top.Populated = true;
+
+            //now do the same for all attached guides
+            foreach (DIGuides g in devInfo.guides)
+            {
+                //search if the guide already exists
+                //add if not
+            }
+
+            //insert the Topic() into the database
+            App.mDB.TopicsTable.InsertOnSubmit(top);
+            App.mDB.SubmitChanges();
+
+            Debug.WriteLine("\tinserted = " + top.Description + " imageurl = " + top.ImageURL);
+
+            //force the view model to update
+            infoVM.UpdateData();
+
+            //disable the loading bar
+            this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
 
             return true;
 
+            //this is especially irrelevant
             /*
             //Fill in the UI:
             //now generate 2 tabs. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
@@ -114,14 +154,65 @@ namespace iFixit7
         }
     }
 
+    /*
+     * The view model for the info column and guides
+     */
+    //FIXME needs to notify when its members get updated!!
     public class TopicInfoViewModel
     {
+        /*
+         * The internal class which holds the content of each row of the guide boxes
+         */
+        public class GuidePreview
+        {
+        }
+
         public String Name { get; set; }
+        public String ImageURL { get; set; }
+        public String Description { get; set; }
+
+        //this is the list of guides
+        public ObservableCollection<GuidePreview> GuideList { get; set; }
 
         public TopicInfoViewModel(string name)
         {
             this.Name = name;
+            ImageURL = "";
+            Description = "";
+            GuideList = new ObservableCollection<GuidePreview>();
+
+            //FIXME HACK remove
+            //ImageURL = "http://www.ifixit.com/igi/lBRuNjQShvBxWol6.thumbnail";
+
+            UpdateData();
         }
+
+        /*
+         * force this view model to update all its internal data
+         */
+        public void UpdateData()
+        {
+            Debug.WriteLine("Updating view model...");
+
+            //run queries
+            Topic top = null;
+            //try to get a topic of this name from the DB. If it fails, do nothing
+            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == Name);
+            Debug.WriteLine("\tquery returned " + top);
+            if (top == null)
+            {
+                return;
+            }
+
+            //fill in internal collections
+            Debug.WriteLine("\tgot a topic of name " + Name + ", populating view model");
+            this.Name = top.Name;
+            this.Description = top.Description;
+            this.ImageURL = top.ImageURL;
+
+            Debug.WriteLine("\tdesc = " + this.Description + " imageurl = " + this.ImageURL);
+        }
+        
     }
 
     /*

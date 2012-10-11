@@ -37,16 +37,26 @@
             </controls:Panorama.TitleTemplate>
             
             <!-- Each element at this level is a different column -->
-            <StackPanel>
+            
+            <!-- The column of general topic info -->
+            <StackPanel x:Name="InfoStack">
                 <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
                 
                 <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
+
+                <!-- stick all the info in a stack panel -->
+                <StackPanel>
+                    <Image x:Name="InfoImage" Source="{Binding ImageURL}" Margin="2" />
+                    <TextBlock x:Name="Description" Text="{Binding Description}" Margin="2" />
+                </StackPanel>
             </StackPanel>
             
-            <StackPanel>
+            
+            <!-- The column that is a list of guides -->
+            <StackPanel x:Name="GuidesStack">
                 <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
                 <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" />
-                <ListBox x:Name="GuideList">
+                <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" >
                     <ListBox.ItemTemplate>
                         <!-- the content of this is what each row of guides displays -->
                         <DataTemplate>

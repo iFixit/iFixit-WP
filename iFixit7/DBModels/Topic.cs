@@ -100,7 +100,6 @@ namespace iFixit7
         [Column(IsVersion = true)]
         private Binary _version;
 
-        /*
         private string _imageUrl;
         [Column]
         public string ImageURL
@@ -119,29 +118,7 @@ namespace iFixit7
                 }
             }
         }
-         */
 
-        /*
-        private List<Guide> _guides;
-
-        [Column]
-        public List<Guide> Guides
-        {
-            get
-            {
-                return _guides;
-            }
-            set
-            {
-                if (_guides != value)
-                {
-                    NotifyPropertyChanging("Guides");
-                    _guides = value;
-                    NotifyPropertyChanged("Guides");
-                }
-            }
-        }
-        */
 
         #region INotifyPropertyChanged Members
 

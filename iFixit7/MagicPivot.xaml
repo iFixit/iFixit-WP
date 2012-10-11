@@ -29,7 +29,7 @@
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem">
-                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap" Style="{StaticResource PhoneTextLargeStyle}"/>
+                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap" Style="{StaticResource PhoneTextLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}"/>
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

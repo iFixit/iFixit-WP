@@ -14,11 +14,6 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
-
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="LoadingBar" IsVisible="True" Text="Loading..." />
-    </shell:SystemTray.ProgressIndicator>
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -44,10 +39,13 @@
             <!-- Each element at this level is a different column -->
             <StackPanel>
                 <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                
+                <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
             </StackPanel>
             
             <StackPanel>
                 <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" />
                 <ListBox x:Name="GuideList">
                     <ListBox.ItemTemplate>
                         <!-- the content of this is what each row of guides displays -->

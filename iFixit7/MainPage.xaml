@@ -15,16 +15,13 @@
     shell:SystemTray.IsVisible="True"
     >
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="LoadingBar" IsVisible="True" Text="Loading..." />
-    </shell:SystemTray.ProgressIndicator>
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
 
         <!--Our pano-->
         <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1" >
@@ -33,13 +30,17 @@
                 <DataTemplate>
                     <TextBlock Text="{Binding}"
                                FontSize="{StaticResource PhoneFontSizeHuge}"
+                               Foreground="Orange"
                                Margin="0,0,0,-60" />
                 </DataTemplate>
             </controls:Panorama.TitleTemplate>
-            
+
             <!-- Each element at this level is a different column -->
             <StackPanel>
                 <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+
+                <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" />
+                
                 <ListBox x:Name="CatagoryList">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

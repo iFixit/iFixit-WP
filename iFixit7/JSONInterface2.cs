@@ -29,15 +29,19 @@ namespace iFixit7
      */
     public class JSONInterface2
     {
-        public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/0.1/areas";
-        public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");          //takes guide id
-        public static string IFIXIT_API_DEVICE_INFO = ("http://www.ifixit.com/api/0.1/device/");    //takes string name
+        public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/1.0/categories/";
+        public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/1.0/guide/");          //takes guide id
+        public static string IFIXIT_API_DEVICE_INFO = ("http://www.ifixit.com/api/1.0/topic/");    //takes string name
 
         private Func<DeviceInfoHolder, bool> devInfoCallback = null;
         private Func<GuideHolder, bool> guidePopulateCallback = null;
 
+        /*
+         * Called from DeviceInfo.xaml to retreive data and fill in its ui
+         */
         public void populateDeviceInfo(string dev, Func<DeviceInfoHolder, bool> f)
         {
+            //save the callback for when the asynchroneous operation returns
             devInfoCallback = f;
 
             //request
@@ -50,7 +54,7 @@ namespace iFixit7
 
         private void GetDeviceInfoCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            //this strea, has the string: e.Result. Read it out
+            //e.Result as the web request result. Read it out
             string rawJSON = new StreamReader(e.Result).ReadToEnd();
 
             //rawJSON = Uri.UnescapeDataString(rawJSON);
@@ -60,8 +64,12 @@ namespace iFixit7
         }
 
 
+        /*
+         * Called from some part of the guide xaml to retreive data and fill in its ui
+         */
         public void populateGuideView(int guideID, Func<GuideHolder, bool> f)
         {
+            //save the callback for when the asynchroneous operation returns
             guidePopulateCallback = f;
 
             //request
@@ -101,37 +109,6 @@ namespace iFixit7
 
             guidePopulateCallback(gde);
         }
-
-        /*
-         * Strips HTML tags out of strings. Used to remove links and whatnot from comments
-         */
-        public static string StripTagsCharArray(string source)
-        {
-	        char[] array = new char[source.Length];
-	        int arrayIndex = 0;
-	        bool inside = false;
-
-	        for (int i = 0; i < source.Length; i++)
-	        {
-	            char let = source[i];
-	            if (let == '<')
-	            {
-		        inside = true;
-		        continue;
-	            }
-	            if (let == '>')
-	            {
-		        inside = false;
-		        continue;
-	            }
-	            if (!inside)
-	            {
-		        array[arrayIndex] = let;
-		        arrayIndex++;
-	            }
-	        }
-	        return new string(array, 0, arrayIndex);
-        }
     }
 
     /*
@@ -139,7 +116,7 @@ namespace iFixit7
      */
 
     /*
-     * Holds the result from a query for device info. There are a number of classes needed to make up
+     * Holds the result from a query for topic info. There are a number of classes needed to make up
      * a single device info model.
      */
     public class DeviceInfoHolder
@@ -147,7 +124,7 @@ namespace iFixit7
         //public string[] categories { get; set; }
         public string contents { get; set; }
         public string description { get; set; }
-        public DIDevInfo device_info { get; set; }
+        public DIDevInfo topic_info { get; set; }
 
         //public string[] flags { get; set; }
 

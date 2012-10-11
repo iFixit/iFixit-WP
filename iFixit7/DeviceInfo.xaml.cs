@@ -47,11 +47,10 @@ namespace iFixit7
 
             InfoPano.Title = navTopicName;
 
-            /*
-            //API call to get the entire contents of the device info and populate it it returns
+            //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
+            //on its own when the operation completes
             JSONInterface2 ji = new JSONInterface2();
             ji.populateDeviceInfo(InfoPano.Title.ToString(), populateUI);
-             * */
 
             //clear the loading bar when we are done loading data
             //this.LoadingBar.IsVisible = false;
@@ -59,6 +58,9 @@ namespace iFixit7
         private bool populateUI(DeviceInfoHolder devInfo){
             Debug.WriteLine("filling in device info ui...");
 
+            return true;
+
+            /*
             //Fill in the UI:
             //now generate 2 tabs. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
             //when the user selects a guide, naviate to a Guide.xaml with the guide ID, and it will fetch the guide and display it
@@ -108,6 +110,7 @@ namespace iFixit7
             }
 
             return true;
+             * */
         }
     }
 

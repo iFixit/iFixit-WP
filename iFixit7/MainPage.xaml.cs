@@ -36,25 +36,8 @@ namespace iFixit7
         {
             InitializeComponent();
 
-            //data binding is called elsewhere?
+            //data binding is called elsewhere
             //initDataBinding();
-
-            //what about this? I think both are fair
-            /*
-            using (iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString))
-            {
-                //select the categories under the root node
-                DataContext = from cats in dbHand.CategoriesTable
-                              where cats.Name == "root"
-                              select cats.Categories;
-
-                ////for testing. Should get all categories ever
-                //IQueryable<Category> query = from cats in dbHand.CategoriesTable
-                //              select cats;
-
-                //this.CatagoryList.ItemsSource = query;
-            }
-        */
         }
 
         public void initDataBinding(){
@@ -73,7 +56,7 @@ namespace iFixit7
             this.CachedList.ItemsSource = queryCached;
 
             //clear the loading bar when we are done loading data
-            this.LoadingBar.IsVisible = false;
+            this.LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         /*

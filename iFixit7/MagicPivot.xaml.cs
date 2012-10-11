@@ -46,6 +46,13 @@ namespace iFixit7
 
         void tb_Tap(object sender, GestureEventArgs e)
         {
+            //figure out if the sender is a text block (it should be). Filters out tapping whitespace.
+            TextBlock t = new TextBlock();
+            if (e.OriginalSource.GetType() != t.GetType())
+            {
+                return;
+            }
+
             string selected = (e.OriginalSource as TextBlock).Text as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 

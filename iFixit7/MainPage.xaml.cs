@@ -38,9 +38,14 @@ namespace iFixit7
 
             //data binding is called elsewhere
             //initDataBinding();
+
+            Debug.WriteLine("new main page");
         }
 
         public void initDataBinding(){
+            if (App.mDB == null)
+                return;
+
             //setup the data binding stuff for live column
             IQueryable<Category> queryCats =
                 from cats in App.mDB.CategoriesTable
@@ -78,7 +83,7 @@ namespace iFixit7
          */
         private void Cached_Tap(object sender, GestureEventArgs e)
         {
-            string s = (sender as TextBlock).Tag as String;
+            string s = (sender as TextBlock).Text as String;
             Debug.WriteLine("main page tapped CACHED > [" + s + "]");
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s,
                 UriKind.Relative));
@@ -90,6 +95,9 @@ namespace iFixit7
 
             //Clear selected index when navigated to
             this.CatagoryList.SelectedIndex = -1;
+
+            //force an update
+            initDataBinding();
         }
 
         

@@ -24,29 +24,8 @@ namespace iFixit7
         {
             get; set;
         }
-
-
-        
-        //the 1 side of the 1:M collection of categories
-        //See: http://msdn.microsoft.com/en-us/library/Bb386950(v=VS.90).aspx#Y1000
-        //private EntitySet<Category> _Categories = new EntitySet<Category>();
-        //[Association(Name = "CategoryCategories", Storage = "_Categories", OtherKey = "categoryId", ThisKey = "id")]
-        //public ICollection<Category> Categories
-        //{
-        //    get { return this._Categories; }
-        //    set {
-        //        NotifyPropertyChanging("Categories");
-        //        this._Categories.Assign(value);
-        //        NotifyPropertyChanged("Categories");
-        //    }
-
-        //}
-
-        //FIXME uncommenting this causes the mystery explosion in CreateDatabase
-        //"Unable to determine SQL type for 'System.Data.Linq.EntityRef`1[iFixit7.Category]'."
         
         //the M side side of the 1:M of categories
-        //FIXME do we need this? can we use id again? NO, need this here!
         [Column(Name = "IFI_Category")] private int? categoryId;
         private EntitySet<Category> _categories = new EntitySet<Category>();
         [Association(Name = "FK_Category_Category", Storage = "_categories",
@@ -61,21 +40,6 @@ namespace iFixit7
                 NotifyPropertyChanged("Categories");
             }
         }
-
-        //[Column]
-        //private EntityRef<Category> _ParentCategory = new EntityRef<Category>();
-        ////not IsForeignKey = true, ?
-        //[Association(Name = "CategoryCategories", IsForeignKey = true, Storage = "_ParentCategory", ThisKey = "categoryId")]
-        //public Category ParentCategory
-        //{
-        //    get { return this._ParentCategory.Entity; }
-        //    set {
-        //        NotifyPropertyChanging("ParentCategory");
-        //        this._ParentCategory.Entity = value;
-        //        NotifyPropertyChanged("ParentCategory");
-        //    }
-        //}
-
 
 
 
@@ -117,48 +81,6 @@ namespace iFixit7
         // Version column aids update performance.
         [Column(IsVersion = true)]
         private Binary _version;
-
-        /*
-        private List<Category> _categories;
-
-        [Column]
-        public List<Category> Categories
-        {
-            get
-            {
-                return _categories;
-            }
-            set
-            {
-                if (_categories != value)
-                {
-                    NotifyPropertyChanging("Categories");
-                    _categories = value;
-                    NotifyPropertyChanged("Categories");
-                }
-            }
-        }
-
-        private List<Topic> _devices;
-
-        [Column]
-        public List<Topic> Devices
-        {
-            get
-            {
-                return _devices;
-            }
-            set
-            {
-                if (_devices != value)
-                {
-                    NotifyPropertyChanging("Devices");
-                    _devices = value;
-                    NotifyPropertyChanged("Devices");
-                }
-            }
-        }
-        */
 
         #region INotifyPropertyChanged Members
 

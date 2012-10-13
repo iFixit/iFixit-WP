@@ -157,29 +157,20 @@ namespace iFixit7
          */
         private void StackPanel_Tap(object sender, GestureEventArgs e)
         {
-
+            string guideTag = "";
+            guideTag = (sender as StackPanel).Tag.ToString();
+            Debug.WriteLine("device info tapped guide id = " + guideTag);
+            NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
         }
     }
 
     /*
      * The view model for the info column and guides
      */
-    //FIXME needs to notify when its members get updated!!
+    //FIXME needs to notify when its members get updated
+    //FIXME this can almost certainly be paired down to nearly nothing (can we refer directly to the Topic that the query gets?)
     public class TopicInfoViewModel
     {
-        /*
-         * The internal class which holds the content of each row of the guide boxes
-         */
-        public class GuidePreview
-        {
-            public String Name { get; set; }
-
-            public GuidePreview(string n)
-            {
-                this.Name = n;
-            }
-        }
-
         public String Name { get; set; }
         public String ImageURL { get; set; }
         public String Description { get; set; }
@@ -194,9 +185,6 @@ namespace iFixit7
             Description = "";
             GuideList = new ObservableCollection<Guide>();
 
-            //FIXME HACK remove
-            //ImageURL = "http://www.ifixit.com/igi/lBRuNjQShvBxWol6.thumbnail";
-
             UpdateData();
         }
 
@@ -209,16 +197,7 @@ namespace iFixit7
 
             //run queries
             Topic top = null;
-            //try to get a topic of this name from the DB. If it fails, do nothing
-            //IQueryable<Topic> query =
-            //    from tops in App.mDB.TopicsTable
-            //    where tops.Name == this.Name
-            //    select tops;
-            //top = query.FirstOrDefault();
-            //Debug.WriteLine("Found some querties: " + query.Count());
             top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == Name);
-            Debug.WriteLine("\tquery returned [" + top + "] for name = " + this.Name);
-            Debug.WriteLine("\t top: " + top.Name + ", " + top.ImageURL);
             if (top == null)
             {
                 return;
@@ -237,118 +216,5 @@ namespace iFixit7
             }
         }
 
-    }
-
-    /*
-     * A class to represent a single line describing a guide.
-     * Type [guide, teardown], title, thumbnail, subject[light sensor]
-     */
-    class GuideEntry
-    {
-        string title;
-        Uri thumb;
-        string subject;
-        string type;
-        int guideID;
-
-        public GuideEntry(DIGuides dg)
-        {
-            title = dg.title;
-            //these are already .thumbnails
-            thumb = new Uri(dg.thumbnail);
-            subject = dg.subject;
-            type = dg.type;
-            guideID = int.Parse(dg.guideid);
-        }
-        public GuideEntry(string itit, string imgUrl, string isub, string itype, int gid)
-        {
-            title = itit;
-            thumb = new Uri(imgUrl);
-            subject = isub;
-            type = itype;
-            guideID = gid;
-        }
-
-        /*
-         * Returns a ListBoxEntry with all the stuff needed to display this row of data
-         */
-        public Grid getRow()
-        {
-            Grid g = new Grid();
-
-            //add 3 cols
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-            //g.ColumnDefinitions.Add(new ColumnDefinition());
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            //g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
-            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
-
-            //add 2 rows
-            //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(100) });
-            //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(100) });
-            //g.RowDefinitions.Add(new RowDefinition());
-            //g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
-            //g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
-            g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(50) });
-            //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(35) });
-            g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            //add the title
-            TextBlock tbTitle = new TextBlock();
-            //tbTitle.MaxWidth = 480 - 30;
-            tbTitle.Text = this.title;
-            tbTitle.TextWrapping = TextWrapping.Wrap;
-            tbTitle.FontWeight = FontWeights.Bold;
-            //tbTitle.Padding = new Thickness(0, 5, 0, 9);
-            Grid.SetColumn(tbTitle, 0);
-            Grid.SetColumnSpan(tbTitle, 2);
-            Grid.SetRow(tbTitle, 0);
-            g.Children.Add(tbTitle);
-
-            //add the subject
-            TextBlock tbSubject = new TextBlock();
-            //tbSubject.MaxWidth = 480 - 30;
-            tbSubject.TextWrapping = TextWrapping.Wrap;
-            tbSubject.Text = this.subject;
-            //tbSubject.Padding = new Thickness(0, 5, 0, 9);
-            Grid.SetColumn(tbSubject, 0);
-            Grid.SetRow(tbSubject, 1);
-            g.Children.Add(tbSubject);
-
-            //add the title
-            TextBlock tbType = new TextBlock();
-            //tbType.MaxWidth = 480 - 30;
-            //tbType.TextWrapping = TextWrapping.Wrap;
-            tbType.Text = this.type;
-            //tbType.Padding = new Thickness(0, 5, 0, 9);
-            Grid.SetColumn(tbType, 1);
-            Grid.SetRow(tbType, 1);
-            g.Children.Add(tbType);
-
-            //add the image
-            Image i = new Image();
-            //This does the actual image fetch
-            i.Source = new BitmapImage(thumb);
-            Grid.SetColumn(i, 2);
-            Grid.SetRow(i, 0);
-            Grid.SetRowSpan(i, 2);
-            g.Children.Add(i);
-
-            //and add the handler to make it navigate to a particular guide when tapped
-            g.Tap += delegate(object sender, GestureEventArgs e)
-            {
-                Debug.WriteLine("navigating to guide " + guideID + " title = " + title);
-                (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/Guide.xaml?guideID=" + guideID + "&guideTitle=" + title + "", UriKind.Relative));
-            };
-
-            //g.Background = new SolidColorBrush(Colors.DarkGray);
-
-            return g;
-        }
     }
 }

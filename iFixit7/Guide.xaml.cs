@@ -23,49 +23,35 @@ namespace iFixit7
         string guideTitle;
         int guideID;
 
-        private List<Image> allImages;
-
         public GuideView()
         {
             InitializeComponent();
-        }
-
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            //empty the pivot
-            this.GuidePivot.Items.Clear();
-
-            //free images?
-            Debug.WriteLine("got " + allImages.Count + " images to free");
-            for (int i = 0; i < allImages.Count; i++ )
-            {
-                Image im = allImages.ElementAt(i);
-
-                //(im as BitmapImage).UriSource = null;
-                im.Source = null;
-                im = null;
-            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("A Guide has been navigated to. We are going to make API calls and do SCIENCE");
 
-            allImages = new List<Image>();
+            this.guideID = int.Parse(this.NavigationContext.QueryString["GuideID"]);
 
+            Debug.WriteLine("\tgot guide id = " + guideID);
+
+            /*
             //get the device name that was passed and stash it
             this.guideTitle = this.NavigationContext.QueryString["guideTitle"];
-            this.guideID = int.Parse(this.NavigationContext.QueryString["guideID"]);
+            
             GuideTitle.Text = this.guideTitle;
             GuideTitle.TextWrapping = TextWrapping.Wrap;
 
             //api call. The callback will be fired to populate the view
             JSONInterface2 ji = new JSONInterface2();
             ji.populateGuideView(this.guideID, populateGuideUI);
+             * */
         }
         public bool populateGuideUI(GuideHolder guide){
+            return true;
+
+            /*
             //now take the data from the object and populate the view!
             ListBoxItem pad = null;
 
@@ -173,6 +159,7 @@ namespace iFixit7
             hb.TargetName = "_blank";
             hb.Padding = new Thickness(8);
             infoLB.Items.Add(hb);
+             */
 
             //============
             //prereqs and whatnot tab
@@ -184,6 +171,7 @@ namespace iFixit7
             backTab.Content = backLB;
             */
 
+            /*
             //============
             //generate a tab for each step
             PivotItem pi = null;
@@ -238,86 +226,9 @@ namespace iFixit7
 
                 this.GuidePivot.Items.Add(pi);
             }
-
+            
             return true;
+             */
         }
     }
 }
-    /*
-     
-    public class GuideHolder
-    {
-        public string guideTitle { get; set; }
-        public int guideID { get; set; }
-        public LinkedList<StepTemp> steps { get; set; }
-
-        public GuideHolder()
-        {
-            steps = new LinkedList<StepTemp>();
-        }
-
-        public void guideToView(Pivot parent)
-        {
-            if (parent == null)
-                return;
-
-            PivotItem pi = null;
-            ListBox lb = null;
-            //foreach across all steps gs
-            foreach (StepTemp gs in this.steps)
-            {
-                pi = new PivotItem();
-                pi.Header = "Step " + gs.getStepNum();
-
-                //add a grid to put the guide in
-                lb = new ListBox();
-                pi.Content = lb;
-
-                //fill in the grid
-                TextBlock tb = new TextBlock();
-                tb.MaxWidth = 480 - 30;
-                tb.TextWrapping = TextWrapping.Wrap;
-                // TODO FIXME: this is hardcoded to 0
-                tb.Text = gs.getLines(0).getText();
-                // TODO also use other methods
-                tb.Padding = new Thickness(0, 5, 0, 9);
-
-                lb.Items.Add(tb);
-
-                Image i = null;
-                ListBoxItem lbPadding = null;
-                foreach (jsonImage img in gs.getImageList())
-                {
-                    //load the image into i, then add it to the grid
-                    i = new Image();
-                    i.Source = new BitmapImage(new Uri(img.getText()));
-
-                    lbPadding = new ListBoxItem();
-                    lbPadding.Padding = new Thickness(0, 5, 0, 5);
-
-                    lb.Items.Add(i);
-                }
-
-                parent.Items.Add(pi);
-            }
-        }
-        //steps
-        private class GuideStep
-        {
-            //step #
-            public int index { get; set; }
-
-            //instructions for that step
-            public string instructions { get; set; }
-
-            //any images (as Uris)
-            public LinkedList<Uri> images { get; set; }
-
-            public GuideStep(int dex)
-            {
-                this.index = dex;
-                images = new LinkedList<Uri>();
-            }
-        }
-    }
-*/

@@ -68,7 +68,6 @@ namespace iFixit7
                 UriKind.Relative));
             }
 
-            //FIXME need to figure out what the type is!
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
                 "&SelectedCategory=" + selected +
                 "&SelectedType=" + type,

@@ -21,10 +21,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="2,2,0,2">
-            <TextBlock x:Name="GuideTitle" Text="device name" Margin="10,10,0,0" Style="{StaticResource PhoneTextSmallStyle}"/>
-        </StackPanel>
+        <!--holds the name of the device-->
+        <TextBlock x:Name="GuideTitle" Text="device name" Margin="10,10,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
 
         <!--ContentPanel - place additional content here-->
         <controls:Pivot x:Name="GuidePivot" Grid.Row="1">

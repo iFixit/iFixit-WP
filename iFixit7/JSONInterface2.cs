@@ -67,7 +67,7 @@ namespace iFixit7
         /*
          * Called from some part of the guide xaml to retreive data and fill in its ui
          */
-        public void populateGuideView(int guideID, Func<GuideHolder, bool> f)
+        public void populateGuideView(string guideID, Func<GuideHolder, bool> f)
         {
             //save the callback for when the asynchroneous operation returns
             guidePopulateCallback = f;
@@ -75,7 +75,7 @@ namespace iFixit7
             //request
             WebClient client = new WebClient();
             MemoryStream stream = new MemoryStream();
-            client.OpenReadAsync(new Uri(IFIXIT_API_GUIDES + Uri.EscapeUriString(guideID.ToString())), stream);
+            client.OpenReadAsync(new Uri(IFIXIT_API_GUIDES + Uri.EscapeUriString(guideID)), stream);
             client.OpenReadCompleted += new OpenReadCompletedEventHandler(GetGuideCompleted);
             stream.Close();
         }
@@ -173,9 +173,10 @@ namespace iFixit7
     /*
      * holds an entire guide
      */
+    //ok
     public class GuideHolder
     {
-        public string device { get; set; }
+        public string topic { get; set; }
         public GHGuide guide { get; set; }
         public string guideid { get; set; }
         public string url { get; set; }
@@ -206,6 +207,7 @@ namespace iFixit7
 
         public GHStep[] steps { get; set; }
 
+        //h
         public string subject { get; set; }
         public string summary { get; set; }     //drop this? null?
         public string time_required { get; set; }
@@ -224,6 +226,14 @@ namespace iFixit7
     {
         public string imageid { get; set; }
         public string text { get; set; }
+        public string mini { get; set; }
+        public string thumbnail { get; set; }
+        public string standard { get; set; }
+        public string medium { get; set; }
+        public string large { get; set; }
+
+        //this is only used when we are unpacking a GHStepMedia
+        public string orderby { get; set; } //int?
     }
     public class GHPart
     {
@@ -240,6 +250,8 @@ namespace iFixit7
     }
     public class GHTool
     {
+        public string type { get; set; }
+        public string quantity { get; set; }
         public string notes { get; set; }
         public string text { get; set; }
         public string thumbnail { get; set; }
@@ -249,22 +261,29 @@ namespace iFixit7
     //a step and its components
     public class GHStep
     {
-        public GHStepImage[] images { get; set; }
+        public string title { get; set; }
+
+        public GHStepMedia media { get; set; }
         public GHStepLines[] lines { get; set; }
 
-        public string number { get; set; }
-        public string title { get; set; }
+        public string number { get; set; }  //int?
     }
-    public class GHStepImage
+    public class GHStepMedia
     {
-        public string imageid { get; set; }
-        public string orderby { get; set; }
-        public string text { get; set; }
+        public string type { get; set; }
+
+        //can reuse image class
+        public GHImage[] image { get; set; }
+
+        //one for video (and embedded video) as well
+        //video
+        //embed
     }
     public class GHStepLines
     {
+        public string text { get; set; }
+        //these are colors
         public string bullet { get; set; }
         public string level { get; set; }
-        public string text { get; set; }
     }
 }

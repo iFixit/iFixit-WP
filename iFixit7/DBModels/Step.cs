@@ -14,6 +14,11 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
+
+        //the M hook of the 1:M of guides to steps
+        [Column(Name = "stepGroupID")]
+        private int? stepGroupID { get; set; }
+
         
         private string _metaInfo;
         [Column]
@@ -33,48 +38,6 @@ namespace iFixit7
                 }
             }
         }
-
-        /*
-        private List<Images> _images;
-        [Column]
-        public List<Images> Images
-        {
-            get
-            {
-                return _images;
-            }
-            set
-            {
-                if (_images != value)
-                {
-                    NotifyPropertyChanging("Images");
-                    _images = value;
-                    NotifyPropertyChanged("Images");
-                }
-            }
-        }
-         * */
-
-        /*
-        private List<string> _descriptions;
-        [Column]
-        public List<string> Descriptions
-        {
-            get
-            {
-                return _descriptions;
-            }
-            set
-            {
-                if (_descriptions != value)
-                {
-                    NotifyPropertyChanging("Descriptions");
-                    _descriptions = value;
-                    NotifyPropertyChanged("Descriptions");
-                }
-            }
-        }
-         * */
 
         // Version column aids update performance.
         [Column(IsVersion = true)]

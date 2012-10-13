@@ -45,20 +45,16 @@ namespace iFixit7
             {
                 Debug.WriteLine("\tgot guide title = " + SourceGuide.Title);
             }
-
-            /*
-            //get the device name that was passed and stash it
-            this.guideTitle = this.NavigationContext.QueryString["guideTitle"];
-            
-            GuideTitle.Text = this.guideTitle;
-            GuideTitle.TextWrapping = TextWrapping.Wrap;
+            this.DataContext = SourceGuide;
 
             //api call. The callback will be fired to populate the view
             JSONInterface2 ji = new JSONInterface2();
             ji.populateGuideView(this.guideID, populateGuideUI);
-             * */
         }
         public bool populateGuideUI(GuideHolder guide){
+
+            //hide the loading bar
+            //LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
             return true;
 
             /*

@@ -22,21 +22,21 @@
             <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="{Binding ColumnHeader}" Tag="HEADER" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                        <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>
 
             <!-- this is for each item underneath -->
+            <!--Height="{Binding ElementName=LayoutRoot, Path=ActualHeight, Mode=OneWay}"-->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" 
                              FontSize="{StaticResource PhoneFontSizeMedium}"
-                             VerticalAlignment="Top"
-                             Height="{Binding ElementName=SmartPivot, Path=ActualHeight, Mode=OneWay}">
+                             VerticalAlignment="Stretch">
                         
-                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap"/>
+                        <TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"/>
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

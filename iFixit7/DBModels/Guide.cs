@@ -14,12 +14,25 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
-        //FIXME add collection of steps!
-
         //the M hook of the 1:M of topics to guides
         [Column(Name = "guideGroupID")]
-        private int? guideGroupID { get; set; }
+        private int? guideGroupID;
 
+
+        //FIXME add collection of steps!
+        //1 side of 1:M for the collection of guides
+        private EntitySet<Step> _steps = new EntitySet<Step>();
+        [Association(Name = "GuideToSteps", Storage = "_steps", ThisKey = "Id", OtherKey = "stepGroupID")]
+        public ICollection<Step> Steps
+        {
+            get { return this._steps; }
+            set
+            {
+                NotifyPropertyChanging("Steps");
+                this._steps.Assign(value);
+                NotifyPropertyChanged("Steps");
+            }
+        }
 
         private string _title;
         [Column]

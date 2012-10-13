@@ -52,8 +52,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
+            
             <StackPanel x:Name="CachedeStack">
-                
                 <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
                 <ListBox x:Name="CachedList" Height="550">

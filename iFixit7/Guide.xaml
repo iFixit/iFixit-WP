@@ -15,17 +15,50 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--holds the name of the device-->
-        <TextBlock x:Name="GuideTitle" Text="device name" Margin="10,10,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+        <TextBlock x:Name="GuideTitle" Text="{Binding Title}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
 
         <!--ContentPanel - place additional content here-->
-        <controls:Pivot x:Name="GuidePivot" Grid.Row="1">
+        <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding}">
+
+            <!--the style for each title of the pivot of guides-->
+            <controls:Pivot.TitleTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <!--PhoneFontSizeExtraExtraLarge margin 0,50,0,0-->
+                        <TextBlock Text="{Binding}"
+                                   FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                                   Margin="0,0,0,0" />
+                        <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </DataTemplate>
+            </controls:Pivot.TitleTemplate>
+
+            <!-- the special info column -->
+            <controls:PivotItem x:Name="GuideInfo" Header="Info">
+                <StackPanel>
+                    <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
+                    <TextBlock Text="some step text for the info pane ONLY" TextWrapping="Wrap"/>
+                </StackPanel>
+            </controls:PivotItem>
+
+            <!-- template for each step column -->
+            <controls:Pivot.ItemTemplate>
+                <DataTemplate>
+                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" 
+                             FontSize="{StaticResource PhoneFontSizeMedium}"
+                             VerticalAlignment="Stretch">
+
+                        <TextBlock Text="some step text"/>
+                    </ListBox>
+                </DataTemplate>
+            </controls:Pivot.ItemTemplate>
         </controls:Pivot>
     </Grid>
 </phone:PhoneApplicationPage>

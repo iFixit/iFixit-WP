@@ -11,52 +11,111 @@ namespace iFixit7
     public class Guide : INotifyPropertyChanged, INotifyPropertyChanging
     {
         //the primary key
-        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
-        public int id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+        [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
 
-        private string _information;
+        //FIXME add collection of steps!
+
+        //the M hook of the 1:M of topics to guides
+        [Column(Name = "guideGroupID")]
+        private int? guideGroupID { get; set; }
+
+
+        private string _title;
         [Column]
-        public string Information
+        public string Title
         {
             get
             {
-                return _information;
+                return _title;
             }
             set
             {
-                if (_information != value)
+                if (_title != value)
                 {
-                    NotifyPropertyChanging("Information");
-                    _information = value;
-                    NotifyPropertyChanged("Information");
+                    NotifyPropertyChanging("Title");
+                    _title = value;
+                    NotifyPropertyChanged("Title");
                 }
             }
         }
 
-        /*
-        private List<Step> _steps;
+        private string _subject;
         [Column]
-        public List<Step> Steps
+        public string Subject
         {
             get
             {
-                return _steps;
+                return _subject;
             }
             set
             {
-                if (_steps != value)
+                if (_subject != value)
                 {
-                    NotifyPropertyChanging("Steps");
-                    _steps = value;
-                    NotifyPropertyChanged("Steps");
+                    NotifyPropertyChanging("Subject");
+                    _subject = value;
+                    NotifyPropertyChanged("Subject");
                 }
             }
         }
-         * */
+
+        private string _url;
+        [Column]
+        public string URL
+        {
+            get
+            {
+                return _url;
+            }
+            set
+            {
+                if (_url != value)
+                {
+                    NotifyPropertyChanging("URL");
+                    _url = value;
+                    NotifyPropertyChanged("URL");
+                }
+            }
+        }
+
+        private string _guideID;
+        [Column]
+        public string GuideID
+        {
+            get
+            {
+                return _guideID;
+            }
+            set
+            {
+                if (_guideID != value)
+                {
+                    NotifyPropertyChanging("GuideID");
+                    _guideID = value;
+                    NotifyPropertyChanged("GuideID");
+                }
+            }
+        }
+
+        private string _thumbnail;
+        [Column]
+        public string Thumbnail
+        {
+            get
+            {
+                return _thumbnail;
+            }
+            set
+            {
+                if (_thumbnail != value)
+                {
+                    NotifyPropertyChanging("Thumbnail");
+                    _thumbnail = value;
+                    NotifyPropertyChanged("Thumbnail");
+                }
+            }
+        }
+        
 
         // Version column aids update performance.
         [Column(IsVersion = true)]

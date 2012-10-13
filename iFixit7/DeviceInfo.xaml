@@ -29,9 +29,10 @@
             <controls:Panorama.TitleTemplate>
                 <DataTemplate>
                     <StackPanel>
+                        <!--PhoneFontSizeExtraExtraLarge margin 0,50,0,0-->
                         <TextBlock Text="{Binding}"
-                                   FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}"
-                                   Margin="0,50,0,0" />
+                                   FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                                   Margin="0,80,0,0" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Panorama.TitleTemplate>
@@ -45,9 +46,9 @@
                 <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
 
                 <!-- stick all the info in a stack panel -->
-                <StackPanel>
-                    <Image x:Name="InfoImage" Source="{Binding ImageURL}" Margin="2" />
-                    <TextBlock x:Name="Description" Text="{Binding Description}" Margin="2" />
+                <StackPanel Margin="2">
+                    <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
+                    <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
             
@@ -55,12 +56,14 @@
             <!-- The column that is a list of guides -->
             <StackPanel x:Name="GuidesStack">
                 <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                
                 <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" />
+                
                 <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" >
                     <ListBox.ItemTemplate>
                         <!-- the content of this is what each row of guides displays -->
                         <DataTemplate>
-                            <TextBlock Text="a guide" Style="{StaticResource PhoneTextLargeStyle}"/>
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -73,16 +73,14 @@ namespace iFixit7
 
             //try to get a topic of this name from the DB
             //if it fails, make a new one. if it works, update the old
-            Debug.WriteLine("Looking for devInfo = " + devInfo.title);
             top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
             if (top == null)
             {
-                Debug.WriteLine("\tgenerated new topic");
                 top = new Topic();
             }
             else
             {
-
+                //nuke the existing one so we dont collide on insert
                 App.mDB.TopicsTable.DeleteOnSubmit(top);
                 App.mDB.SubmitChanges();
             }
@@ -95,33 +93,60 @@ namespace iFixit7
             newTop.ImageURL = devInfo.image.text;
             newTop.Populated = true;
 
+            newTop.Description = devInfo.description;
+            //scale the image
+            newTop.ImageURL = devInfo.image.text + ".medium";
+
             //now do the same for all attached guides
             foreach (DIGuides g in devInfo.guides)
             {
-                //search if the guide already exists
-                //add if not
+                Debug.WriteLine("\tguide " + g.title);
+
+                //search if the guide already exists, and get or update it
+                Guide gNew = new Guide();
+                Guide gOld = null;
+                gOld = App.mDB.GuidesTable.SingleOrDefault(other => other.Title == g.title);
+                if (gOld != null)
+                {
+                    App.mDB.GuidesTable.DeleteOnSubmit(gOld);
+                    App.mDB.SubmitChanges();
+                
+                    //transfer info
+                    gNew.Title = gOld.Title;
+                    gNew.Subject = gOld.Subject;
+                    gNew.URL = gOld.URL;
+                    gNew.GuideID = gOld.GuideID;
+                    gNew.Thumbnail = gOld.Thumbnail;
+                }
+
+                gNew.Title = g.title;
+                gNew.Subject = g.subject;
+                gNew.URL = g.url;
+                gNew.GuideID = g.guideid;
+                gNew.Thumbnail = g.thumbnail;
+
+                // hang it below the topic, it its collection of guides
+                newTop.Guides.Add(gNew);
+
+                //FIXME do we need to specifically add this to the guide table? is that magic?
             }
 
-            //using (iFixitDataContext tDB = new iFixitDataContext(App.DBConnectionString))
-            //{
-
-                //insert the Topic() into the database
-                App.mDB.TopicsTable.InsertOnSubmit(newTop);
-                App.mDB.SubmitChanges();
-            //}
-            Debug.WriteLine("\tinserted = " + top.Description + " imageurl = " + top.ImageURL);
+            //insert the Topic() into the database
+            App.mDB.TopicsTable.InsertOnSubmit(newTop);
+            //FIXME explodes here (just closes...) If we break and navigate inside with the debugger and try to examine an
+            //individual guide, it explodes. cannot evaluate expression ID
+            App.mDB.SubmitChanges();
 
             //force the view model to update
             infoVM.UpdateData();
 
-
-            this.InfoStack.DataContext = null;
-            this.GuidesStack.DataContext = null;
+            //force the views to update
             this.InfoStack.DataContext = infoVM;
             this.GuidesStack.DataContext = infoVM;
 
             //disable the loading bar
             this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+            this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
 
             return true;
         }
@@ -138,6 +163,12 @@ namespace iFixit7
          */
         public class GuidePreview
         {
+            public String Name { get; set; }
+
+            public GuidePreview(string n)
+            {
+                this.Name = n;
+            }
         }
 
         public String Name { get; set; }
@@ -153,7 +184,6 @@ namespace iFixit7
             ImageURL = "";
             Description = "";
             GuideList = new ObservableCollection<GuidePreview>();
-            GuideList.Add(new GuidePreview());
 
             //FIXME HACK remove
             //ImageURL = "http://www.ifixit.com/igi/lBRuNjQShvBxWol6.thumbnail";
@@ -186,12 +216,16 @@ namespace iFixit7
             }
 
             //fill in internal collections
-            Debug.WriteLine("\tgot a topic of name " + Name + ", populating view model");
             this.Name = top.Name;
             this.Description = top.Description;
             this.ImageURL = top.ImageURL;
 
-            Debug.WriteLine("\tdesc = " + this.Description + " imageurl = " + this.ImageURL);
+            //fill in guides
+            foreach (Guide g in top.Guides)
+            {
+                Debug.WriteLine("\tinside updating view model. Found guide: " + g.Title);
+                GuideList.Add(new GuidePreview(g.Title));
+            }
         }
 
     }

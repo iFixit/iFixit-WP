@@ -11,16 +11,12 @@ namespace iFixit7
     public class Step : INotifyPropertyChanged, INotifyPropertyChanging
     {
         //the primary key
-        [ColumnAttribute(Storage = "id", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
-        public int id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+        [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id { get; set; }
 
-        [Column]
+        
         private string _metaInfo;
-
+        [Column]
         public string MetaInfo
         {
             get

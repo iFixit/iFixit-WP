@@ -14,6 +14,11 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
+        ////The M side of the 1:M of categories to guides
+        [Column(Name = "topID")] private int? topID { get; set; }
+
+
+        //FIXME add collection of guides!
         //sub-guides
         /*
         private EntitySet<Guide> _Guides;
@@ -29,10 +34,19 @@ namespace iFixit7
             }
         }
          */
-
-        ////The M side of the 1:M of categories to guides
-        [Column(Name = "topID")]
-        private int? topID { get; set; }
+        //1 side of 1:M for topics
+        private EntitySet<Guide> _guides = new EntitySet<Guide>();
+        [Association(Name = "TopicToGuides", Storage = "_guides", ThisKey = "Id", OtherKey = "guideGroupID")]
+        public ICollection<Guide> Guides
+        {
+            get { return this._guides; }
+            set
+            {
+                NotifyPropertyChanging("Guides");
+                this._guides.Assign(value);
+                NotifyPropertyChanged("Guides");
+            }
+        }
 
 
         private string _name;

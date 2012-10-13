@@ -28,7 +28,7 @@
             <!-- this is for each item underneath -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" FontSize="{StaticResource PhoneFontSizeLarge}">
+                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" FontSize="{StaticResource PhoneFontSizeMedium}">
                         <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap"/>
                     </ListBox>
                 </DataTemplate>

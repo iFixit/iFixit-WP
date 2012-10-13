@@ -63,7 +63,14 @@
                     <ListBox.ItemTemplate>
                         <!-- the content of this is what each row of guides displays -->
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}"/>
+                            <StackPanel Orientation="Horizontal" Tag="{Binding GuideID}">
+                                <Image VerticalAlignment="Top" Source="{Binding Path=Thumbnail}" 
+                                       Width="100" Height="100" Margin="8"/>
+                                
+                                <TextBlock Text="{Binding Title, Mode=OneWay}" TextWrapping="Wrap" 
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           FontSize="{StaticResource PhoneFontSizeMedium}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

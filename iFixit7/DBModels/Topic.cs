@@ -17,24 +17,7 @@ namespace iFixit7
         ////The M side of the 1:M of categories to guides
         [Column(Name = "topID")] private int? topID { get; set; }
 
-
-        //FIXME add collection of guides!
-        //sub-guides
-        /*
-        private EntitySet<Guide> _Guides;
-        [Association(Storage = "_Guides", OtherKey = "id")]
-        public EntitySet<Guide> Guides
-        {
-            get { return this._Guides; }
-            set
-            {
-                NotifyPropertyChanging("Guides");
-                this._Guides.Assign(value);
-                NotifyPropertyChanged("Guides");
-            }
-        }
-         */
-        //1 side of 1:M for topics
+        //1 side of 1:M for the collection of guides
         private EntitySet<Guide> _guides = new EntitySet<Guide>();
         [Association(Name = "TopicToGuides", Storage = "_guides", ThisKey = "Id", OtherKey = "guideGroupID")]
         public ICollection<Guide> Guides

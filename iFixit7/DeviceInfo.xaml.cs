@@ -144,11 +144,20 @@ namespace iFixit7
             this.InfoStack.DataContext = infoVM;
             this.GuidesStack.DataContext = infoVM;
 
-            //disable the loading bar
+            //disable the loading bars
             this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
             this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
 
             return true;
+        }
+
+        /*
+         * This fires whenever an item in the list of guides is tapped. Sender is a StackPanel, tag
+         * is guide ID
+         */
+        private void StackPanel_Tap(object sender, GestureEventArgs e)
+        {
+
         }
     }
 
@@ -176,14 +185,14 @@ namespace iFixit7
         public String Description { get; set; }
 
         //this is the list of guides
-        public ObservableCollection<GuidePreview> GuideList { get; set; }
+        public ObservableCollection<Guide> GuideList { get; set; }
 
         public TopicInfoViewModel(string name)
         {
             this.Name = name;
             ImageURL = "";
             Description = "";
-            GuideList = new ObservableCollection<GuidePreview>();
+            GuideList = new ObservableCollection<Guide>();
 
             //FIXME HACK remove
             //ImageURL = "http://www.ifixit.com/igi/lBRuNjQShvBxWol6.thumbnail";
@@ -224,7 +233,7 @@ namespace iFixit7
             foreach (Guide g in top.Guides)
             {
                 Debug.WriteLine("\tinside updating view model. Found guide: " + g.Title);
-                GuideList.Add(new GuidePreview(g.Title));
+                GuideList.Add(g);
             }
         }
 

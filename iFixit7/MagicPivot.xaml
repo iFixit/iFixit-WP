@@ -28,8 +28,8 @@
             <!-- this is for each item underneath -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem">
-                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap" Style="{StaticResource PhoneTextLargeStyle}" FontSize="{StaticResource PhoneFontSizeLarge}"/>
+                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" FontSize="{StaticResource PhoneFontSizeLarge}">
+                        <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap"/>
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

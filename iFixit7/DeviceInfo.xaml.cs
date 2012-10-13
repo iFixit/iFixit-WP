@@ -19,7 +19,7 @@ namespace iFixit7
 {
     public partial class DeviceInfo : PhoneApplicationPage
     {
-        public TopicInfoViewModel infoVM;
+        public TopicInfoViewModel infoVM = null;
 
         private string navTopicName;
 
@@ -27,7 +27,13 @@ namespace iFixit7
         {
             InitializeComponent();
 
-            infoVM = new TopicInfoViewModel(navTopicName);
+            //IQueryable<Topic> query =
+            //    from tops in App.mDB.TopicsTable
+            //    select tops;
+            //foreach (Topic t in query)
+            //{
+            //    Debug.WriteLine("topic: " + t.Name);
+            //}
 
             //this.DataContext = vm;
             this.InfoStack.DataContext = infoVM;
@@ -45,6 +51,7 @@ namespace iFixit7
         {
             //get the device name that was passed and stash it
             this.navTopicName = this.NavigationContext.QueryString["Topic"];
+            infoVM = new TopicInfoViewModel(navTopicName);
 
             Debug.WriteLine("Showing device info for [" + navTopicName + "]");
 
@@ -59,24 +66,34 @@ namespace iFixit7
         /*
          * Insert the data from the JSON parser into the database
          */
-        private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo){
+        private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo)
+        {
             Topic top = null;
             Debug.WriteLine("putting device info into DB...");
 
             //try to get a topic of this name from the DB
             //if it fails, make a new one. if it works, update the old
-            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == devInfo.title);
+            Debug.WriteLine("Looking for devInfo = " + devInfo.title);
+            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
             if (top == null)
             {
                 Debug.WriteLine("\tgenerated new topic");
                 top = new Topic();
             }
+            else
+            {
 
+                App.mDB.TopicsTable.DeleteOnSubmit(top);
+                App.mDB.SubmitChanges();
+            }
+
+            Topic newTop = new Topic();
             //translate devInfo in a Topic()
             //name is already the same
-            top.Description = devInfo.description;
-            top.ImageURL = devInfo.image.text;
-            top.Populated = true;
+            newTop.Name = devInfo.topic_info.name;
+            newTop.Description = devInfo.description;
+            newTop.ImageURL = devInfo.image.text;
+            newTop.Populated = true;
 
             //now do the same for all attached guides
             foreach (DIGuides g in devInfo.guides)
@@ -85,72 +102,28 @@ namespace iFixit7
                 //add if not
             }
 
-            //insert the Topic() into the database
-            App.mDB.TopicsTable.InsertOnSubmit(top);
-            App.mDB.SubmitChanges();
+            //using (iFixitDataContext tDB = new iFixitDataContext(App.DBConnectionString))
+            //{
 
+                //insert the Topic() into the database
+                App.mDB.TopicsTable.InsertOnSubmit(newTop);
+                App.mDB.SubmitChanges();
+            //}
             Debug.WriteLine("\tinserted = " + top.Description + " imageurl = " + top.ImageURL);
 
             //force the view model to update
             infoVM.UpdateData();
 
+
+            this.InfoStack.DataContext = null;
+            this.GuidesStack.DataContext = null;
+            this.InfoStack.DataContext = infoVM;
+            this.GuidesStack.DataContext = infoVM;
+
             //disable the loading bar
             this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
 
             return true;
-
-            //this is especially irrelevant
-            /*
-            //Fill in the UI:
-            //now generate 2 tabs. one with a list of guides, and one with a screen of info (like description, name, image, etc) about the device.
-            //when the user selects a guide, naviate to a Guide.xaml with the guide ID, and it will fetch the guide and display it
-            PivotItem piInfo = new PivotItem();
-            PivotItem piGuides = new PivotItem();
-
-            //reverse order to reverse order of tabs
-            InfoPano.Items.Add(piGuides);
-            InfoPano.Items.Add(piInfo);
-
-            //now fill in the tabs, starting with info
-            piInfo.Header = "Information";
-            ListBox infoList = new ListBox();
-            piInfo.Content = infoList;
-
-            //add device image
-            if (devInfo.image.text != null && devInfo.image.text != "")
-            {
-                Image infoImg = new Image();
-                infoImg.Source = new BitmapImage(new Uri(devInfo.image.text + ".standard"));
-                infoList.Items.Add(infoImg);
-            }
-
-            //add description
-            TextBlock infoDesc = new TextBlock();
-            infoDesc.MaxWidth = 480 - 30;
-            infoDesc.TextWrapping = TextWrapping.Wrap;
-            infoDesc.Text = devInfo.description;
-            infoDesc.Padding = new Thickness(0, 5, 0, 9);
-            infoList.Items.Add(infoDesc);
-
-            //fill in guides
-            piGuides.Header = "Guides";
-            ListBox guideList = new ListBox();
-            piGuides.Content = guideList;
-
-            ListBoxItem lPad = null;
-            GuideEntry ge = null;
-            //iterate through all guides, adding each one
-            foreach(DIGuides graw in devInfo.guides){
-                ge = new GuideEntry(graw);
-                guideList.Items.Add(ge.getRow());
-
-                lPad = new ListBoxItem();
-                lPad.Padding = new Thickness(5, 5, 5, 5);
-                guideList.Items.Add(lPad);
-            }
-
-            return true;
-             * */
         }
     }
 
@@ -180,6 +153,7 @@ namespace iFixit7
             ImageURL = "";
             Description = "";
             GuideList = new ObservableCollection<GuidePreview>();
+            GuideList.Add(new GuidePreview());
 
             //FIXME HACK remove
             //ImageURL = "http://www.ifixit.com/igi/lBRuNjQShvBxWol6.thumbnail";
@@ -197,8 +171,15 @@ namespace iFixit7
             //run queries
             Topic top = null;
             //try to get a topic of this name from the DB. If it fails, do nothing
+            //IQueryable<Topic> query =
+            //    from tops in App.mDB.TopicsTable
+            //    where tops.Name == this.Name
+            //    select tops;
+            //top = query.FirstOrDefault();
+            //Debug.WriteLine("Found some querties: " + query.Count());
             top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == Name);
-            Debug.WriteLine("\tquery returned " + top);
+            Debug.WriteLine("\tquery returned [" + top + "] for name = " + this.Name);
+            Debug.WriteLine("\t top: " + top.Name + ", " + top.ImageURL);
             if (top == null)
             {
                 return;
@@ -212,7 +193,7 @@ namespace iFixit7
 
             Debug.WriteLine("\tdesc = " + this.Description + " imageurl = " + this.ImageURL);
         }
-        
+
     }
 
     /*
@@ -272,7 +253,7 @@ namespace iFixit7
             //g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
             g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(50) });
             //g.RowDefinitions.Add(new RowDefinition { Height = new GridLength(35) });
-            g.RowDefinitions.Add(new RowDefinition{ Height = GridLength.Auto});
+            g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             //add the title
             TextBlock tbTitle = new TextBlock();

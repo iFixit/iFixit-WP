@@ -54,7 +54,7 @@ namespace iFixit7
             }
         }
 
-        private string _description;
+        private string _description = "this is a description";
         [Column]
         public string Description
         {

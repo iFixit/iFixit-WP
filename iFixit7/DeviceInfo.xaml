@@ -19,6 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -58,7 +59,10 @@
                 
                 <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" />
                 
-                <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" >
+                <!-- the strange height binding allows it to fill the StackPanel around it and scroll properly -->
+                <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" 
+                         Height="{Binding ElementName=GuidesStack, Path=ActualHeight, Mode=OneWay}">
+                    
                     <ListBox.ItemTemplate>
                         <!-- the content of this is what each row of guides displays -->
                         <DataTemplate>

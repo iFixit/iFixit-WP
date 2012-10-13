@@ -36,12 +36,12 @@
             </controls:Panorama.TitleTemplate>
 
             <!-- Each element at this level is a different column -->
-            <StackPanel>
+            <StackPanel x:Name="BrowseStack">
                 <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
                 <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" />
-                
-                <ListBox x:Name="CatagoryList">
+
+                <ListBox x:Name="CatagoryList" Height="550" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
@@ -52,9 +52,11 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
-            <StackPanel>
+            <StackPanel x:Name="CachedeStack">
+                
                 <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
-                <ListBox x:Name="CachedList">
+
+                <ListBox x:Name="CachedList" Height="550">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!-- the thing after Binding is exactly the name of the variable to sample-->

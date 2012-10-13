@@ -209,6 +209,7 @@ namespace iFixit7
             this.ImageURL = top.ImageURL;
 
             //fill in guides
+            GuideList.Clear();
             foreach (Guide g in top.Guides)
             {
                 Debug.WriteLine("\tinside updating view model. Found guide: " + g.Title);

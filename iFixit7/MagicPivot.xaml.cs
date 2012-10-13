@@ -53,6 +53,12 @@ namespace iFixit7
                 return;
             }
 
+            //make sure we arent reacting to tapping a header
+            if ((string)(e.OriginalSource as TextBlock).Tag.ToString() == "HEADER")
+            {
+                return;
+            }
+
             string selected = (e.OriginalSource as TextBlock).Text as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 

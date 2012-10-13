@@ -20,21 +20,31 @@ namespace iFixit7
 {
     public partial class GuideView : PhoneApplicationPage
     {
-        string guideTitle;
-        int guideID;
+        public Guide SourceGuide = null;
+
+        string guideID = "";
 
         public GuideView()
         {
             InitializeComponent();
+
+            this.DataContext = SourceGuide;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("A Guide has been navigated to. We are going to make API calls and do SCIENCE");
 
-            this.guideID = int.Parse(this.NavigationContext.QueryString["GuideID"]);
+            //this.guideID = int.Parse(this.NavigationContext.QueryString["GuideID"]);
+            this.guideID = this.NavigationContext.QueryString["GuideID"];
 
             Debug.WriteLine("\tgot guide id = " + guideID);
+
+            SourceGuide = App.mDB.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+            if (SourceGuide != null)
+            {
+                Debug.WriteLine("\tgot guide title = " + SourceGuide.Title);
+            }
 
             /*
             //get the device name that was passed and stash it

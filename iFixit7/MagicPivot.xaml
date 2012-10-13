@@ -16,19 +16,26 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot Name="SmartPivot" SelectedIndex="{Binding TabIndex, Mode=TwoWay}" ItemsSource="{Binding Columns}">
+        <controls:Pivot x:Name="SmartPivot" SelectedIndex="{Binding TabIndex, Mode=TwoWay}" ItemsSource="{Binding Columns}">
             
             <!-- this is the header -->
             <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding ColumnHeader}" Tag="HEADER" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                        <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
+                    </StackPanel>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>
 
             <!-- this is for each item underneath -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" FontSize="{StaticResource PhoneFontSizeMedium}">
+                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" 
+                             FontSize="{StaticResource PhoneFontSizeMedium}"
+                             VerticalAlignment="Top"
+                             Height="{Binding ElementName=SmartPivot, Path=ActualHeight, Mode=OneWay}">
+                        
                         <TextBlock Text="{Binding ., Mode=OneWay}" Tag="cc" Tap="tb_Tap"/>
                     </ListBox>
                 </DataTemplate>

@@ -73,6 +73,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataContext.cs" />
+    <Compile Include="DBModels\Lines.cs" />
     <Compile Include="DBModels\Topic.cs" />
     <Compile Include="DBModels\Category.cs" />
     <Compile Include="DBModels\Guide.cs" />

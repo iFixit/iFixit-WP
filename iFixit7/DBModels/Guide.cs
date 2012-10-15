@@ -29,7 +29,7 @@ namespace iFixit7
             this.URL = gh.url;
             this.GuideID = gh.guideid;
             this.Thumbnail = gh.guide.image.thumbnail;
-            this.TitleImage = gh.guide.image.medium;
+            this.TitleImage = gh.guide.image.standard;
 
             //copy over steps
             foreach (GHStep s in gh.guide.steps)
@@ -60,7 +60,6 @@ namespace iFixit7
         private int? guideGroupID;
 
 
-        //FIXME add collection of steps!
         //1 side of 1:M for the collection of guides
         private EntitySet<Step> _steps = new EntitySet<Step>();
         [Association(Name = "GuideToSteps", Storage = "_steps", ThisKey = "Id", OtherKey = "stepGroupID")]
@@ -191,7 +190,7 @@ namespace iFixit7
             }
         }
 
-        //a larger title photo [medium]
+        //a larger title photo [standard] (small?)
         private string _titleImage;
         [Column]
         public string TitleImage

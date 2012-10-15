@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-
-// databasey things
+using System.Windows.Media;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
@@ -18,7 +17,40 @@ namespace iFixit7
          */
         public Step(GHStep st)
         {
-            //FIXME
+            this.StepIndex = st.number;
+            this.Title = st.title;
+            
+            //add images (in a strange way...)
+            this.Image1 = "";
+            this.Image2 = "";
+            this.Image3 = "";
+            switch (st.media.image.Length)
+            {
+                default:
+                    //no images, or we have no idea
+                    break;
+
+                case 1:
+                    this.Image1 = st.media.image[0].text;
+                    break;
+
+                case 2:
+                    this.Image1 = st.media.image[0].text;
+                    this.Image2 = st.media.image[1].text;
+                    break;
+
+                case 3:
+                    this.Image1 = st.media.image[0].text;
+                    this.Image2 = st.media.image[1].text;
+                    this.Image3 = st.media.image[2].text;
+                    break;
+            }
+
+            //add each line
+            foreach (GHStepLines l in st.lines)
+            {
+                this.Lines.Add(new Lines(l));
+            }
         }
 
         //the primary key
@@ -30,22 +62,114 @@ namespace iFixit7
         [Column(Name = "stepGroupID")]
         private int? stepGroupID { get; set; }
 
-        
-        private string _metaInfo;
+
+        //1 side of 1:M for the collection of lines in this step
+        private EntitySet<Lines> _lines = new EntitySet<Lines>();
+        [Association(Name = "GuideToSteps", Storage = "_lines", ThisKey = "Id", OtherKey = "lineStepID")]
+        public IList<Lines> Lines
+        {
+            get { return this._lines; }
+            set
+            {
+                NotifyPropertyChanging("Lines");
+                this._lines.Assign(value);
+                NotifyPropertyChanged("Lines");
+            }
+        }
+
+        private string _title;
         [Column]
-        public string MetaInfo
+        public string Title
         {
             get
             {
-                return _metaInfo;
+                return _title;
             }
             set
             {
-                if (_metaInfo != value)
+                if (_title != value)
                 {
-                    NotifyPropertyChanging("MetaInfo");
-                    _metaInfo = value;
-                    NotifyPropertyChanged("MetaInfo");
+                    NotifyPropertyChanging("Title");
+                    _title = value;
+                    NotifyPropertyChanged("Title");
+                }
+            }
+        }
+
+
+        //because there can be up to 3 images, hard code that possability for now. Should this use the Image table?
+        //what number step this is
+        private string _image1;
+        [Column]
+        public string Image1
+        {
+            get
+            {
+                return _image1;
+            }
+            set
+            {
+                if (_image1 != value)
+                {
+                    NotifyPropertyChanging("Image1");
+                    _image1 = value;
+                    NotifyPropertyChanged("Image1");
+                }
+            }
+        }
+        private string _image2;
+        [Column]
+        public string Image2
+        {
+            get
+            {
+                return _image2;
+            }
+            set
+            {
+                if (_image2 != value)
+                {
+                    NotifyPropertyChanging("Image2");
+                    _image2 = value;
+                    NotifyPropertyChanged("Image2");
+                }
+            }
+        }
+        private string _image3;
+        [Column]
+        public string Image3
+        {
+            get
+            {
+                return _image3;
+            }
+            set
+            {
+                if (_image3 != value)
+                {
+                    NotifyPropertyChanging("Image3");
+                    _image3 = value;
+                    NotifyPropertyChanged("Image3");
+                }
+            }
+        }
+        
+        //what number step this is
+        private string _stepIndex;
+        [Column]
+        public string StepIndex
+        {
+            get
+            {
+                return _stepIndex;
+            }
+            set
+            {
+                if (_stepIndex != value)
+                {
+                    NotifyPropertyChanging("StepIndex");
+                    _stepIndex = value;
+                    NotifyPropertyChanged("StepIndex");
                 }
             }
         }

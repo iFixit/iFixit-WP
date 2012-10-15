@@ -17,6 +17,7 @@ namespace iFixit7
         public Table<Topic> TopicsTable;
         public Table<Guide> GuidesTable;
         public Table<Step> StepsTable;
-        public Table<Images> ImagesTable;
+        //public Table<Images> ImagesTable;
+        public Table<Lines> LinesTable;
     }
 }

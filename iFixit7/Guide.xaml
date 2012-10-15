@@ -28,14 +28,14 @@
         </StackPanel>
         
         <!--ContentPanel - place additional content here-->
-        <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding}">
+        <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding ColHeaders}">
 
             <!--the style for each title of the pivot of guides-->
             <controls:Pivot.TitleTemplate>
                 <DataTemplate>
                     <StackPanel>
                         <!--PhoneFontSizeExtraExtraLarge margin 0,50,0,0-->
-                        <TextBlock Text="{Binding}"
+                        <TextBlock Text="{Binding Title}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    Margin="0,0,0,0" />
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
@@ -44,6 +44,7 @@
             </controls:Pivot.TitleTemplate>
 
             <!-- the special info column -->
+            <!--
             <controls:PivotItem x:Name="GuideInfo" Header="Info">
                 <StackPanel>
                     <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
@@ -52,15 +53,20 @@
                     <TextBlock x:Name="Summary" Text="{Binding Summary}" TextWrapping="Wrap" />
                 </StackPanel>
             </controls:PivotItem>
-
+            -->
+            
             <!-- template for each step column -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" 
+                    <ListBox ItemsSource="{Binding Lines, Mode=OneWay}" x:Name="ListItem" 
                              FontSize="{StaticResource PhoneFontSizeMedium}"
                              VerticalAlignment="Stretch">
 
-                        <TextBlock Text="some step text"/>
+                        <TextBlock Text="dddd"/>
+
+                        <Image x:Name="Img1" Source="{Binding Image1}"  />
+                        <Image x:Name="Img2" Source="{Binding Image2}"  />
+                        <Image x:Name="Img3" Source="{Binding Image3}"  />
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

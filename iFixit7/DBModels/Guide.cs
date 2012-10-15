@@ -10,6 +10,47 @@ namespace iFixit7
     [Table]
     public class Guide : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public Guide() : base()
+        {}
+
+        /*
+         * This constructor is for making a new Guide from a GuideHolder
+         */
+        public Guide(GuideHolder gh)
+        {
+            this.FillFields(gh);
+        }
+
+        public void FillFields(GuideHolder gh){
+            //fill in fields
+            this.Title = gh.guide.title;
+            this.Topic = gh.topic;
+            this.Summary = gh.guide.summary;
+            this.URL = gh.url;
+            this.GuideID = gh.guideid;
+            this.Thumbnail = gh.guide.image.thumbnail;
+            this.TitleImage = gh.guide.image.medium;
+
+            //copy over steps
+            foreach (GHStep s in gh.guide.steps)
+            {
+                this.Steps.Add(new Step(s));
+            }
+        }
+
+        /*
+         * Fills in the fields of this object from the incomplete DeviceInfo model of a guide
+         */
+        public void FillFieldsFromDeviceInfo(string top, DIGuides g)
+        {
+            this.Title = g.title;
+            this.Topic = top;
+            this.Summary = "";
+            this.URL = g.url;
+            this.GuideID = g.guideid;
+            this.Thumbnail = g.thumbnail;
+        }
+
         //the primary key
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
@@ -53,21 +94,41 @@ namespace iFixit7
             }
         }
 
-        private string _subject;
+        //this should probably be an entity ref or something, not just a string
+        private string _topic;
         [Column]
-        public string Subject
+        public string Topic
         {
             get
             {
-                return _subject;
+                return _topic;
             }
             set
             {
-                if (_subject != value)
+                if (_topic != value)
                 {
-                    NotifyPropertyChanging("Subject");
-                    _subject = value;
-                    NotifyPropertyChanged("Subject");
+                    NotifyPropertyChanging("Topic");
+                    _topic = value;
+                    NotifyPropertyChanged("Topic");
+                }
+            }
+        }
+
+        private string _summary;
+        [Column]
+        public string Summary
+        {
+            get
+            {
+                return _summary;
+            }
+            set
+            {
+                if (_summary != value)
+                {
+                    NotifyPropertyChanging("Summary");
+                    _summary = value;
+                    NotifyPropertyChanged("Summary");
                 }
             }
         }
@@ -110,6 +171,7 @@ namespace iFixit7
             }
         }
 
+        //the mini/thumbnail photo [thumbnail]
         private string _thumbnail;
         [Column]
         public string Thumbnail
@@ -125,6 +187,26 @@ namespace iFixit7
                     NotifyPropertyChanging("Thumbnail");
                     _thumbnail = value;
                     NotifyPropertyChanged("Thumbnail");
+                }
+            }
+        }
+
+        //a larger title photo [medium]
+        private string _titleImage;
+        [Column]
+        public string TitleImage
+        {
+            get
+            {
+                return _titleImage;
+            }
+            set
+            {
+                if (_titleImage != value)
+                {
+                    NotifyPropertyChanging("TitleImage");
+                    _titleImage = value;
+                    NotifyPropertyChanged("TitleImage");
                 }
             }
         }

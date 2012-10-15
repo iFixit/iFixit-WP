@@ -10,6 +10,17 @@ namespace iFixit7
     [Table]
     public class Step : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public Step() : base()
+        {}
+
+        /*
+         * This constructor is for making a new Step from a GHStep
+         */
+        public Step(GHStep st)
+        {
+            //FIXME
+        }
+
         //the primary key
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }

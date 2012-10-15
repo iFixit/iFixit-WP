@@ -42,8 +42,8 @@
             <!-- The column of general topic info -->
             <StackPanel x:Name="InfoStack" VerticalAlignment="Stretch">
                 <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
-                
-                <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
+
+                <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
 
                 <!-- stick all the info in a stack panel -->
                 <StackPanel Margin="2">
@@ -56,8 +56,8 @@
             <!-- The column that is a list of guides -->
             <StackPanel x:Name="GuidesStack" VerticalAlignment="Stretch">
                 <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
-                
-                <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" />
+
+                <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
                 
                 <!-- the strange height binding allows it to fill the StackPanel around it and scroll properly -->
                 <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" 

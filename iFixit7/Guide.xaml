@@ -21,9 +21,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--holds the name of the device-->
-        <TextBlock x:Name="GuideTitle" Text="{Binding Title}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
-
+        <!--holds the name of the device, then name of topic-->
+        <StackPanel>
+            <TextBlock x:Name="GuideTopic" Text="{Binding Topic}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock x:Name="GuideTitle" Text="{Binding Title}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+        </StackPanel>
+        
         <!--ContentPanel - place additional content here-->
         <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding}">
 
@@ -43,8 +46,10 @@
             <!-- the special info column -->
             <controls:PivotItem x:Name="GuideInfo" Header="Info">
                 <StackPanel>
-                    <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" />
-                    <TextBlock Text="some step text for the info pane ONLY" TextWrapping="Wrap"/>
+                    <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+
+                    <Image x:Name="TitleImage" Source="{Binding TitleImage}"  />
+                    <TextBlock x:Name="Summary" Text="{Binding Summary}" TextWrapping="Wrap" />
                 </StackPanel>
             </controls:PivotItem>
 

@@ -19,6 +19,7 @@ namespace iFixit7
 {
     public partial class DeviceInfo : PhoneApplicationPage
     {
+        //FIXME if we implement the property changing stuff here, the do we need to do the funny assignments?
         public TopicInfoViewModel infoVM = null;
 
         private string navTopicName;
@@ -27,15 +28,6 @@ namespace iFixit7
         {
             InitializeComponent();
 
-            //IQueryable<Topic> query =
-            //    from tops in App.mDB.TopicsTable
-            //    select tops;
-            //foreach (Topic t in query)
-            //{
-            //    Debug.WriteLine("topic: " + t.Name);
-            //}
-
-            //this.DataContext = vm;
             this.InfoStack.DataContext = infoVM;
             this.GuidesStack.DataContext = infoVM;
         }
@@ -53,14 +45,13 @@ namespace iFixit7
             this.navTopicName = this.NavigationContext.QueryString["Topic"];
             infoVM = new TopicInfoViewModel(navTopicName);
 
-            Debug.WriteLine("Showing device info for [" + navTopicName + "]");
+            Debug.WriteLine("Showing device info for [" + this.navTopicName + "]");
 
             InfoPano.Title = navTopicName;
 
             //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
             //on its own when the operation completes
-            JSONInterface2 ji = new JSONInterface2();
-            ji.populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
+            new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
         }
 
         /*
@@ -90,12 +81,10 @@ namespace iFixit7
             //name is already the same
             newTop.Name = devInfo.topic_info.name;
             newTop.Description = devInfo.description;
-            newTop.ImageURL = devInfo.image.text;
+            newTop.ImageURL = devInfo.image.text + ".medium";       //scales the image
             newTop.Populated = true;
 
             newTop.Description = devInfo.description;
-            //scale the image
-            newTop.ImageURL = devInfo.image.text + ".medium";
 
             //now do the same for all attached guides
             foreach (DIGuides g in devInfo.guides)
@@ -113,17 +102,14 @@ namespace iFixit7
                 
                     //transfer info
                     gNew.Title = gOld.Title;
-                    gNew.Subject = gOld.Subject;
+                    gNew.Summary = gOld.Summary;
                     gNew.URL = gOld.URL;
                     gNew.GuideID = gOld.GuideID;
                     gNew.Thumbnail = gOld.Thumbnail;
+                    gNew.TitleImage = gOld.TitleImage;
                 }
 
-                gNew.Title = g.title;
-                gNew.Subject = g.subject;
-                gNew.URL = g.url;
-                gNew.GuideID = g.guideid;
-                gNew.Thumbnail = g.thumbnail;
+                gNew.FillFieldsFromDeviceInfo(navTopicName, g);
 
                 // hang it below the topic, it its collection of guides
                 newTop.Guides.Add(gNew);
@@ -133,8 +119,6 @@ namespace iFixit7
 
             //insert the Topic() into the database
             App.mDB.TopicsTable.InsertOnSubmit(newTop);
-            //FIXME explodes here (just closes...) If we break and navigate inside with the debugger and try to examine an
-            //individual guide, it explodes. cannot evaluate expression ID
             App.mDB.SubmitChanges();
 
             //force the view model to update

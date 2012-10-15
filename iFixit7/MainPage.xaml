@@ -39,7 +39,7 @@
             <StackPanel x:Name="BrowseStack">
                 <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
-                <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" />
+                <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
 
                 <ListBox x:Name="CatagoryList" Height="550" >
                     <ListBox.ItemTemplate>

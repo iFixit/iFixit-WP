@@ -25,24 +25,25 @@
         <StackPanel>
             <TextBlock x:Name="GuideTopic" Text="{Binding GuideTopic, Mode=OneWay}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
             <TextBlock x:Name="GuideTitle" Text="{Binding GuideTitle, Mode=OneWay}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+
+            <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
         </StackPanel>
         
         <!--ContentPanel - place additional content here-->
         <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding ColHeaders}">
 
-            <!--the style for each title of the pivot of guides-->
-            <!--
-            <controls:Pivot.TitleTemplate>
+            <!--the style for the title of each step-->
+            <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="{Binding Title}" Foreground="White"
+                        <TextBlock Text="{Binding Title}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    Margin="0,0,0,0" />
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
-            </controls:Pivot.TitleTemplate>
-            -->
+            </controls:Pivot.HeaderTemplate>
+            
             <!-- the special info column -->
             <!--
             <controls:PivotItem x:Name="GuideInfo" Header="Info">

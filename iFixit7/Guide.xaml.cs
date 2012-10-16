@@ -25,7 +25,7 @@ namespace iFixit7
 
                 public ColContent(Step s)
                 {
-                    this.Title = s.StepIndex;
+                    this.Title = "Step " + s.StepIndex;
                     //FIXME this is probably bad. We are always assuming there is a .standard availible
                     this.Image1 = s.Image1 + ".standard";
                     this.Image2 = s.Image2 + ".standard";
@@ -37,14 +37,11 @@ namespace iFixit7
                         Lines.Add(l);
                     }
                 }
-                override public string ToString()
-                {
-                    return "Step " + Title;
-                }
             }
 
             public Guide SourceGuide;
 
+            private ColContent infoTab = null;
             public ObservableCollection<ColContent> ColHeaders { get; set; }
             public string GuideTitle { get; set; }
             public string GuideTopic { get; set; }
@@ -62,7 +59,7 @@ namespace iFixit7
                 ColHeaders = new ObservableCollection<ColContent>();
 
                 //FIXME manually add info page
-                //AddInfoTab(g);
+                AddInfoTab(g);
 
                 UpdateContentFromGuide(g);
             }
@@ -72,17 +69,35 @@ namespace iFixit7
              */
             public void UpdateContentFromGuide(Guide g)
             {
+                AddInfoTab(g);
                 foreach(Step s in g.Steps)
                 {
                     ColHeaders.Add(new ColContent(s));
                 }
             }
 
+            /*
+             * Generates a fake entry for the list of steps to hold information about the guide.
+             * Not an ideal solution... Should probabky build an entire PivotItem and insert it at the
+             * start of GuidePivot.
+             */
             private void AddInfoTab(Guide g)
             {
-                ColContent cc = new ColContent(new Step());
-                cc.Title = "Info";
-                cc.Image1 = g.TitleImage;
+                if (infoTab != null)
+                {
+                    ColHeaders.Remove(infoTab);
+                }
+
+                infoTab = new ColContent(new Step());
+                infoTab.Title = "Info";
+                infoTab.Image1 = g.TitleImage;
+
+                Lines l = new Lines();
+                l.Text = g.Summary;
+                l.ColorString = "white";
+                infoTab.Lines.Add(l);
+
+                ColHeaders.Add(infoTab);
             }
         }
 
@@ -151,7 +166,7 @@ namespace iFixit7
             this.DataContext = vm;
 
             //hide the loading bar
-            //LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+            LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
             return true;
         }
 

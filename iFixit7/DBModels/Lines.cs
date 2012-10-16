@@ -12,6 +12,9 @@ namespace iFixit7
     [Table]
     public class Lines : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public Lines()
+        {
+        }
         public Lines(GHStepLines l)
         {
             this.Text = l.text;
@@ -34,6 +37,8 @@ namespace iFixit7
                 {"green",Colors.Green},
                 {"blue",Colors.Blue},
                 {"violet",Colors.Purple},
+
+                {"white", Colors.White},
 
                 //what should these be?
                 {"icon_note", Colors.Magenta},

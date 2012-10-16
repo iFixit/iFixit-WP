@@ -23,26 +23,26 @@
 
         <!--holds the name of the device, then name of topic-->
         <StackPanel>
-            <TextBlock x:Name="GuideTopic" Text="{Binding Topic}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
-            <TextBlock x:Name="GuideTitle" Text="{Binding Title}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock x:Name="GuideTopic" Text="{Binding GuideTopic, Mode=OneWay}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock x:Name="GuideTitle" Text="{Binding GuideTitle, Mode=OneWay}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
         </StackPanel>
         
         <!--ContentPanel - place additional content here-->
         <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding ColHeaders}">
 
             <!--the style for each title of the pivot of guides-->
+            <!--
             <controls:Pivot.TitleTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <!--PhoneFontSizeExtraExtraLarge margin 0,50,0,0-->
-                        <TextBlock Text="{Binding Title}"
+                        <TextBlock Text="{Binding Title}" Foreground="White"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    Margin="0,0,0,0" />
-                        <Rectangle Fill="Red" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.TitleTemplate>
-
+            -->
             <!-- the special info column -->
             <!--
             <controls:PivotItem x:Name="GuideInfo" Header="Info">
@@ -58,20 +58,24 @@
             <!-- template for each step column -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
-                             FontSize="{StaticResource PhoneFontSizeMedium}"
-                             VerticalAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{Binding ColorBrush}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Image x:Name="Img1" Source="{Binding Image1}"  />
-                        <Image x:Name="Img2" Source="{Binding Image2}"  />
-                        <Image x:Name="Img3" Source="{Binding Image3}"  />
-                    </StackPanel>
+                    <ScrollViewer>
+                        <StackPanel>
+                            <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
+                                 FontSize="{StaticResource PhoneFontSizeMedium}"
+                                 VerticalAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{Binding ColorBrush}"
+                                                   Margin="2"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Image x:Name="Img1" Source="{Binding Image1}" Margin="2" />
+                            <Image x:Name="Img2" Source="{Binding Image2}" Margin="2" />
+                            <Image x:Name="Img3" Source="{Binding Image3}" Margin="2" />
+                        </StackPanel>
+                    </ScrollViewer>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>
         </controls:Pivot>

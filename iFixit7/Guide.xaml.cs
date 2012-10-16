@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using System;
 
 namespace iFixit7
 {
@@ -16,16 +17,19 @@ namespace iFixit7
             //holds what goes in each column
             public class ColContent
             {
-                public string Title;
-                public string Image1, Image2, Image3;
+                public string Title { get; set; }
+                public string Image1 { get; set; }
+                public string Image2 { get; set; }
+                public string Image3 { get; set; }
                 public ObservableCollection<Lines> Lines { get; set; }
 
                 public ColContent(Step s)
                 {
                     this.Title = s.StepIndex;
-                    this.Image1 = s.Image1;
-                    this.Image2 = s.Image2;
-                    this.Image3 = s.Image3;
+                    //FIXME this is probably bad. We are always assuming there is a .standard availible
+                    this.Image1 = s.Image1 + ".standard";
+                    this.Image2 = s.Image2 + ".standard";
+                    this.Image3 = s.Image3 + ".standard";
 
                     Lines = new ObservableCollection<Lines>();
                     foreach (Lines l in s.Lines)
@@ -39,11 +43,11 @@ namespace iFixit7
                 }
             }
 
-            private Guide SourceGuide;
+            public Guide SourceGuide;
 
             public ObservableCollection<ColContent> ColHeaders { get; set; }
-            public string Title = "asdasd";
-            public string Topic = "ddddd";
+            public string GuideTitle { get; set; }
+            public string GuideTopic { get; set; }
 
             /*
              * Populate this VM with a pre-existing Guide
@@ -52,10 +56,13 @@ namespace iFixit7
             {
                 SourceGuide = g;
 
+                GuideTitle = g.Title;
+                GuideTopic = g.Topic;
+
                 ColHeaders = new ObservableCollection<ColContent>();
 
-                //manually add info page
-                AddInfoTab(g);
+                //FIXME manually add info page
+                //AddInfoTab(g);
 
                 UpdateContentFromGuide(g);
             }

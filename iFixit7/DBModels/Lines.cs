@@ -26,14 +26,19 @@ namespace iFixit7
         {
             //setup the static dictionary
             var ColorsByJSONName = new Dictionary<string, Color>() { 
-                {"black",Colors.Black}, 
+                //{"black",Colors.Black}, 
+                {"black",Colors.DarkGray}, 
                 {"red",Colors.Red},
                 {"orange",Colors.Orange},
                 {"yellow",Colors.Yellow},
                 {"green",Colors.Green},
                 {"blue",Colors.Blue},
                 {"violet",Colors.Purple},
-                {"icon_note", Colors.Magenta}
+
+                //what should these be?
+                {"icon_note", Colors.Magenta},
+                {"icon_reminder", Colors.Cyan},
+                {"icon_caution", Colors.Brown}
             };
 
             //index into it and return

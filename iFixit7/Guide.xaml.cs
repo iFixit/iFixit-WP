@@ -18,7 +18,7 @@ namespace iFixit7
             {
                 public string Title;
                 public string Image1, Image2, Image3;
-                public ObservableCollection<string> Lines { get; set; }
+                public ObservableCollection<Lines> Lines { get; set; }
 
                 public ColContent(Step s)
                 {
@@ -27,11 +27,15 @@ namespace iFixit7
                     this.Image2 = s.Image2;
                     this.Image3 = s.Image3;
 
-                    Lines = new ObservableCollection<string>();
+                    Lines = new ObservableCollection<Lines>();
                     foreach (Lines l in s.Lines)
                     {
-                        Lines.Add(l.Text);
+                        Lines.Add(l);
                     }
+                }
+                override public string ToString()
+                {
+                    return "Step " + Title;
                 }
             }
 

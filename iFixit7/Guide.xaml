@@ -58,16 +58,20 @@
             <!-- template for each step column -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <ListBox ItemsSource="{Binding Lines, Mode=OneWay}" x:Name="ListItem" 
+                    <StackPanel>
+                        <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
                              FontSize="{StaticResource PhoneFontSizeMedium}"
                              VerticalAlignment="Stretch">
-
-                        <TextBlock Text="dddd"/>
-
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                         <Image x:Name="Img1" Source="{Binding Image1}"  />
                         <Image x:Name="Img2" Source="{Binding Image2}"  />
                         <Image x:Name="Img3" Source="{Binding Image3}"  />
-                    </ListBox>
+                    </StackPanel>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>
         </controls:Pivot>

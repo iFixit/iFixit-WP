@@ -36,7 +36,8 @@
                              FontSize="{StaticResource PhoneFontSizeMedium}"
                              VerticalAlignment="Stretch">
                         
-                        <TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"/>
+                        <!-- this wasn't being used -->
+                        <!--<TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"/>-->
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

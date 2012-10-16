@@ -38,7 +38,7 @@
                         <TextBlock Text="{Binding Title}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    Margin="0,0,0,0" />
-                        <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="Red" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.TitleTemplate>
@@ -64,7 +64,7 @@
                              VerticalAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{Binding ColorBrush}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

@@ -32,7 +32,8 @@ namespace iFixit7
                 {"yellow",Colors.Yellow},
                 {"green",Colors.Green},
                 {"blue",Colors.Blue},
-                {"violet",Colors.Purple} 
+                {"violet",Colors.Purple},
+                {"icon_note", Colors.Magenta}
             };
 
             //index into it and return
@@ -69,16 +70,16 @@ namespace iFixit7
 
         //color
         //FIXME there is no LINQ type for color, so convert when retreived (but dont store it)
-        public Color ColorBrush
+        public SolidColorBrush ColorBrush
         {
             get
             {
-                return Lines.ConvertToColor(_colorString);
+                return new SolidColorBrush(Lines.ConvertToColor(_colorString));
             }
             set
             {
                 //this has to be something. It will be ignored though
-                ColorBrush = Colors.Blue;
+                ColorBrush = null;
             }
         }
         private string _colorString;

@@ -43,6 +43,7 @@ namespace iFixit7
 
             public ObservableCollection<ColContent> ColHeaders { get; set; }
             public string Title = "asdasd";
+            public string Topic = "ddddd";
 
             /*
              * Populate this VM with a pre-existing Guide
@@ -52,6 +53,9 @@ namespace iFixit7
                 SourceGuide = g;
 
                 ColHeaders = new ObservableCollection<ColContent>();
+
+                //manually add info page
+                AddInfoTab(g);
 
                 UpdateContentFromGuide(g);
             }
@@ -65,6 +69,13 @@ namespace iFixit7
                 {
                     ColHeaders.Add(new ColContent(s));
                 }
+            }
+
+            private void AddInfoTab(Guide g)
+            {
+                ColContent cc = new ColContent(new Step());
+                cc.Title = "Info";
+                cc.Image1 = g.TitleImage;
             }
         }
 

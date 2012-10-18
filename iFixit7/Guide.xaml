@@ -54,8 +54,14 @@
                                  VerticalAlignment="Stretch">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{Binding ColorBrush}"
-                                                   Margin="2"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0, 4">
+                                            <Rectangle Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
+                                                       Fill="{Binding ColorBrush}"/>
+                                            
+                                            <!-- unfortunately, to make the text wrapping work we must hard code a width -->
+                                            <TextBlock Text="{Binding Text}" TextWrapping="Wrap"
+                                                       Width="450" Margin="2"/>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>

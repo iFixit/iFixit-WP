@@ -31,6 +31,7 @@ namespace iFixit7
             var ColorsByJSONName = new Dictionary<string, Color>() { 
                 //{"black",Colors.Black}, 
                 {"black",Colors.DarkGray}, 
+                
                 {"red",Colors.Red},
                 {"orange",Colors.Orange},
                 {"yellow",Colors.Yellow},

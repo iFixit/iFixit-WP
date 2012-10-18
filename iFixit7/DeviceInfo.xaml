@@ -31,6 +31,7 @@
                         <!--PhoneFontSizeExtraExtraLarge margin 0,50,0,0-->
                         <TextBlock Text="{Binding}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                                   HorizontalAlignment="Left"
                                    Margin="0,70,-20,0" />
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
@@ -73,7 +74,7 @@
                                        Width="100" Margin="2"/>
                                 
                                 <TextBlock Text="{Binding Title, Mode=OneWay}" TextWrapping="Wrap" 
-                                           Width="300"
+                                           Width="280" Margin="15, 5"
                                            VerticalAlignment="Center" HorizontalAlignment="Left"
                                            FontSize="{StaticResource PhoneFontSizeMedium}"/>
                             </StackPanel>

@@ -28,10 +28,9 @@
             <!-- restyle the panorama title -->
             <controls:Panorama.TitleTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               FontSize="{StaticResource PhoneFontSizeHuge}"
-                               Foreground="Orange"
-                               Margin="0,0,0,-60" />
+                    <Image Source="iFixit_logo_white.png" 
+                           Height="120"
+                           Margin="0,80,0,-40"/>
                 </DataTemplate>
             </controls:Panorama.TitleTemplate>
 
@@ -46,14 +45,15 @@
                         <DataTemplate>
                             <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
                                 <!-- the thing after Binding is exactly the name of the variable to sample-->
-                                <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" />
+                                <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" 
+                                           Margin="0, 4"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
             
-            <StackPanel x:Name="CachedeStack">
+            <StackPanel x:Name="CachedStack">
                 <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
                 <ProgressBar x:Name="LoadingBarCached" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
@@ -62,7 +62,8 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!-- the thing after Binding is exactly the name of the variable to sample-->
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" Style="{StaticResource PhoneTextLargeStyle}"/>
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" Style="{StaticResource PhoneTextLargeStyle}"
+                                       Margin="0, 4"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

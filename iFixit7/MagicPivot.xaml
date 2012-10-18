@@ -22,7 +22,8 @@
             <controls:Pivot.HeaderTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                        <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                                   HorizontalAlignment="Left"/>
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
@@ -33,8 +34,15 @@
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="ListItem" 
-                             FontSize="{StaticResource PhoneFontSizeMedium}"
+                             FontSize="{StaticResource PhoneFontSizeLarge}"
                              VerticalAlignment="Stretch">
+                        
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"
+                                           Margin="0, 4"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                         
                         <!-- this wasn't being used -->
                         <!--<TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"/>-->

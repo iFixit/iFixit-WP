@@ -38,23 +38,11 @@
                     <StackPanel>
                         <TextBlock Text="{Binding Title}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
-                                   Margin="0,0,0,0" />
+                                   HorizontalAlignment="Left" />
                         <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>
-            
-            <!-- the special info column -->
-            <!--
-            <controls:PivotItem x:Name="GuideInfo" Header="Info">
-                <StackPanel>
-                    <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
-
-                    <Image x:Name="TitleImage" Source="{Binding TitleImage}"  />
-                    <TextBlock x:Name="Summary" Text="{Binding Summary}" TextWrapping="Wrap" />
-                </StackPanel>
-            </controls:PivotItem>
-            -->
             
             <!-- template for each step column -->
             <controls:Pivot.ItemTemplate>

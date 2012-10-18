@@ -30,12 +30,6 @@ namespace iFixit7
         private iFixitJSONHelper ifj;
         public static iFixitDataContext mDB;
 
-        // The static ViewModel, to be used across the application.
-        //private static ToDoViewModel viewModel;
-        //public static ToDoViewModel ViewModel
-        //{
-        //    get { return viewModel; }
-        //}
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
@@ -99,46 +93,6 @@ namespace iFixit7
                 // Save categories to the database.
                 tDB.SubmitChanges();
             }
-
-            // Create the ViewModel object.
-            //viewModel = new ToDoViewModel(DBConnectionString);
-
-            // Query the local database and load observable collections.
-            //viewModel.LoadCollectionsFromDatabase();
-        }
-
-        private static Category EntireAreaHierarchy, currentArea;
-        private static int currentCol;
-        /* Allows each view to get its current hierarchical position? */
-        public static int getCurrCol()
-        {
-            return currentCol;
-        }
-        public static Category getNextArea()
-        {
-            return currentArea;
-        }
-
-        /* allows a view to stash its current place in the area hierarchy */
-        public static void setNextArea(Category last, int tag)
-        {
-            currentArea = last;
-            currentCol = tag;
-        }
-
-        /* set the entire view hierarchy */
-        //public static void setEnitreAreaHierarchy(Category entire)
-        //{
-        //    EntireAreaHierarchy = entire;
-        //}
-
-        public static Category getEnitreAreaHierarchy()
-        {
-            return EntireAreaHierarchy;
-        }
-
-        public NavigationService getNavigationService(){
-            return null;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -198,6 +152,15 @@ namespace iFixit7
         //the callback hook that gets fired when the area hierarchy is finally retreived
         public void App_callAreasAPI(Category tree)
         {
+            if (tree == null)
+            {
+                //FIXME not sure this is what we really want to do
+                MessageBox.Show("No network connection. Please run this app when connected to the internet.");
+                (RootFrame.Content as MainPage).StopLoadingIndication(true);
+
+                return;
+            }
+
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
             //open up a new DB connection for this transaction

@@ -56,6 +56,8 @@
             <StackPanel x:Name="CachedeStack">
                 <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
+                <ProgressBar x:Name="LoadingBarCached" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+                
                 <ListBox x:Name="CachedList" Height="550">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

@@ -10,7 +10,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
@@ -41,19 +41,20 @@
             <!-- Each element at this level is a different column -->
             
             <!-- The column of general topic info -->
-            <ScrollViewer>
                 <StackPanel x:Name="InfoStack" VerticalAlignment="Stretch">
                     <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
                     <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
 
                     <!-- stick all the info in a stack panel -->
-                    <StackPanel Margin="2">
-                        <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
-                        <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
-                    </StackPanel>
+                    <ScrollViewer>
+                        <StackPanel Margin="2" VerticalAlignment="Stretch">
+                            <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
+                            <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
                 </StackPanel>
-            </ScrollViewer>
+            
 
 
             <!-- The column that is a list of guides -->

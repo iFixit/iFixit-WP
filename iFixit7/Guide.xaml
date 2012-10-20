@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:WP7_Mango_HtmlTextBlockControl"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -51,7 +52,7 @@
                         <StackPanel>
                             <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
                                  FontSize="{StaticResource PhoneFontSizeMedium}"
-                                 VerticalAlignment="Stretch">
+                                 VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="0, 4">
@@ -59,7 +60,7 @@
                                                        Fill="{Binding ColorBrush}"/>
                                             
                                             <!-- unfortunately, to make the text wrapping work we must hard code a width -->
-                                            <TextBlock Text="{Binding Text}" TextWrapping="Wrap"
+                                            <local:HtmlTextBlock Text="{Binding Text}" TextWrapping="Wrap"
                                                        Width="450" Margin="2"/>
                                         </StackPanel>
                                     </DataTemplate>

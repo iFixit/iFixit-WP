@@ -94,7 +94,7 @@ namespace iFixit7
                 //search if the guide already exists, and get or update it
                 Guide gNew = new Guide();
                 Guide gOld = null;
-                gOld = App.mDB.GuidesTable.SingleOrDefault(other => other.Title == g.title);
+                gOld = App.mDB.GuidesTable.FirstOrDefault(other => other.Title == g.title);
                 if (gOld != null)
                 {
                     App.mDB.GuidesTable.DeleteOnSubmit(gOld);

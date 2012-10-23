@@ -139,7 +139,7 @@ namespace iFixit7
          * This fires whenever an item in the list of guides is tapped. Sender is a StackPanel, tag
          * is guide ID
          */
-        private void StackPanel_Tap(object sender, GestureEventArgs e)
+        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string guideTag = "";
             guideTag = (sender as StackPanel).Tag.ToString();

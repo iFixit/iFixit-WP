@@ -1,0 +1,41 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="iFixit7.FullscreenImage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="False">
+
+    <Canvas x:Name="MyImage" 
+            Width="480"  Height="720">
+        
+        <toolkit:GestureService.GestureListener>
+            <toolkit:GestureListener 
+                    DragDelta="GestureListener_DragDelta"
+                    PinchStarted="OnPinchStarted" 
+                    PinchDelta="OnPinchDelta"/>
+        </toolkit:GestureService.GestureListener>
+        <Canvas.RenderTransform>
+            <CompositeTransform x:Name="myTransform"
+                    ScaleX="1" ScaleY="1"
+                    TranslateX="0" TranslateY="0"/>
+        </Canvas.RenderTransform>
+        
+        
+        <Image Width="480"  Height="720"   
+               Stretch="Uniform" 
+               x:Name="TheImage"
+               Source="{Binding SourceURI}">
+        </Image>
+    </Canvas>
+
+
+</phone:PhoneApplicationPage>

@@ -95,7 +95,7 @@ namespace iFixit7
         /*
          * Fires when something in the live list is tapped
          */
-        void tb_Tap(object sender, GestureEventArgs e)
+        void tb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string s = (sender as StackPanel).Tag as String;
             Debug.WriteLine("main page tapped > [" + s + "]");
@@ -109,7 +109,7 @@ namespace iFixit7
         /*
          * Fires when a cached entry is tapped
          */
-        private void Cached_Tap(object sender, GestureEventArgs e)
+        private void Cached_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string s = (sender as TextBlock).Text as String;
             Debug.WriteLine("main page tapped CACHED > [" + s + "]");

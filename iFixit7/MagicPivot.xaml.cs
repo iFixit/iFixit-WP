@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
 
@@ -32,7 +26,7 @@ namespace iFixit7
 
             Debug.WriteLine("starting a new magic pivot...");
 
-            this.SmartPivot.Tap += new EventHandler<GestureEventArgs>(tb_Tap);
+            this.SmartPivot.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(tb_Tap);
         }
 
         private void setupBinding()
@@ -44,7 +38,7 @@ namespace iFixit7
             this.DataContext = vm;
         }
 
-        void tb_Tap(object sender, GestureEventArgs e)
+        void tb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //figure out if the sender is a text block (it should be). Filters out tapping whitespace.
             TextBlock t = new TextBlock();

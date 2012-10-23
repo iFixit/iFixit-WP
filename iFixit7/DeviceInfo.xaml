@@ -41,21 +41,20 @@
             <!-- Each element at this level is a different column -->
             
             <!-- The column of general topic info -->
-                <StackPanel x:Name="InfoStack" VerticalAlignment="Stretch">
-                    <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+            <StackPanel x:Name="InfoStack" VerticalAlignment="Stretch">
+                <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
-                    <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+                <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
 
-                    <!-- stick all the info in a stack panel -->
-                    <ScrollViewer>
-                        <StackPanel Margin="2" VerticalAlignment="Stretch">
-                            <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
-                            <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
-                        </StackPanel>
-                    </ScrollViewer>
-                </StackPanel>
+                <!-- stick all the info in a stack panel -->
+                <ScrollViewer>
+                    <StackPanel Margin="2" VerticalAlignment="Stretch">
+                        <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
+                        <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
             
-
 
             <!-- The column that is a list of guides -->
             <StackPanel x:Name="GuidesStack" VerticalAlignment="Stretch">

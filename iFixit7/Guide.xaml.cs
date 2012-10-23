@@ -4,6 +4,8 @@ using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System;
+using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace iFixit7
 {
@@ -132,6 +134,25 @@ namespace iFixit7
             this.DataContext = vm;
         }
 
+        /*
+         * Look at the tag from the sending Image to figure out which was touched.
+         */
+        private void Img_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Image src = sender as Image;
+            Debug.WriteLine("tapped image " + src.Tag);
+
+            //get the proper source url
+            String srcUrl = (src.Source as BitmapImage).UriSource.ToString();
+
+            //modify it to get the huge version
+            srcUrl = srcUrl.Replace(".standard", ".huge");
+            
+            //FIXME navigate to fullscreen image w/ URL (just URL?)
+            NavigationService.Navigate(new Uri("/FullscreenImage.xaml?ImgURI=" + srcUrl,
+                UriKind.Relative));
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             Debug.WriteLine("A Guide has been navigated to. We are going to make API calls and do SCIENCE");
@@ -170,7 +191,6 @@ namespace iFixit7
             return true;
         }
 
-
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -200,5 +220,7 @@ namespace iFixit7
         }
 
         #endregion
+
+        
     }
 }

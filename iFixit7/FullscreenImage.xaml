@@ -14,28 +14,34 @@
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
 
-    <Canvas x:Name="MyImage" 
-            Width="480"  Height="720">
+    <StackPanel>
+        <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
         
-        <toolkit:GestureService.GestureListener>
-            <toolkit:GestureListener 
-                    DragDelta="GestureListener_DragDelta"
-                    PinchStarted="OnPinchStarted" 
-                    PinchDelta="OnPinchDelta"/>
-        </toolkit:GestureService.GestureListener>
-        <Canvas.RenderTransform>
-            <CompositeTransform x:Name="myTransform"
-                    ScaleX="1" ScaleY="1"
-                    TranslateX="0" TranslateY="0"/>
-        </Canvas.RenderTransform>
+        <Canvas x:Name="MyImage" 
+                Width="480"  Height="720"
+                Visibility="Collapsed">
+        
+            <toolkit:GestureService.GestureListener>
+                <toolkit:GestureListener 
+                        DragDelta="GestureListener_DragDelta"
+                        PinchStarted="OnPinchStarted" 
+                        PinchDelta="OnPinchDelta"/>
+            </toolkit:GestureService.GestureListener>
+            <Canvas.RenderTransform>
+                <CompositeTransform x:Name="myTransform"
+                        ScaleX="1" ScaleY="1"
+                        TranslateX="0" TranslateY="0"/>
+            </Canvas.RenderTransform>
         
         
-        <Image Width="480"  Height="720"   
-               Stretch="Uniform" 
-               x:Name="TheImage"
-               Source="{Binding SourceURI}">
-        </Image>
-    </Canvas>
+            <Image Width="480"  Height="720"   
+                   Stretch="Uniform" 
+                   x:Name="TheImage"
+                   Source="{Binding SourceURI}"
+                   Loaded="TheImage_Loaded">
+            </Image>
+        </Canvas>
+    </StackPanel>
 
 
 </phone:PhoneApplicationPage>

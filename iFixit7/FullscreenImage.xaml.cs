@@ -32,6 +32,8 @@ namespace iFixit7
                 NavigationService.GoBack();
 
             this.DataContext = this;
+
+            
         }
 
         /*
@@ -126,6 +128,15 @@ namespace iFixit7
         private void GestureListener_DragDelta(object sender, DragDeltaGestureEventArgs e)
         {
             UpdatePicture(1.0, new Point(e.HorizontalChange, e.VerticalChange));
+        }
+
+        /*
+         * When the image finishes loading, hide the progress indicator
+         */
+        private void TheImage_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
+            MyImage.Visibility = System.Windows.Visibility.Visible;
         }
     }
 }

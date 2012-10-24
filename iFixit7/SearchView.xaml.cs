@@ -27,6 +27,9 @@ namespace iFixit7
 
             string searchQuery = SearchQueryTB.Text;
 
+            //hide the keyboard
+            this.Focus();
+
             // kick off async search query
             /*
              * Cleanup the view and display the results of a search. Called async.
@@ -61,6 +64,22 @@ namespace iFixit7
             //maybe a single char at the start of the tag? build that string in the SearchResult object
             //for now, can only tap on topics (which lead to device info)
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + name, UriKind.Relative));
+        }
+
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.SearchQueryTB.Focus();
+        }
+
+        /*
+         * Keydown method figures out if enter was hit, and executes the search if it was
+         */
+        private void SearchQueryTB_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SearchButton_Tap(null, null);
+            }
         }
     }
 }

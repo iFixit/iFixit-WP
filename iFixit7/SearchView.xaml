@@ -12,6 +12,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    Loaded="PhoneApplicationPage_Loaded"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -36,8 +37,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <toolkit:PhoneTextBox x:Name="SearchQueryTB" Hint="Topic to Search For"
-                                          Grid.Column="0"/>
+            <toolkit:PhoneTextBox Grid.Column="0"
+                                  x:Name="SearchQueryTB" Hint="Topic to Search For" 
+                                  KeyDown="SearchQueryTB_KeyDown"/>
             <Button Tap="SearchButton_Tap" Grid.Column="1">Search</Button>
         </Grid>
 

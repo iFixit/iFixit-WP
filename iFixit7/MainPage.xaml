@@ -20,53 +20,58 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
 
-        <!--Our pano-->
-        <controls:Panorama Title="iFixit" x:Name="BigPano" Grid.RowSpan="1" >
-            <!-- restyle the panorama title -->
-            <controls:Panorama.TitleTemplate>
-                <DataTemplate>
-                    <Image Source="iFixit_logo_white.png" 
-                           Height="120"
-                           Margin="0,80,0,-40"/>
-                </DataTemplate>
-            </controls:Panorama.TitleTemplate>
+        <Rectangle Grid.Row="0" Grid.RowSpan="2"
+            Fill="DarkBlue" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <StackPanel Grid.Row="0">
+            <Image
+                Source="iFixit_logo_white.png"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Height="100"/>
 
-            <!-- Each element at this level is a different column -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        </StackPanel>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                
-                <TextBlock Grid.Row="0"
-                    Text="Browse Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+        <StackPanel Grid.Row="1">
+            <!--
+            <TextBlock
+                    Text="Browse Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"
+                    HorizontalAlignment="Left"/>
+            -->
+            <Rectangle Fill="Orange" Height="4" HorizontalAlignment="Stretch" />
+        </StackPanel>
 
-                <ProgressBar Grid.Row="1"
-                    x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+        <!-- Each element at this level is a different column -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <ListBox Grid.Row="2" Height="550"
-                    x:Name="CatagoryList" VerticalAlignment="Top">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
-                                <!-- the thing after Binding is exactly the name of the variable to sample-->
-                                <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" 
-                                           Margin="0, 4"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-        </controls:Panorama>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ProgressBar Grid.Row="0" 
+                x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+
+            <ListBox Grid.Row="1"
+                x:Name="CatagoryList" VerticalAlignment="Top">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
+                            <!-- the thing after Binding is exactly the name of the variable to sample-->
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" 
+                                        Margin="0, 4"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->

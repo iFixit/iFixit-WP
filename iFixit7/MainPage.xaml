@@ -48,7 +48,7 @@
                 </Grid.RowDefinitions>
                 
                 <TextBlock Grid.Row="0"
-                    Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+                    Text="Browse Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
                 <ProgressBar Grid.Row="1"
                     x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
@@ -66,22 +66,6 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
-            
-            <StackPanel x:Name="CachedStack">
-                <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
-
-                <ProgressBar x:Name="LoadingBarCached" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
-                
-                <ListBox x:Name="CachedList" Height="550">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <!-- the thing after Binding is exactly the name of the variable to sample-->
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" Style="{StaticResource PhoneTextLargeStyle}"
-                                       Margin="0, 4"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
         </controls:Panorama>
     </Grid>
  

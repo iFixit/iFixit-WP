@@ -85,6 +85,9 @@
     <Compile Include="DBModels\Guide.cs" />
     <Compile Include="DBModels\Images.cs" />
     <Compile Include="DBModels\Step.cs" />
+    <Compile Include="FavoriteItems.xaml.cs">
+      <DependentUpon>FavoriteItems.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FullscreenImage.xaml.cs">
       <DependentUpon>FullscreenImage.xaml</DependentUpon>
     </Compile>
@@ -120,6 +123,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="FavoriteItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FullscreenImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

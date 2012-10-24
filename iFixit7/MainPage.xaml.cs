@@ -24,12 +24,6 @@ namespace iFixit7
     {
         public Panorama BigPanoGetter { get; private set; }
 
-        //public delegate void AreaCallEventHandler(iFixitJSONHelper sender, List<Node> tree);
-        //public static event AreaCallEventHandler callAreasAPI;
-
-        //see http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh407286(v=vs.88).aspx
-        //for data binding info
-
         private iFixitDataContext dbHand = new iFixitDataContext(App.DBConnectionString);
 
         // Constructor
@@ -49,12 +43,7 @@ namespace iFixit7
                 select cats;
             this.CatagoryList.ItemsSource = queryCats.FirstOrDefault().Categories;
 
-            //and binding for the cached column
-            IQueryable<Topic> queryCached =
-                from top in App.mDB.TopicsTable
-                where top.Populated == true
-                select top;
-            this.CachedList.ItemsSource = queryCached;
+           
 
             //clear the loading bars when we are done loading data
             StopLoadingIndication(false);
@@ -66,7 +55,6 @@ namespace iFixit7
         public void StopLoadingIndication(Boolean failure)
         {
             this.LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
-            this.LoadingBarCached.Visibility = System.Windows.Visibility.Collapsed;
 
             //replace the view with a view indicating failure
             if (failure)
@@ -106,19 +94,6 @@ namespace iFixit7
                 UriKind.Relative));
         }
 
-        /*
-         * Fires when a cached entry is tapped
-         */
-        private void Cached_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            string s = (sender as TextBlock).Text as String;
-            Debug.WriteLine("main page tapped CACHED > [" + s + "]");
-            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s,
-                UriKind.Relative));
-        }
-
-       
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -130,8 +105,6 @@ namespace iFixit7
             initDataBinding();
         }
 
-        
-
         /*
          * These two are the handlers for the application bar buttons
          */
@@ -141,7 +114,7 @@ namespace iFixit7
         }
         private void AppBarFavorites_Click(object sender, EventArgs e)
         {
-
+            NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
         }
     }
 }

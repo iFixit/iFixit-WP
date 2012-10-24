@@ -18,13 +18,18 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
 
+        <!-- stack two views ontop of eachother for effect -->
         <Rectangle Grid.Row="0" Grid.RowSpan="2"
             Fill="DarkBlue" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
         <StackPanel Grid.Row="0">
@@ -33,7 +38,6 @@
                 VerticalAlignment="Top"
                 HorizontalAlignment="Center"
                 Height="100"/>
-
         </StackPanel>
 
         <StackPanel Grid.Row="1">
@@ -42,10 +46,39 @@
                     Text="Browse Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                     HorizontalAlignment="Left"/>
             -->
-            <Rectangle Fill="Orange" Height="4" HorizontalAlignment="Stretch" />
+            <Rectangle Fill="DarkOrange" Height="4" HorizontalAlignment="Stretch" />
         </StackPanel>
 
-        <!-- Each element at this level is a different column -->
+        <ProgressBar Grid.Row="2"
+                x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="DarkOrange"
+                Margin="0, 8"/>
+
+        <!-- to get hub tiles, replace the way a list lays out its content, then tell it to build HubTiles -->
+        <ListBox Grid.Row="3"
+                x:Name="CatagoryList" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!-- title = big on front, message = small on back, source = image, Background = tile backgroun -->
+                    <!-- Source="{Binding Thumbnail, Mode=OneWay}" -->
+                    <toolkit:HubTile Tap="tb_Tap" 
+                                     Title="{Binding Name, Mode=OneWay}" Tag="{Binding Name, Mode=OneWay}"
+                                     Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail"
+                                     Background="DarkOrange"
+                                     GroupTag="AllTiles"
+                                     Margin="5"
+                                     />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        
+        <!--
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -64,7 +97,6 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
-                            <!-- the thing after Binding is exactly the name of the variable to sample-->
                             <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" 
                                         Margin="0, 4"/>
                         </StackPanel>
@@ -72,6 +104,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
+        -->
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->

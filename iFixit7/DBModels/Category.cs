@@ -78,6 +78,25 @@ namespace iFixit7
             }
         }
 
+        private string _thumbnail = "";
+        [Column]
+        public string Thumbnail
+        {
+            get
+            {
+                return _thumbnail;
+            }
+            set
+            {
+                if (_thumbnail != value)
+                {
+                    NotifyPropertyChanging("Thumbnail");
+                    _thumbnail = value;
+                    NotifyPropertyChanged("Thumbnail");
+                }
+            }
+        }
+
         // Version column aids update performance.
         [Column(IsVersion = true)]
         private Binary _version;

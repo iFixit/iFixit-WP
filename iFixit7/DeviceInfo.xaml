@@ -19,7 +19,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -33,7 +32,7 @@
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    HorizontalAlignment="Left"
                                    Margin="0,70,-20,0" />
-                        <Rectangle Fill="Orange" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="DarkOrange" Height="1" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Panorama.TitleTemplate>
@@ -41,19 +40,29 @@
             <!-- Each element at this level is a different column -->
             
             <!-- The column of general topic info -->
-            <StackPanel x:Name="InfoStack" VerticalAlignment="Stretch">
-                <TextBlock Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+            <Grid x:Name="InfoStack">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+                <TextBlock Grid.Row="0"
+                           Text="Info" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+
+                <ProgressBar Grid.Row="1"
+                             x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
 
                 <!-- stick all the info in a stack panel -->
-                <ScrollViewer>
-                    <StackPanel Margin="2" VerticalAlignment="Stretch">
-                        <Image x:Name="InfoImage" Source="{Binding ImageURL}"  />
-                        <TextBlock x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
+                <ScrollViewer Grid.Row="2">
+                    <StackPanel>
+                        <Image 
+                                x:Name="InfoImage" Source="{Binding ImageURL}"  />
+                        <TextBlock 
+                                x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
             
 
             <!-- The column that is a list of guides -->

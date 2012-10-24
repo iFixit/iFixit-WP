@@ -30,6 +30,9 @@ namespace iFixit7
         public MainPage()
         {
             InitializeComponent();
+
+            //force hub tiles to not animate
+            HubTileService.FreezeGroup("AllTiles");
         }
 
         public void initDataBinding(){
@@ -43,10 +46,11 @@ namespace iFixit7
                 select cats;
             this.CatagoryList.ItemsSource = queryCats.FirstOrDefault().Categories;
 
-           
-
             //clear the loading bars when we are done loading data
             StopLoadingIndication(false);
+
+            //force hub tiles to not animate
+            HubTileService.FreezeGroup("AllTiles");
         }
 
         /*
@@ -85,7 +89,7 @@ namespace iFixit7
          */
         void tb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string s = (sender as StackPanel).Tag as String;
+            string s = (sender as HubTile).Tag as String;
             Debug.WriteLine("main page tapped > [" + s + "]");
 
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +

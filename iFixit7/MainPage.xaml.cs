@@ -61,7 +61,7 @@ namespace iFixit7
         }
 
         /*
-         * A hook to disable the loading indicators
+         * A hook to disable the loading indicators and indicate no connectivity
          */
         public void StopLoadingIndication(Boolean failure)
         {
@@ -117,6 +117,20 @@ namespace iFixit7
                 UriKind.Relative));
         }
 
+        /*
+         * Fires when a search result is tapped
+         */
+        private void Search_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            string name = (sender as TextBlock).Text as String;
+            Debug.WriteLine("main page tapped SEARCH topic name > [" + name + "]");
+
+            //FIXME can we tap on device pages as well as guides? We need to be able to handle that...
+            //maybe a single char at the start of the tag? build that string in the SearchResult object
+            //for now, can only tap on topics (which lead to device info)
+            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + name, UriKind.Relative));
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -128,6 +142,32 @@ namespace iFixit7
             initDataBinding();
         }
 
-        
+        private void SearchButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            SearchProgressStack.Visibility = System.Windows.Visibility.Visible;
+
+            string searchQuery = SearchQueryTB.Text;
+
+            // kick off async search query
+            /*
+             * Cleanup the view and display the results of a search. Called async.
+             * Return value is meaningless
+             */
+            Search.SearchForString(searchQuery, delegate(List<SRResult> SearchResults)
+            {
+                //this allows the async web thread to do UI things on the UI thread
+                Dispatcher.BeginInvoke(() =>
+                {
+                    //hide progress indicator
+                    SearchProgressStack.Visibility = System.Windows.Visibility.Collapsed;
+
+                    //display the items
+                    SearchResultList.ItemsSource = SearchResults;
+                });
+
+                //return from the lambda
+                return 0;
+            });
+        }
     }
 }

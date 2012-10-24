@@ -169,6 +169,11 @@ namespace iFixit7
                 App.mDB.GuidesTable.DeleteOnSubmit(SourceGuide);
                 App.mDB.SubmitChanges();
             }
+            else
+            {
+                //FIXME the API must be queried to get the guide if we got here. It wasnt in the DB
+                //this.guideID
+            }
             vm = new GuideViewModel(SourceGuide);
 
             //api call. The callback will be fired to populate the view

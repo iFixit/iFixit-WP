@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -35,12 +36,25 @@
             </controls:Panorama.TitleTemplate>
 
             <!-- Each element at this level is a different column -->
-            <StackPanel x:Name="BrowseStack">
-                <TextBlock Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0"
+                    Text="Browse Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
-                <ListBox x:Name="CatagoryList" Height="550" >
+                <ProgressBar Grid.Row="1"
+                    x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+
+                <ListBox Grid.Row="2" Height="550"
+                    x:Name="CatagoryList" VerticalAlignment="Top">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
@@ -51,7 +65,62 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
+            </Grid>
+
+
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0"
+                    Text="Search" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+
+                <Grid  Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <toolkit:PhoneTextBox x:Name="SearchQueryTB" Hint="Topic to Search For"
+                                          Grid.Column="0"/>
+                    <Button Tap="SearchButton_Tap" Grid.Column="1">Search</Button>
+                </Grid>
+
+
+                <StackPanel  Grid.Row="2"
+                             x:Name="SearchProgressStack" Visibility="Collapsed">
+                    <TextBlock Text="Search in Progress..." Style="{StaticResource PhoneTextSubtleStyle}" />
+                    <ProgressBar x:Name="LoadingBarSearching" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+                </StackPanel>
+
+
+                <ListBox  Grid.Row="3"
+                          x:Name="SearchResultList" VerticalAlignment="Top">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" 
+                                        Margin="4">
+                                <Image Source="{Binding thumbnail}" 
+                                       Margin="4"/>
+                                <TextBlock Text="{Binding title, Mode=OneWay}" Tag="{Binding id, Mode=OneWay}"
+                                           Tap="Search_Tap" Style="{StaticResource PhoneTextLargeStyle}"
+                                           Margin="2, 4" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            
+
             
             <StackPanel x:Name="CachedStack">
                 <TextBlock Text="Cached Topics" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>

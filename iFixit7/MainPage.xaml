@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
 
@@ -54,8 +54,9 @@
                 Margin="0, 8"/>
 
         <!-- to get hub tiles, replace the way a list lays out its content, then tell it to build HubTiles -->
+        <!-- FIXME if height is hard coded, works -->
         <ListBox Grid.Row="3"
-                x:Name="CatagoryList" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                x:Name="CatagoryList" VerticalAlignment="Stretch" HorizontalAlignment="Center">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <toolkit:WrapPanel/>
@@ -65,7 +66,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <!-- title = big on front, message = small on back, source = image, Background = tile backgroun -->
-                    <!-- Source="{Binding Thumbnail, Mode=OneWay}" -->
+                    <!--
                     <toolkit:HubTile Tap="tb_Tap" 
                                      Title="{Binding Name, Mode=OneWay}" Tag="{Binding Name, Mode=OneWay}"
                                      Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail"
@@ -73,42 +74,42 @@
                                      GroupTag="AllTiles"
                                      Margin="5"
                                      />
+                    -->
+                    <Grid Width="220" Height="220" Margin="5"
+                          Tag="{Binding Name, Mode=OneWay}" Tap="tb_Tap" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
+                        
+                        <Rectangle Grid.Row="0" Grid.RowSpan="2"
+                                   Fill="DarkOrange" />
+
+                        <!-- Source="{Binding Thumbnail, Mode=OneWay}" -->
+                        <Image Grid.Row="0" Grid.RowSpan="2"
+                               VerticalAlignment="Top"
+                               Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail" />
+
+                        <Rectangle Grid.Row="1"
+                                   Fill="LightGray" Opacity=".8"/>
+                        <TextBlock Grid.Row="1"
+                                   VerticalAlignment="Bottom" Margin="3"
+                                   TextWrapping="Wrap"
+                                   FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   Text="{Binding Name, Mode=OneWay}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
-        
-        <!--
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <ProgressBar Grid.Row="0" 
-                x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
-
-            <ListBox Grid.Row="1"
-                x:Name="CatagoryList" VerticalAlignment="Top">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Tap="tb_Tap" Tag="{Binding Name, Mode=OneWay}">
-                            <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource PhoneTextLargeStyle}" 
-                                        Margin="0, 4"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        -->
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
+        <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
                                             Click="AppBarSearch_Click"/>

@@ -89,7 +89,7 @@ namespace iFixit7
          */
         void tb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string s = (sender as HubTile).Tag as String;
+            string s = (sender as Grid).Tag as String;
             Debug.WriteLine("main page tapped > [" + s + "]");
 
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +

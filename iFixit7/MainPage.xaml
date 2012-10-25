@@ -85,9 +85,9 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         
-                        
+                        <!-- this is the background of the entire tile, which is usually hidden by the image -->
                         <Rectangle Grid.Row="0" Grid.RowSpan="2"
-                                   Fill="DarkOrange" />
+                                   Fill="DarkBlue" />
 
                         <!-- Source="{Binding Thumbnail, Mode=OneWay}" -->
                         <Image Grid.Row="0" Grid.RowSpan="2"
@@ -99,7 +99,7 @@
                         <TextBlock Grid.Row="1"
                                    VerticalAlignment="Bottom" Margin="3"
                                    TextWrapping="Wrap"
-                                   FontSize="{StaticResource PhoneFontSizeMedium}"
+                                   FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="Black"
                                    Text="{Binding Name, Mode=OneWay}" />
                     </Grid>
                 </DataTemplate>

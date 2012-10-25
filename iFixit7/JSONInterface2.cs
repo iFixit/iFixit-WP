@@ -82,38 +82,18 @@ namespace iFixit7
         private void GetGuideCompleted(object sender, OpenReadCompletedEventArgs e)
         {
             string rawJSON = new StreamReader(e.Result).ReadToEnd();
+            GuideHolder gde = null;
 
-            //rawJSON = Uri.UnescapeDataString(rawJSON);
-            GuideHolder gde = JsonConvert.DeserializeObject<GuideHolder>(rawJSON);
-
-
-            //apply the URL unescaper and HTML stripper to all strings in the class
-            /*
-            var fields = typeof(GuideHolder).GetFields(System.Reflection.BindingFlags.GetField);
-            foreach (FieldInfo f in fields) {
-                var val = f.GetValue(gde);
-                if (val != null)
-                {
-                    if(val is string)
-                    {
-                        string str = (string)val;
-                        str = Uri.UnescapeDataString(str);
-                        str = StripTagsCharArray(str);
-                        val = str;
-                    }
-                }
+            try
+            {
+                //rawJSON = Uri.UnescapeDataString(rawJSON);
+                gde = JsonConvert.DeserializeObject<GuideHolder>(rawJSON);
             }
-            */
-            //this DOES WORK. it just needs to be called on everything...
-            //gde.guide.steps[0].lines[4].text = StripTagsCharArray(gde.guide.steps[0].lines[4].text);
-
+            catch (JsonSerializationException ex)
+            {}
             guidePopulateCallback(gde);
         }
     }
-
-    /*
-     * 
-     */
 
     /*
      * Holds the result from a query for topic info. There are a number of classes needed to make up

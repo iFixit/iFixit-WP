@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
+using System.IO.IsolatedStorage;
 
 namespace iFixit7
 {
@@ -71,6 +72,18 @@ namespace iFixit7
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
+            //make sure the folder of images for the local cache exists
+            IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication();
+            try
+            {
+                if (!iso.DirectoryExists(ImgCache.BASE_PATH))
+                {
+                    iso.CreateDirectory(ImgCache.BASE_PATH);
+                }
+            }
+            catch (Exception ex)
+            { }
 
             //this has asynchroneous components that will run while the UI loads and whatnot
             getAreas();

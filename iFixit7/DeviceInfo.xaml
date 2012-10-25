@@ -7,6 +7,9 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
+    xmlns:c="clr-namespace:iFixit7"
+    
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -20,6 +23,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <Grid.Resources>
+            <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
+        </Grid.Resources>
 
         <!--TitlePanel contains the name of the application and page title-->
         <controls:Panorama Title="{Binding Name, Mode=OneWay}" x:Name="InfoPano">
@@ -57,7 +64,7 @@
                 <ScrollViewer Grid.Row="2">
                     <StackPanel>
                         <Image 
-                                x:Name="InfoImage" Source="{Binding ImageURL}"  />
+                                x:Name="InfoImage" Source="{Binding ImageURL, Converter={StaticResource ImageCacheConverter}}"  />
                         <TextBlock 
                                 x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
                     </StackPanel>

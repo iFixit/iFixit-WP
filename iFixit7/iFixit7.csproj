@@ -101,6 +101,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="iFixitJSONHelper.cs" />
+    <Compile Include="ImgCache.cs" />
     <Compile Include="jsonImage.cs" />
     <Compile Include="JSONInterface2.cs" />
     <Compile Include="jsonLines.cs" />

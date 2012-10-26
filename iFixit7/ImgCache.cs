@@ -20,6 +20,7 @@ namespace iFixit7
     public class ImgCache
     {
         public const string BASE_PATH = "imageCache";
+        public const string IFIXIT_IMG_URL_BASE = "http://guide-images.ifixit.net/igi/";
         /*
          * Save img under the name guid
          */
@@ -125,6 +126,10 @@ namespace iFixit7
                 using (IsolatedStorageFileStream fileStream = iso.OpenFile(fullPath, FileMode.Open, FileAccess.Read))
                 {
                     bi.SetSource(fileStream);
+
+                    //FIXME need to set the URI source! else we cannot open it later for fullscreen view
+                    bi.UriSource = new Uri(IFIXIT_IMG_URL_BASE + guidWithSize, UriKind.Absolute);
+
                     return bi;
                 }
             }
@@ -146,6 +151,13 @@ namespace iFixit7
             string url = value as string;
 
             Debug.WriteLine("starting conversion");
+
+            //make sure the URL we got is actually a full URL
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                Debug.WriteLine("\tgot a bad uri [" + url + "], aborting conversion");
+                return null;
+            }
 
             //figure out if the URL is cached locally
             outImage = ImgCache.GetImageByURL(url);

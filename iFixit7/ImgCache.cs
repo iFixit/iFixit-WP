@@ -28,26 +28,18 @@ namespace iFixit7
         /*
          * A wrapper for getting an image from the web, then storing it
          */
-        public static void RetrieveAndCacheByURL(string url)
+        public static BitmapImage RetrieveAndCacheByURL(string url)
         {
-            string guid = "";
             BitmapImage img = null;
 
-            //get image from web
+            //get image from web and force it to begin downloading immediately
             img = new BitmapImage(new Uri(url, UriKind.Absolute));
             img.CreateOptions = BitmapCreateOptions.None;
-            
-
-            //strip out GUID
-            //http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail
-            //int lastSlash = url.LastIndexOf('/');
-            //guid = url.Substring(lastSlash + 1);
-
-            //save image
-            //ImgCache.StoreImage(guid, img);
 
             //actually save to isolated storage once the image finishes downloading
             img.ImageOpened += new EventHandler<RoutedEventArgs>(ImageSaveComplete);
+
+            return img;
         }
 
         static void ImageSaveComplete(object sender, RoutedEventArgs e)
@@ -167,10 +159,10 @@ namespace iFixit7
             if (outImage == null)
             {
                 Debug.WriteLine("\timage not found in cache, caching now");
-                ImgCache.RetrieveAndCacheByURL(url);
+                outImage = ImgCache.RetrieveAndCacheByURL(url);
                 
                 //outImage = ImgCache.GetImageByURL(url);
-                outImage = new BitmapImage(new Uri(url, UriKind.Absolute));
+                //outImage = new BitmapImage(new Uri(url, UriKind.Absolute));
             }
             else
                 Debug.WriteLine("\timage found in cache!");

@@ -56,12 +56,26 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" 
-                                        Margin="4">
+                                Tag="{Binding title, Mode=OneWay}" Tap="Search_Tap"
+                                Margin="4">
+                        
                         <Image Source="{Binding thumbnail}" 
-                                       Margin="4"/>
-                        <TextBlock Text="{Binding title, Mode=OneWay}" Tag="{Binding id, Mode=OneWay}"
-                                           Tap="Search_Tap" Style="{StaticResource PhoneTextLargeStyle}"
-                                           Margin="2, 4" VerticalAlignment="Center"/>
+                               Stretch="Uniform" Width="100"
+                               Margin="4"/>
+                        
+                        <StackPanel>
+                            <TextBlock
+                                Text="{Binding title, Mode=OneWay}" 
+                               Style="{StaticResource PhoneTextLargeStyle}"
+                               Margin="2, 4" VerticalAlignment="Center"/>
+                            
+                            <TextBlock 
+                                Text="{Binding summary, Mode=OneWay}" TextWrapping="Wrap"
+                               HorizontalAlignment="Stretch" Width="360"
+                                Style="{StaticResource PhoneTextSmallStyle}"
+                                Margin="2, 4"/>
+                    </StackPanel>
+                        
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

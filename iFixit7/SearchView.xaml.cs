@@ -57,7 +57,7 @@ namespace iFixit7
         */
         private void Search_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string name = (sender as TextBlock).Text as String;
+            string name = (sender as StackPanel).Tag as String;
             Debug.WriteLine("main page tapped SEARCH topic name > [" + name + "]");
 
             //FIXME can we tap on device pages as well as guides? We need to be able to handle that...

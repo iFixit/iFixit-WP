@@ -146,6 +146,18 @@ namespace iFixit7
             Debug.WriteLine("device info tapped guide id = " + guideTag);
             NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
         }
+
+        /*
+         * These two are the handlers for the application bar buttons
+         */
+        private void AppBarSearch_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/SearchView.xaml", UriKind.Relative));
+        }
+        private void AppBarFavorites_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
+        }
     }
 
     /*

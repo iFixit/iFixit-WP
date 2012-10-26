@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:WP7_Mango_HtmlTextBlockControl"
+    xmlns:c="clr-namespace:iFixit7"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -17,6 +18,9 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding}">
+        <Grid.Resources>
+            <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -67,9 +71,9 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Image x:Name="Img1" Source="{Binding Image1}" Margin="2" Tag="1" Tap="Img_Tap" />
-                            <Image x:Name="Img2" Source="{Binding Image2}" Margin="2" Tag="2" Tap="Img_Tap" />
-                            <Image x:Name="Img3" Source="{Binding Image3}" Margin="2" Tag="3" Tap="Img_Tap" />
+                            <Image x:Name="Img1" Source="{Binding Image1, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="1" Tap="Img_Tap" />
+                            <Image x:Name="Img2" Source="{Binding Image2, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="2" Tap="Img_Tap" />
+                            <Image x:Name="Img3" Source="{Binding Image3, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="3" Tap="Img_Tap" />
                         </StackPanel>
                     </ScrollViewer>
                 </DataTemplate>

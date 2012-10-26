@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="clr-namespace:iFixit7"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -15,6 +16,9 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.Resources>
+            <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -27,8 +31,15 @@
              x:Name="CachedList">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" Style="{StaticResource PhoneTextLargeStyle}"
-                                    Margin="0, 4"/>
+                    <StackPanel Orientation="Horizontal" Margin="0, 2" Tag="{Binding Name, Mode=OneWay}" Tap="Cached_Tap">
+                        
+                        <Image VerticalAlignment="Top" Source="{Binding Path=ImageURL, Converter={StaticResource ImageCacheConverter}}" 
+                                       Width="100" Stretch="Uniform" Margin="2"/>
+
+                        <TextBlock Text="{Binding Name, Mode=OneWay}"
+                                   Style="{StaticResource PhoneTextLargeStyle}" 
+                                   Width="360" Margin="4, 0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

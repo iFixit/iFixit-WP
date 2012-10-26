@@ -26,7 +26,7 @@ namespace iFixit7
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             this.SourceURI = this.NavigationContext.QueryString["ImgURI"];
-            //Debug.WriteLine("got image url id = " + SourceURI);
+            Debug.WriteLine("got image url id = " + SourceURI);
 
             if (SourceURI == "")
                 NavigationService.GoBack();

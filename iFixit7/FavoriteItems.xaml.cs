@@ -26,8 +26,8 @@ namespace iFixit7
          */
         private void Cached_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string s = (sender as TextBlock).Text as String;
-            Debug.WriteLine("main page tapped CACHED > [" + s + "]");
+            string s = (sender as StackPanel).Tag as String;
+            //Debug.WriteLine("main page tapped CACHED > [" + s + "]");
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s,
                 UriKind.Relative));
         }

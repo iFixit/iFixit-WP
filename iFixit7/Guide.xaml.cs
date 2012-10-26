@@ -80,7 +80,7 @@ namespace iFixit7
 
             /*
              * Generates a fake entry for the list of steps to hold information about the guide.
-             * Not an ideal solution... Should probabky build an entire PivotItem and insert it at the
+             * Not an ideal solution... Should probably build an entire PivotItem and insert it at the
              * start of GuidePivot.
              */
             private void AddInfoTab(Guide g)

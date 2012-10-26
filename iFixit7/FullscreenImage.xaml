@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:c="clr-namespace:iFixit7"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -15,6 +16,10 @@
     shell:SystemTray.IsVisible="False">
 
     <StackPanel>
+        <StackPanel.Resources>
+            <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
+        </StackPanel.Resources>
+        
         <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
         
         <Canvas x:Name="MyImage" 
@@ -37,7 +42,7 @@
             <Image Width="480"  Height="720"   
                    Stretch="Uniform" 
                    x:Name="TheImage"
-                   Source="{Binding SourceURI}"
+                   Source="{Binding SourceURI, Converter={StaticResource ImageCacheConverter}}"
                    Loaded="TheImage_Loaded">
             </Image>
         </Canvas>

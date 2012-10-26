@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="PortraitOrLandscape"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -54,5 +54,16 @@
 
         </controls:Pivot>
     </Grid>
+
+    <!--ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False" >
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
+                                            Click="AppBarSearch_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"
+                                            Click="AppBarFavorites_Click"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

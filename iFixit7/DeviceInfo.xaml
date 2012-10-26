@@ -7,14 +7,12 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    
     xmlns:c="clr-namespace:iFixit7"
-    
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="PortraitOrLandscape"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -86,7 +84,7 @@
                         <!-- the content of this is what each row of guides displays -->
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="2" Tag="{Binding GuideID}" Tap="StackPanel_Tap">
-                                <Image VerticalAlignment="Top" Source="{Binding Path=Thumbnail}" 
+                                <Image VerticalAlignment="Top" Source="{Binding Path=Thumbnail, Converter={StaticResource ImageCacheConverter}}" 
                                        Width="100" Margin="2"/>
                                 
                                 <TextBlock Text="{Binding Title, Mode=OneWay}" TextWrapping="Wrap" 
@@ -100,4 +98,18 @@
             </StackPanel>
         </controls:Panorama>
     </Grid>
+
+    <!--ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False" >
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
+                                            Click="AppBarSearch_Click"/>
+
+            <!--
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"
+                                            Click="AppBarFavorites_Click"/>
+            -->
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

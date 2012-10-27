@@ -179,13 +179,28 @@ namespace iFixit7
             //open up a new DB connection for this transaction
             mDB = new iFixitDataContext(DBConnectionString);
 
-            // Prepopulate the categories
-            //FIXME probably need to do duplicate checking here?
-            mDB.CategoriesTable.InsertOnSubmit(tree);
 
             // Save categories to the database.
+            /*
             mDB.SubmitChanges();
+            IQueryable<Category> query = from cats in mDB.CategoriesTable
+                                         where cats.Name == "Camera"
+                                         select cats;
+            var x = query.FirstOrDefault();
+            */
+            using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
+            {
+                db.CategoriesTable.InsertOnSubmit(tree);
+                db.SubmitChanges();
+            }
 
+            IQueryable<Category> query2 = from cats in mDB.GetTable<Category>()
+                                          join c in mDB.GetTable<Category>() on cats.parentName equals "Camera"
+                                          select c;
+            foreach (var c in query2)
+            {
+                Debug.WriteLine("cat = " + c.Name);
+            }
             /*
             IQueryable<Category> query = from cats in mDB.CategoriesTable
                                             where cats.Name == "root"

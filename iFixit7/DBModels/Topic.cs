@@ -15,22 +15,26 @@ namespace iFixit7
         public int Id { get; set; }
 
         ////The M side of the 1:M of categories to guides
-        [Column(Name = "topID")] private int? topID { get; set; }
+        //[Column(Name = "topID")] private int? topID { get; set; }
 
-        //1 side of 1:M for the collection of guides
-        private EntitySet<Guide> _guides = new EntitySet<Guide>();
-        [Association(Name = "TopicToGuides", Storage = "_guides", ThisKey = "Id", OtherKey = "guideGroupID")]
-        public ICollection<Guide> Guides
-        {
-            get { return this._guides; }
-            set
-            {
-                NotifyPropertyChanging("Guides");
-                this._guides.Assign(value);
-                NotifyPropertyChanged("Guides");
-            }
-        }
+        ////1 side of 1:M for the collection of guides
+        //private EntitySet<Guide> _guides = new EntitySet<Guide>();
+        //[Association(Name = "TopicToGuides", Storage = "_guides", ThisKey = "Id", OtherKey = "guideGroupID")]
+        //public ICollection<Guide> Guides
+        //{
+        //    get { return this._guides; }
+        //    set
+        //    {
+        //        NotifyPropertyChanging("Guides");
+        //        this._guides.Assign(value);
+        //        NotifyPropertyChanged("Guides");
+        //    }
+        //}
 
+        [Column]
+        public string parentName { get; set; }
+
+        public List<Guide> Guides = new List<Guide>();
 
         private string _name;
         [Column]

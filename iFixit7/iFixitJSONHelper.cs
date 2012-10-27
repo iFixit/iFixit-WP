@@ -57,6 +57,8 @@ namespace iFixit7
                     jsonResponse = reader.ReadToEnd();
                     JObject jo = JObject.Parse(jsonResponse);
 
+                    mRootGroup.parentName = mRootGroup.Name;
+
                     //if we are processing a categories call (always yes now?)
                     if (categories)
                     {
@@ -70,8 +72,8 @@ namespace iFixit7
                             }
                             Category curr = new Category(p.Name);
 
-                            mRootGroup.Categories.Add(curr);
-                            //mTree.getChildrenList().Add(curr);
+                            mRootGroup.AddCategory(curr);
+                            //mRootGroup.Categories.Add(curr);
 
                             if (!p.HasValues)
                                 break;
@@ -111,8 +113,8 @@ namespace iFixit7
                     Category curr = new Category(jt.ToObject<JProperty>().Name);
                     
                     //FIXME this is where we add to the 1:M, right?
-                    group.Categories.Add(curr);
-                    //node.getChildrenList().Add(curr);
+                    //group.Categories.Add(curr);
+                    group.AddCategory(curr);
                     if (jt.HasValues)
                     {
                         IJEnumerable<JToken> values = jt.Values();
@@ -136,8 +138,8 @@ namespace iFixit7
                             group.Devices = new List<Topic>();
                         }
                          */
-                        //group.Devices.Add(d);
-                        group.Topics.Add(d);
+                        //group.Topics.Add(d);
+                        group.AddTopic(d);
                         
                         //node.getChildrenList().Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());

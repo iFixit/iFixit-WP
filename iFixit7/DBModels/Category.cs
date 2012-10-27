@@ -25,39 +25,43 @@ namespace iFixit7
             get; set;
         }
         
-        //the M side side of the 1:M of categories
-        [Column(Name = "IFI_Category")] private int? categoryId;
-        private EntitySet<Category> _categories = new EntitySet<Category>();
-        [Association(Name = "FK_Category_Category", Storage = "_categories",
-            OtherKey = "categoryId", ThisKey = "Id")]
-        //should these be 'ObservableCollection's?
-        public ICollection<Category> Categories
-        {
-            get { return _categories; }
-            set {
-                NotifyPropertyChanging("Categories");
-                _categories.Assign(value);
-                NotifyPropertyChanged("Categories");
-            }
-        }
+        ////the M side side of the 1:M of categories
+        //[Column(Name = "IFI_Category")] private int? categoryId;
+        //private EntitySet<Category> _categories = new EntitySet<Category>();
+        //[Association(Name = "FK_Category_Category", Storage = "_categories",
+        //    OtherKey = "categoryId", ThisKey = "Id")]
+        ////should these be 'ObservableCollection's?
+        //public ICollection<Category> Categories
+        //{
+        //    get { return _categories; }
+        //    set {
+        //        NotifyPropertyChanging("Categories");
+        //        _categories.Assign(value);
+        //        NotifyPropertyChanged("Categories");
+        //    }
+        //}
 
 
 
         //1 side of 1:M for topics
-        private EntitySet<Topic> _Topics = new EntitySet<Topic>();
-        [Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "Id", OtherKey = "topID")]
-        public ICollection<Topic> Topics
-        {
-            get { return this._Topics; }
-            set
-            {
-                NotifyPropertyChanging("Topics");
-                this._Topics.Assign(value);
-                NotifyPropertyChanged("Topics");
-            }
-        }
+        //private EntitySet<Topic> _Topics = new EntitySet<Topic>();
+        //[Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "Id", OtherKey = "topID")]
+        //public ICollection<Topic> Topics
+        //{
+        //    get { return this._Topics; }
+        //    set
+        //    {
+        //        NotifyPropertyChanging("Topics");
+        //        this._Topics.Assign(value);
+        //        NotifyPropertyChanged("Topics");
+        //    }
+        //}
 
+        [Column]
+        public string parentName { get; set; }
 
+        public List<Category> Categories = new List<Category>();
+        public List<Topic> Topics = new List<Topic>();
 
         private string _name = "";
         [Column]
@@ -100,6 +104,18 @@ namespace iFixit7
         // Version column aids update performance.
         [Column(IsVersion = true)]
         private Binary _version;
+
+        public void AddCategory(Category c)
+        {
+            c.parentName = this.Name;
+            this.Categories.Add(c);
+        }
+
+        public void AddTopic(Topic t)
+        {
+            t.parentName = this.Name;
+            this.Topics.Add(t);
+        }
 
         #region INotifyPropertyChanged Members
 

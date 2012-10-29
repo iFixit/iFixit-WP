@@ -56,10 +56,15 @@ namespace iFixit7
         {
             //e.Result as the web request result. Read it out
             string rawJSON = new StreamReader(e.Result).ReadToEnd();
+            DeviceInfoHolder di = null;
 
-            //rawJSON = Uri.UnescapeDataString(rawJSON);
-            DeviceInfoHolder di = JsonConvert.DeserializeObject<DeviceInfoHolder>(rawJSON);
-
+            try
+            {
+                //rawJSON = Uri.UnescapeDataString(rawJSON);
+                di = JsonConvert.DeserializeObject<DeviceInfoHolder>(rawJSON);
+            }
+            catch (JsonSerializationException ex)
+            { }
             devInfoCallback(di);
         }
 

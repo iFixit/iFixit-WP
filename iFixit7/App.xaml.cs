@@ -29,7 +29,6 @@ namespace iFixit7
         public const string MagicTypeTag = "SelectedType";
 
         private iFixitJSONHelper ifj;
-        ///public static iFixitDataContext mDB;
 
 
         /// <summary>
@@ -195,6 +194,16 @@ namespace iFixit7
                 db.SubmitChanges();
             }
 
+            //now async get images for all root categories
+            foreach (Category c in tree.Categories)
+            {
+                Debug.WriteLine("thumb = " + c.Thumbnail);
+                if (c.Thumbnail == "")
+                {
+                    new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
+                }
+            }
+
             /*
             Category c;
             using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
@@ -225,6 +234,32 @@ namespace iFixit7
              */
 
             (RootFrame.Content as MainPage).initDataBinding();
+        }
+
+        /*
+         * Take in the results from the API query to get additional info about categories (IE thumb) and
+         * add it to the DB entries
+         */
+        bool storeJSONCategoryInDB(DeviceInfoHolder di)
+        {
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                Category c = db.CategoriesTable.FirstOrDefault(cat => cat.Name == di.title);
+
+                if (c.Thumbnail != di.image.text + ".standard")
+                {
+                    Debug.WriteLine("updating thumb");
+
+                    c.Thumbnail = di.image.text + ".standard";
+
+                    //update the DB
+                    db.SubmitChanges();
+
+                    (RootFrame.Content as MainPage).initDataBinding();
+                }
+            }
+
+            return true;
         }
 
         #region Phone application initialization

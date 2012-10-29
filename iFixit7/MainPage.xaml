@@ -94,10 +94,11 @@
                         <Rectangle Grid.Row="0" Grid.RowSpan="2"
                                    Fill="DarkBlue" />
 
-                        <!-- Source="{Binding Thumbnail, Mode=OneWay, Converter={StaticResource ImageCacheConverter} -->
+                        <!-- Source="{Binding Thumbnail, Mode=OneWay, Converter={StaticResource ImageCacheConverter}}" -->
+                        <!-- Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail" -->
                         <Image Grid.Row="0" Grid.RowSpan="2"
                                VerticalAlignment="Top"
-                               Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail" />
+                               Source="{Binding Thumbnail, Mode=OneWay, Converter={StaticResource ImageCacheConverter}}" />
 
                         <Rectangle Grid.Row="1"
                                    Fill="Black" Opacity=".8"/>

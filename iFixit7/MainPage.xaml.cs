@@ -30,16 +30,17 @@ namespace iFixit7
         public MainPage()
         {
             InitializeComponent();
-
-            //force hub tiles to not animate
-            HubTileService.FreezeGroup("AllTiles");
         }
 
+        /*
+         * setup the data binding stuff
+         */
         public void initDataBinding(){
+            Category rootCat = null;
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
                 //setup the data binding stuff for live column
-                Category rootCat = DBHelpers.GetCompleteCategory("root", db);
+                rootCat = DBHelpers.GetCompleteCategory("root", db);
                 if(rootCat != null){
                     this.CatagoryList.ItemsSource = rootCat.Categories;
                 }
@@ -47,9 +48,6 @@ namespace iFixit7
 
             //clear the loading bars when we are done loading data
             StopLoadingIndication(false);
-
-            //force hub tiles to not animate
-            HubTileService.FreezeGroup("AllTiles");
         }
 
         /*

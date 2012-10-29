@@ -146,7 +146,8 @@ namespace iFixit7
             String srcUrl = (src.Source as BitmapImage).UriSource.ToString();
 
             //modify it to get the huge version
-            srcUrl = srcUrl.Replace(".standard", ".huge");
+            //srcUrl = srcUrl.Replace(".standard", ".huge");
+            srcUrl = srcUrl.Replace(".standard", "");
             
             //FIXME navigate to fullscreen image w/ URL (just URL?)
             NavigationService.Navigate(new Uri("/FullscreenImage.xaml?ImgURI=" + srcUrl,
@@ -160,21 +161,24 @@ namespace iFixit7
             Debug.WriteLine("\tgot guide id = " + guideID);
 
             //get the guide, if it already exists
-            SourceGuide = App.mDB.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
-            if (SourceGuide != null)
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                Debug.WriteLine("\tgot guide title = " + SourceGuide.Title);
+                SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+                if (SourceGuide != null)
+                {
+                    Debug.WriteLine("\tgot guide title = " + SourceGuide.Title);
 
-                //clear the existing Guide from the DB
-                App.mDB.GuidesTable.DeleteOnSubmit(SourceGuide);
-                App.mDB.SubmitChanges();
+                    //clear the existing Guide from the DB
+                    db.GuidesTable.DeleteOnSubmit(SourceGuide);
+                    db.SubmitChanges();
+                }
+                else
+                {
+                    //FIXME the API must be queried to get the guide if we got here. It wasnt in the DB
+                    //this.guideID
+                }
+                vm = new GuideViewModel(SourceGuide);
             }
-            else
-            {
-                //FIXME the API must be queried to get the guide if we got here. It wasnt in the DB
-                //this.guideID
-            }
-            vm = new GuideViewModel(SourceGuide);
 
             //api call. The callback will be fired to populate the view
             new JSONInterface2().populateGuideView(this.guideID, insertGuideIntoDB);
@@ -183,9 +187,12 @@ namespace iFixit7
             //convert the GuideHolder we got into a DB object
             SourceGuide = new Guide(guide);
 
-            //insert it into the DB
-            App.mDB.GuidesTable.InsertOnSubmit(SourceGuide);
-            App.mDB.SubmitChanges();
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                //insert it into the DB
+                db.GuidesTable.InsertOnSubmit(SourceGuide);
+                db.SubmitChanges();
+            }
 
             //force view model to update
             vm.UpdateContentFromGuide(SourceGuide);

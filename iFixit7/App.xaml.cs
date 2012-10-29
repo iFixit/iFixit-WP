@@ -29,7 +29,7 @@ namespace iFixit7
         public const string MagicTypeTag = "SelectedType";
 
         private iFixitJSONHelper ifj;
-        public static iFixitDataContext mDB;
+        ///public static iFixitDataContext mDB;
 
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace iFixit7
             Debug.WriteLine("we got a tree, right? PROCESS IT");
 
             //open up a new DB connection for this transaction
-            mDB = new iFixitDataContext(DBConnectionString);
+            //mDB = new iFixitDataContext(DBConnectionString);
 
 
             // Save categories to the database.
@@ -190,24 +190,40 @@ namespace iFixit7
             */
             using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
             {
-                db.CategoriesTable.InsertOnSubmit(tree);
+                //add the rest of the tree
+                DBHelpers.InsertTree(tree, db);
                 db.SubmitChanges();
             }
 
-            IQueryable<Category> query2 = from cats in mDB.GetTable<Category>()
+            /*
+            Category c;
+            using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
+            {
+                c = DBHelpers.GetCompleteCategory("root", db);
+            }
+            */
+            //this works, though there are many duplicates w/o the Distinct() call. Is it correct?
+            /*
+            IQueryable<Category> q1 = from cats in mDB.GetTable<Category>()
                                           join c in mDB.GetTable<Category>() on cats.parentName equals "Camera"
-                                          select c;
-            foreach (var c in query2)
+                                          select cats;
+            q1 = q1.Distinct();
+            foreach (var c in q1)
             {
                 Debug.WriteLine("cat = " + c.Name);
             }
+            */
             /*
-            IQueryable<Category> query = from cats in mDB.CategoriesTable
-                                            where cats.Name == "root"
-                                            select cats;
-            //FIXME this is kindof evil... The main app should not be able/have to do this
-            ((MainPage)RootFrame.Content).CatagoryList.ItemsSource = query.FirstOrDefault().Categories;
-                * */
+            string catName = "Camera";
+            var q2 = from cat in mDB.CategoriesTable
+                        where cat.parentName == catName
+                        select cat;
+            foreach (var c in q2)
+            {
+                Debug.WriteLine("cat = " + c.Name);
+            }
+             */
+
             (RootFrame.Content as MainPage).initDataBinding();
         }
 

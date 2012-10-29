@@ -37,11 +37,16 @@ namespace iFixit7
             base.OnNavigatedTo(e);
 
             //force an update of binding for the cached column
-            IQueryable<Topic> queryCached =
-                from top in App.mDB.TopicsTable
-                where top.Populated == true
-                select top;
-            this.CachedList.ItemsSource = queryCached;
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                // this.CachedList.ItemsSource = DBHelpers.GetCompleteCategory("root", db).Categories;
+
+                IQueryable<Topic> queryCached =
+                    from top in db.TopicsTable
+                    where top.Populated == true
+                    select top;
+                this.CachedList.ItemsSource = queryCached;
+            }
         }
     }
 }

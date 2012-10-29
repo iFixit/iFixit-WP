@@ -64,73 +64,78 @@ namespace iFixit7
 
             //try to get a topic of this name from the DB
             //if it fails, make a new one. if it works, update the old
-            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
-            if (top == null)
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                top = new Topic();
-            }
-            else
-            {
-                //nuke the existing one so we dont collide on insert
-                App.mDB.TopicsTable.DeleteOnSubmit(top);
-                App.mDB.SubmitChanges();
-            }
+                top = db.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
 
-            Topic newTop = new Topic();
-            //translate devInfo in a Topic()
-            //name is already the same
-            newTop.Name = devInfo.topic_info.name;
-            newTop.Description = devInfo.description;
-            newTop.ImageURL = devInfo.image.text + ".medium";       //scales the image
-            newTop.Populated = true;
-
-            newTop.Description = devInfo.description;
-
-            //now do the same for all attached guides
-            foreach (DIGuides g in devInfo.guides)
-            {
-                Debug.WriteLine("\tguide " + g.title);
-
-                //search if the guide already exists, and get or update it
-                Guide gNew = new Guide();
-                Guide gOld = null;
-                gOld = App.mDB.GuidesTable.FirstOrDefault(other => other.Title == g.title);
-                if (gOld != null)
+                if (top == null)
                 {
-                    App.mDB.GuidesTable.DeleteOnSubmit(gOld);
-                    App.mDB.SubmitChanges();
-                
-                    //transfer info
-                    gNew.Title = gOld.Title;
-                    gNew.Summary = gOld.Summary;
-                    gNew.URL = gOld.URL;
-                    gNew.GuideID = gOld.GuideID;
-                    gNew.Thumbnail = gOld.Thumbnail;
-                    gNew.TitleImage = gOld.TitleImage;
+                    top = new Topic();
+                }
+                else
+                {
+                    //nuke the existing one so we dont collide on insert
+                    db.TopicsTable.DeleteOnSubmit(top);
+                    db.SubmitChanges();
                 }
 
-                gNew.FillFieldsFromDeviceInfo(navTopicName, g);
+                Topic newTop = new Topic();
+                //translate devInfo in a Topic()
+                //name is already the same
+                newTop.Name = devInfo.topic_info.name;
+                newTop.Description = devInfo.description;
+                newTop.ImageURL = devInfo.image.text + ".medium";       //scales the image
+                newTop.Populated = true;
 
-                // hang it below the topic, it its collection of guides
-                newTop.Guides.Add(gNew);
+                newTop.Description = devInfo.description;
 
-                //FIXME do we need to specifically add this to the guide table? is that magic?
+                //now do the same for all attached guides
+                foreach (DIGuides g in devInfo.guides)
+                {
+                    Debug.WriteLine("\tguide " + g.title);
+
+                    //search if the guide already exists, and get or update it
+                    Guide gNew = new Guide();
+                    Guide gOld = null;
+                    gOld = db.GuidesTable.FirstOrDefault(other => other.Title == g.title);
+                    if (gOld != null)
+                    {
+                        db.GuidesTable.DeleteOnSubmit(gOld);
+                        db.SubmitChanges();
+
+                        //transfer info
+                        gNew.Title = gOld.Title;
+                        gNew.Summary = gOld.Summary;
+                        gNew.URL = gOld.URL;
+                        gNew.GuideID = gOld.GuideID;
+                        gNew.Thumbnail = gOld.Thumbnail;
+                        gNew.TitleImage = gOld.TitleImage;
+                    }
+
+                    gNew.FillFieldsFromDeviceInfo(navTopicName, g);
+
+                    // hang it below the topic, it its collection of guides
+                    newTop.Guides.Add(gNew);
+
+                    //FIXME do we need to specifically add this to the guide table? is that magic?
+                }
+
+                //insert the Topic() into the database
+                db.TopicsTable.InsertOnSubmit(newTop);
+                db.SubmitChanges();
+
+                //force the view model to update
+                infoVM.UpdateData();
+
+                //force the views to update
+                this.InfoStack.DataContext = infoVM;
+                this.GuidesStack.DataContext = infoVM;
+
+                //disable the loading bars
+                this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+                this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
+
             }
-
-            //insert the Topic() into the database
-            App.mDB.TopicsTable.InsertOnSubmit(newTop);
-            App.mDB.SubmitChanges();
-
-            //force the view model to update
-            infoVM.UpdateData();
-
-            //force the views to update
-            this.InfoStack.DataContext = infoVM;
-            this.GuidesStack.DataContext = infoVM;
-
-            //disable the loading bars
-            this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
-            this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
 
             return true;
         }
@@ -193,7 +198,10 @@ namespace iFixit7
 
             //run queries
             Topic top = null;
-            top = App.mDB.TopicsTable.SingleOrDefault(t => t.Name == Name);
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                top = db.TopicsTable.SingleOrDefault(t => t.Name == Name);
+            }
             if (top == null)
             {
                 return;

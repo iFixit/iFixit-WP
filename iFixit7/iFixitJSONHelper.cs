@@ -57,7 +57,8 @@ namespace iFixit7
                     jsonResponse = reader.ReadToEnd();
                     JObject jo = JObject.Parse(jsonResponse);
 
-                    mRootGroup.parentName = mRootGroup.Name;
+                    //NO! This causes queries for 'root''s chilren to return 'root' as well
+                    //mRootGroup.parentName = mRootGroup.Name;
 
                     //if we are processing a categories call (always yes now?)
                     if (categories)

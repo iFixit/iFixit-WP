@@ -76,6 +76,19 @@ namespace iFixit7
                 UriKind.Relative));
         }
 
+        /*
+         * Called right as we are being navigated from
+         */
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            //FIXME save current index in VM? alter params?
+        }
+
+        /*
+         * Called right as we are being navigated to
+         */
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -145,13 +158,20 @@ namespace iFixit7
 
             public void setColumnContent()
             {
-                IQueryable<Category> query =
-                    from cats in App.mDB.CategoriesTable
-                    where cats.Name == ColumnHeader
-                    select cats;
+                Category colCat = null;
+                using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+                {
+                    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
+                    /*
+                    IQueryable<Category> query =
+                        from cats in App.mDB.CategoriesTable
+                        where cats.Name == ColumnHeader
+                        select cats;
+                     */
+                }
 
                 //add all sub categories
-                foreach (Category c in query.FirstOrDefault().Categories)
+                foreach (Category c in colCat.Categories)
                 {
                     //Debug.WriteLine("col content " + c.Name);
                     ColContent.Add(c.Name);
@@ -159,7 +179,7 @@ namespace iFixit7
                 }
 
                 //add all topics
-                foreach (Topic c in query.FirstOrDefault().Topics)
+                foreach (Topic c in colCat.Topics)
                 {
                     //Debug.WriteLine("col content topic " + c.Name);
                     ColContent.Add(c.Name);
@@ -200,13 +220,19 @@ namespace iFixit7
         {
             //run a query to fill the list of column headers
             //FIXME need to notify changed
-            IQueryable<Category> query =
-                from cats in App.mDB.CategoriesTable
-                where cats.Name == ParentName
-                select cats;
-
+            Category parentCat = null;
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                parentCat = DBHelpers.GetCompleteCategory(ParentName, db);
+                /*
+                IQueryable<Category> query =
+                    from cats in App.mDB.CategoriesTable
+                    where cats.Name == ParentName
+                    select cats;
+                 */
+            }
             int index = 0;
-            foreach (Category c in query.FirstOrDefault().Categories)
+            foreach (Category c in parentCat.Categories)
             {
                 //Debug.WriteLine("Got Cat " + c.Name);
 

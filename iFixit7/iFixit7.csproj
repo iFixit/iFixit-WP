@@ -83,7 +83,6 @@
     <Compile Include="DBModels\Topic.cs" />
     <Compile Include="DBModels\Category.cs" />
     <Compile Include="DBModels\Guide.cs" />
-    <Compile Include="DBModels\Images.cs" />
     <Compile Include="DBModels\Step.cs" />
     <Compile Include="FavoriteItems.xaml.cs">
       <DependentUpon>FavoriteItems.xaml</DependentUpon>

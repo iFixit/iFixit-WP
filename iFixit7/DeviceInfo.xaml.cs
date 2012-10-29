@@ -66,7 +66,8 @@ namespace iFixit7
             //if it fails, make a new one. if it works, update the old
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                top = db.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
+                //top = db.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
+                top = DBHelpers.GetCompleteTopic(devInfo.topic_info.name, db);
 
                 if (top == null)
                 {
@@ -115,9 +116,12 @@ namespace iFixit7
                     gNew.FillFieldsFromDeviceInfo(navTopicName, g);
 
                     // hang it below the topic, it its collection of guides
-                    newTop.Guides.Add(gNew);
+                    //newTop.Guides.Add(gNew);
+                    newTop.AddGuide(gNew);
 
                     //FIXME do we need to specifically add this to the guide table? is that magic?
+                    db.GuidesTable.InsertOnSubmit(gNew);
+                    db.SubmitChanges();
                 }
 
                 //insert the Topic() into the database
@@ -200,7 +204,8 @@ namespace iFixit7
             Topic top = null;
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                top = db.TopicsTable.SingleOrDefault(t => t.Name == Name);
+                //top = db.TopicsTable.SingleOrDefault(t => t.Name == Name);
+                top = DBHelpers.GetCompleteTopic(Name, db);
             }
             if (top == null)
             {

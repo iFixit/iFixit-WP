@@ -58,6 +58,7 @@ namespace iFixit7
         public int Id { get; set; }
 
 
+        /*
         //the M hook of the 1:M of guides to steps
         [Column(Name = "stepGroupID")]
         private int? stepGroupID { get; set; }
@@ -76,6 +77,19 @@ namespace iFixit7
                 NotifyPropertyChanged("Lines");
             }
         }
+         * */
+        [Column]
+        public string parentName { get; set; }
+
+        public List<Lines> Lines = new List<Lines>();
+
+        public void AddCategory(Lines l)
+        {
+            l.parentName = this.Title;
+            this.Lines.Add(l);
+        }
+
+
 
         private string _title;
         [Column]

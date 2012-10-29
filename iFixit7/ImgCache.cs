@@ -51,7 +51,7 @@ namespace iFixit7
             string guid = src.Substring(lastSlash + 1);
 
             ImgCache.StoreImage(guid, bm);
-            Debug.WriteLine("done loading and saving image from URL");
+            //Debug.WriteLine("done loading and saving image from URL");
         }
         public static void StoreImage(string guid, BitmapImage img)
         {
@@ -71,22 +71,11 @@ namespace iFixit7
 
                 IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(tempJPEG);
 
-                /*
-                StreamResourceInfo sri = null;
-                Uri uri = new Uri(tempJPEG, UriKind.Relative);
-                sri = Application.GetResourceStream(uri);
-
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.SetSource(sri.Stream); 
-                WriteableBitmap wb = new WriteableBitmap(bitmap);
-                 */
                 WriteableBitmap wb = new WriteableBitmap(img);
 
                 // Encode WriteableBitmap object to a JPEG stream.
                 Extensions.SaveJpeg(wb, fileStream, wb.PixelWidth, wb.PixelHeight, 0, 85);
 
-                //commented in example...
-                //wb.SaveJpeg(fileStream, wb.PixelWidth, wb.PixelHeight, 0, 85);
                 fileStream.Close();
             }
         }
@@ -142,12 +131,12 @@ namespace iFixit7
             BitmapImage outImage = null;
             string url = value as string;
 
-            Debug.WriteLine("starting conversion");
+            //Debug.WriteLine("starting conversion");
 
             //make sure the URL we got is actually a full URL
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                Debug.WriteLine("\tgot a bad uri [" + url + "], aborting conversion");
+                //Debug.WriteLine("\tgot a bad uri [" + url + "], aborting conversion");
                 return null;
             }
 
@@ -158,14 +147,16 @@ namespace iFixit7
             //if not, get it from the web, save it, then return that
             if (outImage == null)
             {
-                Debug.WriteLine("\timage not found in cache, caching now");
+                //Debug.WriteLine("\timage not found in cache, caching now");
                 outImage = ImgCache.RetrieveAndCacheByURL(url);
                 
                 //outImage = ImgCache.GetImageByURL(url);
                 //outImage = new BitmapImage(new Uri(url, UriKind.Absolute));
             }
+            /*
             else
                 Debug.WriteLine("\timage found in cache!");
+              */
 
             return outImage;
         }

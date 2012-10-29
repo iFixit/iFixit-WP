@@ -55,9 +55,15 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
+        /*
         //the M hook of the 1:M of step to lines
         [Column(Name = "lineStepID")]
         private int? lineStepID { get; set; }
+        */
+
+        [Column]
+        public string parentName { get; set; }
+
 
         //text
         private string _text;

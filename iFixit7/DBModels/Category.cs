@@ -63,6 +63,19 @@ namespace iFixit7
         public List<Category> Categories = new List<Category>();
         public List<Topic> Topics = new List<Topic>();
 
+        public void AddCategory(Category c)
+        {
+            c.parentName = this.Name;
+            this.Categories.Add(c);
+        }
+
+        public void AddTopic(Topic t)
+        {
+            t.parentName = this.Name;
+            this.Topics.Add(t);
+        }
+
+
         private string _name = "";
         [Column]
         public string Name
@@ -104,18 +117,6 @@ namespace iFixit7
         // Version column aids update performance.
         [Column(IsVersion = true)]
         private Binary _version;
-
-        public void AddCategory(Category c)
-        {
-            c.parentName = this.Name;
-            this.Categories.Add(c);
-        }
-
-        public void AddTopic(Topic t)
-        {
-            t.parentName = this.Name;
-            this.Topics.Add(t);
-        }
 
         #region INotifyPropertyChanged Members
 

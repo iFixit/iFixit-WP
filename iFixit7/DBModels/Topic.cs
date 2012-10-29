@@ -36,6 +36,13 @@ namespace iFixit7
 
         public List<Guide> Guides = new List<Guide>();
 
+        public void AddGuide(Guide g)
+        {
+            g.parentName = this.Name;
+            this.Guides.Add(g);
+        }
+
+
         private string _name;
         [Column]
         public string Name
@@ -97,10 +104,6 @@ namespace iFixit7
             }
         }
 
-        // Version column aids update performance.
-        [Column(IsVersion = true)]
-        private Binary _version;
-
         private string _imageUrl;
         [Column]
         public string ImageURL
@@ -120,6 +123,9 @@ namespace iFixit7
             }
         }
 
+        // Version column aids update performance.
+        [Column(IsVersion = true)]
+        private Binary _version;
 
         #region INotifyPropertyChanged Members
 

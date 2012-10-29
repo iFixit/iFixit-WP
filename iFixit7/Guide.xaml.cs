@@ -176,6 +176,7 @@ namespace iFixit7
                 {
                     //FIXME the API must be queried to get the guide if we got here. It wasnt in the DB
                     //this.guideID
+                    //FIXME doesnt this happen after the JSON interface call below?
                 }
                 vm = new GuideViewModel(SourceGuide);
             }

@@ -49,33 +49,15 @@ namespace iFixit7
             Category n = null;
 
             //get the node
-            /*
-            var q = from c in dc.CategoriesTable
-                    where c.Name == catName
-                    select c;
-            n = q.FirstOrDefault();
-             * */
-            n = dc.CategoriesTable.SingleOrDefault(c => c.Name == catName);
+            n = dc.CategoriesTable.FirstOrDefault(c => c.Name == catName);
 
             if (n == null)
                 return null;
 
             //get its child categories
-            /*
-            var q = from cats in dc.CategoriesTable
-                join c in dc.TopicsTable on cats.parentName equals n.Name
-                select cats;
-            n.Categories = q.Distinct().ToList();
-             */
             n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).Distinct().ToList();
 
             //get its child topics
-            /*
-            var q2 = from tops in dc.TopicsTable
-                    join t in dc.TopicsTable on tops.parentName equals n.Name
-                    select tops;
-            n.Topics = q2.Distinct().ToList();
-            */
             n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).Distinct().ToList();
 
             return n;
@@ -84,5 +66,52 @@ namespace iFixit7
         /*
          * FIXME add methods simillar to above for Topic, Guide, Step!
          */
+        public static Topic GetCompleteTopic(string name, iFixitDataContext dc)
+        {
+            Topic t = null;
+
+            //get the node
+            t = dc.TopicsTable.FirstOrDefault(c => c.Name == name);
+
+            if (t == null)
+                return null;
+
+            //get its child guides
+            t.Guides = dc.GuidesTable.Where(g => g.parentName == name).Distinct().ToList();
+
+            return t;
+        }
+
+        public static Guide GetCompleteGuide(string title, iFixitDataContext dc)
+        {
+            Guide g = null;
+
+            //get the node
+            g = dc.GuidesTable.FirstOrDefault(c => c.Title == title);
+
+            if (g == null)
+                return null;
+
+            //get its child guides
+            g.Steps = dc.StepsTable.Where(s => s.parentName == title).Distinct().ToList();
+
+            return g;
+        }
+
+        public static Step GetCompleteStep(string title, iFixitDataContext dc)
+        {
+            Step s = null;
+
+            //get the node
+            s = dc.StepsTable.FirstOrDefault(c => c.Title == title);
+
+            if (s == null)
+                return null;
+
+            //get its child guides
+            s.Lines = dc.LinesTable.Where(l => l.parentName == title).Distinct().ToList();
+
+            return s;
+        }
     }
 }

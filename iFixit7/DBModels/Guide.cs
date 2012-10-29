@@ -55,6 +55,8 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
+
+        /*
         //the M hook of the 1:M of topics to guides
         [Column(Name = "guideGroupID")]
         private int? guideGroupID;
@@ -73,6 +75,19 @@ namespace iFixit7
                 NotifyPropertyChanged("Steps");
             }
         }
+         * */
+
+        [Column]
+        public string parentName { get; set; }
+
+        public List<Step> Steps = new List<Step>();
+
+        public void AddStep(Step s)
+        {
+            s.parentName = this.Title;
+            this.Steps.Add(s);
+        }
+
 
         private string _title;
         [Column]

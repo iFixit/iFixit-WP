@@ -38,19 +38,11 @@ namespace iFixit7
         public void initDataBinding(){
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
+                //setup the data binding stuff for live column
                 Category rootCat = DBHelpers.GetCompleteCategory("root", db);
                 if(rootCat != null){
                     this.CatagoryList.ItemsSource = rootCat.Categories;
                 }
-
-                //setup the data binding stuff for live column
-                /*
-                IQueryable<Category> queryCats =
-                    from cats in App.mDB.CategoriesTable
-                    where cats.Name == "root"
-                    select cats;
-                this.CatagoryList.ItemsSource = queryCats.FirstOrDefault().Categories;
-                 * */
             }
 
             //clear the loading bars when we are done loading data

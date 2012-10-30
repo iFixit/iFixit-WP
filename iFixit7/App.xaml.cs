@@ -204,35 +204,6 @@ namespace iFixit7
                 }
             }
 
-            /*
-            Category c;
-            using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
-            {
-                c = DBHelpers.GetCompleteCategory("root", db);
-            }
-            */
-            //this works, though there are many duplicates w/o the Distinct() call. Is it correct?
-            /*
-            IQueryable<Category> q1 = from cats in mDB.GetTable<Category>()
-                                          join c in mDB.GetTable<Category>() on cats.parentName equals "Camera"
-                                          select cats;
-            q1 = q1.Distinct();
-            foreach (var c in q1)
-            {
-                Debug.WriteLine("cat = " + c.Name);
-            }
-            */
-            /*
-            string catName = "Camera";
-            var q2 = from cat in mDB.CategoriesTable
-                        where cat.parentName == catName
-                        select cat;
-            foreach (var c in q2)
-            {
-                Debug.WriteLine("cat = " + c.Name);
-            }
-             */
-
             (RootFrame.Content as MainPage).initDataBinding();
         }
 

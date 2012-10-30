@@ -56,10 +56,23 @@ namespace iFixit7
 
             //get its child categories
             n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).Distinct().ToList();
+            /*
+            var qc = from c in dc.CategoriesTable
+                     where c.parentName == catName
+                     orderby c.Name
+                     select c;
+            n.Categories = qc.Distinct().ToList();
+            */
 
             //get its child topics
             n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).Distinct().ToList();
-
+            /*
+            var qt = from t in dc.TopicsTable
+                     where t.parentName == catName
+                     orderby t.Name
+                     select t;
+            n.Topics = qt.Distinct().ToList();
+            */
             return n;
         }
 

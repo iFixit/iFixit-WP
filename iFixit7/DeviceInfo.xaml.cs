@@ -76,19 +76,19 @@ namespace iFixit7
                 else
                 {
                     //nuke the existing one so we dont collide on insert
-                    db.TopicsTable.DeleteOnSubmit(top);
-                    db.SubmitChanges();
+                    //db.TopicsTable.DeleteOnSubmit(top);
+                    //db.SubmitChanges();
                 }
 
-                Topic newTop = new Topic();
                 //translate devInfo in a Topic()
                 //name is already the same
-                newTop.Name = devInfo.topic_info.name;
-                newTop.Description = devInfo.description;
-                newTop.ImageURL = devInfo.image.text + ".medium";       //scales the image
-                newTop.Populated = true;
+                top.Name = devInfo.topic_info.name;
+                top.parentName = devInfo.title;
+                top.Description = devInfo.description;
+                top.ImageURL = devInfo.image.text + ".medium";       //scales the image
+                top.Populated = true;
 
-                newTop.Description = devInfo.description;
+                top.Description = devInfo.description;
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)
@@ -106,6 +106,7 @@ namespace iFixit7
 
                         //transfer info
                         gNew.Title = gOld.Title;
+                        gNew.parentName = gOld.parentName;
                         gNew.Summary = gOld.Summary;
                         gNew.URL = gOld.URL;
                         gNew.GuideID = gOld.GuideID;
@@ -117,15 +118,15 @@ namespace iFixit7
 
                     // hang it below the topic, it its collection of guides
                     //newTop.Guides.Add(gNew);
-                    newTop.AddGuide(gNew);
+                    top.AddGuide(gNew);
 
                     //FIXME do we need to specifically add this to the guide table? is that magic?
                     db.GuidesTable.InsertOnSubmit(gNew);
                     db.SubmitChanges();
                 }
 
-                //insert the Topic() into the database
-                db.TopicsTable.InsertOnSubmit(newTop);
+                //update the Topic() into the database
+                //db.TopicsTable.InsertOnSubmit(newTop);
                 db.SubmitChanges();
 
                 //force the view model to update

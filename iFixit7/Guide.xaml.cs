@@ -186,6 +186,8 @@ namespace iFixit7
         }
         public bool insertGuideIntoDB(GuideHolder guide){
             //convert the GuideHolder we got into a DB object
+
+            //FIXME should change this to re-use the existing guide so we dont delete then add it
             SourceGuide = new Guide(guide);
 
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))

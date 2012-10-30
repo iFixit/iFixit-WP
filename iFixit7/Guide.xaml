@@ -65,7 +65,7 @@
                                             
                                             <!-- unfortunately, to make the text wrapping work we must hard code a width -->
                                             <local:HtmlTextBlock Text="{Binding Text}" TextWrapping="Wrap"
-                                                       Width="450" Margin="2"/>
+                                                       Width="450" Margin="8, 2, 2, 2"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

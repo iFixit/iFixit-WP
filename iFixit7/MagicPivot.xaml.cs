@@ -83,9 +83,10 @@ namespace iFixit7
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            State.Add("NavigatedToHeader", (this.SmartPivot.SelectedItem as MagicPivotViewModel.ColumnContent).ColumnHeader);
 
             //FIXME save current index in VM? alter params?
+            //FIXME finish...
+            //State.Add("NavigatedToHeader", (this.SmartPivot.SelectedItem as MagicPivotViewModel.ColumnContent).ColumnHeader);
         }
 
         /*
@@ -136,7 +137,7 @@ namespace iFixit7
         {
             //FIXME need to notify changed?
             public string ColumnHeader {get; set;}
-            public ObservableCollection<string> ColContent {get; set;}
+            public List<string> ColContent {get; set;}
 
             //private List<string> AllCategories;
             //private List<string> AllTopics;
@@ -146,10 +147,8 @@ namespace iFixit7
             {
                 this.ColumnHeader = c.Name;
 
-                ColContent = new ObservableCollection<string>();
+                ColContent = new List<string>();
 
-                //AllCategories = new List<string>();
-                //AllTopics = new List<string>();
                 TypeRefs = new Dictionary<string, string>();
             }
 
@@ -159,12 +158,6 @@ namespace iFixit7
              */
             public string findType(string q)
             {
-                //if (AllCategories.Contains(q))
-                //    return MagicPivot.MagicTypeCategory;
-                //else if (AllTopics.Contains(q))
-                //    return MagicPivot.MagicTypeTopic;
-                //else
-                //    return "";
                 return TypeRefs[q];
             }
 
@@ -172,33 +165,37 @@ namespace iFixit7
             {
                 Category colCat = null;
 
-                    using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-                    {
-                        colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
-                        /*
-                        IQueryable<Category> query =
-                            from cats in App.mDB.CategoriesTable
-                            where cats.Name == ColumnHeader
-                            select cats;
-                         */
-                    }
-                    //add all sub categories
-                    foreach (Category c in colCat.Categories)
-                    {
-                        //Debug.WriteLine("col content " + c.Name);
-                        ColContent.Add(c.Name);
-                        TypeRefs.Add(c.Name, MagicPivot.MagicTypeCategory);
-                        //AllCategories.Add(c.Name);
-                    }
+                using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+                {
+                    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
+                    /*
+                    IQueryable<Category> query =
+                        from cats in App.mDB.CategoriesTable
+                        where cats.Name == ColumnHeader
+                        select cats;
+                        */
+                }
+                //add all sub categories
+                foreach (Category c in colCat.Categories)
+                {
+                    //Debug.WriteLine("col content " + c.Name);
+                    ColContent.Add(c.Name);
+                    TypeRefs.Add(c.Name, MagicPivot.MagicTypeCategory);
+                }
 
-                    //add all topics
-                    foreach (Topic c in colCat.Topics)
-                    {
-                        //Debug.WriteLine("col content topic " + c.Name);
-                        ColContent.Add(c.Name);
-                        TypeRefs.Add(c.Name, MagicPivot.MagicTypeTopic);
-                        //AllTopics.Add(c.Name);
-                    }
+                //add all topics
+                foreach (Topic c in colCat.Topics)
+                {
+                    //Debug.WriteLine("col content topic " + c.Name);
+                    ColContent.Add(c.Name);
+                    TypeRefs.Add(c.Name, MagicPivot.MagicTypeTopic);
+                }
+
+                //FIXME forces sorting...
+                var q = from cc in ColContent
+                        orderby cc
+                        select cc;
+                ColContent = q.ToList();
             }
         }
 

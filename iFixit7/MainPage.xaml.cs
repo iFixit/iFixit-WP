@@ -78,6 +78,8 @@ namespace iFixit7
                 sp.Children.Add(i);
                 sp.Children.Add(tb);
                 App.Current.RootVisual = sp;
+
+                ApplicationBar.IsVisible = false;
             }
         }
 

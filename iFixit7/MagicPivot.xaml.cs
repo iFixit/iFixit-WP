@@ -13,9 +13,9 @@ namespace iFixit7
     {
         private MagicPivotViewModel vm = null;
 
-        private String navParentName;
-        private String navSelectedName;
-        private String navSelectedType;
+        private String navParentName = "";
+        private String navSelectedName = "";
+        private String navSelectedType = "";
 
         public const string MagicTypeCategory = "category";
         public const string MagicTypeTopic = "topic";
@@ -27,6 +27,7 @@ namespace iFixit7
             Debug.WriteLine("starting a new magic pivot...");
 
             this.SmartPivot.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(tb_Tap);
+            setupBinding();
         }
 
         private void setupBinding()
@@ -82,6 +83,7 @@ namespace iFixit7
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+            State.Add("NavigatedToHeader", (this.SmartPivot.SelectedItem as MagicPivotViewModel.ColumnContent).ColumnHeader);
 
             //FIXME save current index in VM? alter params?
         }
@@ -95,10 +97,17 @@ namespace iFixit7
 
             Debug.WriteLine("A MagicPivot has been navigated to...");
 
-            //get parameters
             navParentName = NavigationContext.QueryString[App.MagicParentTag];
-            navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
             navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
+            if (State.Keys.Contains("NavigatedToHeader"))
+            {
+                navSelectedName = State["NavigatedToHeader"] as string;
+            }
+            else
+            {
+                //get parameters
+                navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
+            }
 
             Debug.WriteLine("magic pivot got a type = " + navSelectedType);
 
@@ -129,8 +138,9 @@ namespace iFixit7
             public string ColumnHeader {get; set;}
             public ObservableCollection<string> ColContent {get; set;}
 
-            private List<string> AllCategories;
-            private List<string> AllTopics;
+            //private List<string> AllCategories;
+            //private List<string> AllTopics;
+            private Dictionary<string, string> TypeRefs;
 
             public ColumnContent(Category c)
             {
@@ -138,8 +148,9 @@ namespace iFixit7
 
                 ColContent = new ObservableCollection<string>();
 
-                AllCategories = new List<string>();
-                AllTopics = new List<string>();
+                //AllCategories = new List<string>();
+                //AllTopics = new List<string>();
+                TypeRefs = new Dictionary<string, string>();
             }
 
             /*
@@ -148,43 +159,46 @@ namespace iFixit7
              */
             public string findType(string q)
             {
-                if (AllCategories.Contains(q))
-                    return MagicPivot.MagicTypeCategory;
-                else if (AllTopics.Contains(q))
-                    return MagicPivot.MagicTypeTopic;
-                else
-                    return "";
+                //if (AllCategories.Contains(q))
+                //    return MagicPivot.MagicTypeCategory;
+                //else if (AllTopics.Contains(q))
+                //    return MagicPivot.MagicTypeTopic;
+                //else
+                //    return "";
+                return TypeRefs[q];
             }
 
             public void setColumnContent()
             {
                 Category colCat = null;
-                using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-                {
-                    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
-                    /*
-                    IQueryable<Category> query =
-                        from cats in App.mDB.CategoriesTable
-                        where cats.Name == ColumnHeader
-                        select cats;
-                     */
-                }
 
-                //add all sub categories
-                foreach (Category c in colCat.Categories)
-                {
-                    //Debug.WriteLine("col content " + c.Name);
-                    ColContent.Add(c.Name);
-                    AllCategories.Add(c.Name);
-                }
+                    using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+                    {
+                        colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
+                        /*
+                        IQueryable<Category> query =
+                            from cats in App.mDB.CategoriesTable
+                            where cats.Name == ColumnHeader
+                            select cats;
+                         */
+                    }
+                    //add all sub categories
+                    foreach (Category c in colCat.Categories)
+                    {
+                        //Debug.WriteLine("col content " + c.Name);
+                        ColContent.Add(c.Name);
+                        TypeRefs.Add(c.Name, MagicPivot.MagicTypeCategory);
+                        //AllCategories.Add(c.Name);
+                    }
 
-                //add all topics
-                foreach (Topic c in colCat.Topics)
-                {
-                    //Debug.WriteLine("col content topic " + c.Name);
-                    ColContent.Add(c.Name);
-                    AllTopics.Add(c.Name);
-                }
+                    //add all topics
+                    foreach (Topic c in colCat.Topics)
+                    {
+                        //Debug.WriteLine("col content topic " + c.Name);
+                        ColContent.Add(c.Name);
+                        TypeRefs.Add(c.Name, MagicPivot.MagicTypeTopic);
+                        //AllTopics.Add(c.Name);
+                    }
             }
         }
 
@@ -210,7 +224,8 @@ namespace iFixit7
             Debug.WriteLine("Made a new MagicPivot View Model with parent = " + pName + " & cur = " + selName);
 
             //force all data to update
-            UpdateData();
+            if (ParentName != "" && Columns.Count == 0)
+                UpdateData();
         }
 
         /*

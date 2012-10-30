@@ -255,7 +255,7 @@ namespace iFixit7
                     //update the DB
                     db.SubmitChanges();
 
-                    (RootFrame.Content as MainPage).initDataBinding();
+                    //(RootFrame.Content as MainPage).initDataBinding();
                 }
             }
 

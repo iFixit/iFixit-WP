@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="iFixit_I - Square.png" />
+    <None Include="iFixit7_2012_10_29_17_08_58.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />

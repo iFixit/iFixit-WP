@@ -59,14 +59,29 @@
                                  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="0, 4">
-                                            <Rectangle Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
-                                                       Fill="{Binding ColorBrush}"/>
+                                        <Grid Margin="0, 4">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <!-- This is a hidden rectangle which is used to space bullets -->
+                                            <Rectangle Grid.Column="0"
+                                                Width="{Binding DrawingLevelWidth}"  VerticalAlignment="Stretch" 
+                                                Fill="Black" Opacity="0"/>
+
+                                            <Rectangle Grid.Column="1"
+                                                 Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
+                                                 Fill="{Binding ColorBrush}"/>
                                             
                                             <!-- unfortunately, to make the text wrapping work we must hard code a width -->
-                                            <local:HtmlTextBlock Text="{Binding Text}" TextWrapping="Wrap"
-                                                       Width="450" Margin="8, 2, 2, 2"/>
-                                        </StackPanel>
+                                            <local:HtmlTextBlock Grid.Column="2"
+                                                 Text="{Binding Text}" TextWrapping="Wrap"
+                                                 Margin="8, 2, 2, 2"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>

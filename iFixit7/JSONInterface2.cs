@@ -269,6 +269,6 @@ namespace iFixit7
         public string text { get; set; }
         //these are colors
         public string bullet { get; set; }
-        public string level { get; set; }
+        public int level { get; set; }
     }
 }

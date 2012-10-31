@@ -3,6 +3,7 @@ using System.Windows.Media;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace iFixit7
 {
@@ -18,7 +19,7 @@ namespace iFixit7
         public Lines(GHStepLines l)
         {
             this.Text = l.text;
-            this.Level = l.level;
+            this.Level = l.level.ToString();
             this.ColorString = l.bullet;
         }
 
@@ -133,6 +134,21 @@ namespace iFixit7
                     _level = value;
                     NotifyPropertyChanged("Level");
                 }
+            }
+        }
+
+        // a modified level for data binding
+        public string DrawingLevelWidth
+        {
+            get
+            {
+                if(_level != null)
+                    return (int.Parse(_level) * 14).ToString();
+                return "0";
+            }
+            set
+            {
+                DrawingLevelWidth = "";
             }
         }
 

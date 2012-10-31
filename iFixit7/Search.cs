@@ -32,6 +32,25 @@ namespace iFixit7
         public string title { get; set; }
         public string display_title { get; set; }
         public string summary { get; set; }
+
+        //a truncated version of the summary
+        public string shortSummary
+        {
+            get
+            {
+                if (summary != null)
+                {
+                    if (summary.Length > 150)
+                        return string.Concat(summary.Remove(150), "...");
+                    return summary;
+                }
+                return summary;
+            }
+            set
+            {
+                shortSummary = "";
+            }
+        }
         public string id { get; set; }
 
         //images

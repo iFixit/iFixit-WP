@@ -37,7 +37,7 @@
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    HorizontalAlignment="Left"
                                    Margin="0,70,-20,0" />
-                        <Rectangle Fill="DarkOrange" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Panorama.TitleTemplate>
@@ -106,10 +106,8 @@
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
                                             Click="AppBarSearch_Click"/>
 
-            <!--
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"
                                             Click="AppBarFavorites_Click"/>
-            -->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

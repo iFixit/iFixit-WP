@@ -44,7 +44,7 @@
                         <TextBlock Text="{Binding Title}"
                                    FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    HorizontalAlignment="Left" />
-                        <Rectangle Fill="DarkOrange" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>

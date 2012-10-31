@@ -33,9 +33,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                    Text="Search" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+        <StackPanel  Grid.Row="0">
+            <TextBlock Text="Search" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
+            <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
+        </StackPanel>
+        
         <Grid  Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -75,7 +78,7 @@
                                Margin="2, 4" VerticalAlignment="Center"/>
                             
                             <TextBlock 
-                                Text="{Binding summary, Mode=OneWay}" TextWrapping="Wrap"
+                                Text="{Binding shortSummary, Mode=OneWay}" TextWrapping="Wrap"
                                HorizontalAlignment="Stretch" Width="360"
                                 Style="{StaticResource PhoneTextSmallStyle}"
                                 Margin="2, 4"/>

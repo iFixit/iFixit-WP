@@ -42,7 +42,7 @@ namespace iFixit7
                 //setup the data binding stuff for live column
                 rootCat = DBHelpers.GetCompleteCategory("root", db);
                 if(rootCat != null){
-                    this.CatagoryList.ItemsSource = rootCat.Categories;
+                    this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
                 }
             }
 

@@ -35,24 +35,20 @@
 
 
         <!-- stack two views ontop of eachother for effect -->
-        <Rectangle Grid.Row="0" Grid.RowSpan="2"
-            Fill="DarkBlue" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
         <StackPanel Grid.Row="0">
             <Image
                 Source="iFixit_logo_white.png"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Center"
-                Height="100"/>
+                Height="100"
+                Margin="0, 0, 0, 10"/>
         </StackPanel>
-
+        
+        <!--
         <StackPanel Grid.Row="1">
-            <!--
-            <TextBlock
-                    Text="Browse Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"
-                    HorizontalAlignment="Left"/>
-            -->
-            <Rectangle Fill="DarkOrange" Height="4" HorizontalAlignment="Stretch" />
+            <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
         </StackPanel>
+        -->
 
         <ProgressBar Grid.Row="2"
                 x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="DarkOrange"
@@ -79,8 +75,9 @@
                                      GroupTag="AllTiles"
                                      Margin="5"
                                      />
-                    -->
-                    <Grid Width="220" Height="220" Margin="5"
+                     -->
+                    <!-- <Grid Width="220" Height="220" Margin="5" -->
+                    <Grid Width="220" Height="170" Margin="5"
                           Tag="{Binding Name, Mode=OneWay}" Tap="tb_Tap" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -92,16 +89,14 @@
                         
                         <!-- this is the background of the entire tile, which is usually hidden by the image -->
                         <Rectangle Grid.Row="0" Grid.RowSpan="2"
-                                   Fill="DarkBlue" />
-
-                        <!-- Source="{Binding Thumbnail, Mode=OneWay, Converter={StaticResource ImageCacheConverter}}" -->
-                        <!-- Source="http://guide-images.ifixit.net/igi/VPN5xWMbATEaIwmV.thumbnail" -->
+                                   Fill="DarkGray" Opacity=".2" />
+                        
                         <Image Grid.Row="0" Grid.RowSpan="2"
-                               VerticalAlignment="Top"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
                                Source="{Binding Thumbnail, Mode=OneWay, Converter={StaticResource ImageCacheConverter}}" />
 
                         <Rectangle Grid.Row="1"
-                                   Fill="Black" Opacity=".8"/>
+                                   Fill="Black" Opacity=".7"/>
                         <TextBlock Grid.Row="1"
                                    VerticalAlignment="Bottom" Margin="3"
                                    TextWrapping="Wrap"

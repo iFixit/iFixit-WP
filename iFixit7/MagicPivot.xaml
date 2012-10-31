@@ -24,7 +24,7 @@
                     <StackPanel>
                         <TextBlock Text="{Binding ColumnHeader}" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"
                                    HorizontalAlignment="Left"/>
-                        <Rectangle Fill="DarkOrange" Height="1" HorizontalAlignment="Stretch" />
+                        <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
                     </StackPanel>
                 </DataTemplate>
             </controls:Pivot.HeaderTemplate>

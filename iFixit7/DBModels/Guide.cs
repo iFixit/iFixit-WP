@@ -28,7 +28,7 @@ namespace iFixit7
             this.Summary = gh.guide.summary;
             this.URL = gh.url;
             this.GuideID = gh.guideid;
-            this.Thumbnail = gh.guide.image.thumbnail;
+            this.Thumbnail = gh.guide.image.medium;
             this.TitleImage = gh.guide.image.standard;
 
             //copy over steps

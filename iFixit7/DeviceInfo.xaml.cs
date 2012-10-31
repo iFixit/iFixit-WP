@@ -152,7 +152,7 @@ namespace iFixit7
         private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string guideTag = "";
-            guideTag = (sender as StackPanel).Tag.ToString();
+            guideTag = (sender as Grid).Tag.ToString();
             Debug.WriteLine("device info tapped guide id = " + guideTag);
             NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
         }

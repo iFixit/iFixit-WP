@@ -14,10 +14,11 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
+using System.ComponentModel;
 
 namespace iFixit7
 {
-    public partial class App : Application
+    public partial class App : Application, INotifyPropertyChanged, INotifyPropertyChanging
     {
         // Specify the local database connection string.
         public const string DBConnectionString = "Data Source=isostore:/iFixit.sdf";
@@ -221,10 +222,12 @@ namespace iFixit7
                 {
                     Debug.WriteLine("updating thumb");
 
+                    NotifyPropertyChanging("Category.Thumbnail");
                     c.Thumbnail = di.image.text + ".standard";
 
                     //update the DB
                     db.SubmitChanges();
+                    NotifyPropertyChanged("Category.Thumbnail");
 
                     //(RootFrame.Content as MainPage).initDataBinding();
                 }
@@ -232,7 +235,35 @@ namespace iFixit7
 
             return true;
         }
+        #region INotifyPropertyChanged Members
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify the page that a data context property changed
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        // Used to notify the data context that a data context property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            }
+        }
+
+        #endregion
         #region Phone application initialization
 
         // Avoid double-initialization

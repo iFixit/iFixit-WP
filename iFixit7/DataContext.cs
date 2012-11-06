@@ -30,15 +30,41 @@ namespace iFixit7
          */
         public static void InsertTree(Category root, iFixitDataContext dc)
         {
-            dc.CategoriesTable.InsertOnSubmit(root);
-            dc.TopicsTable.InsertAllOnSubmit(root.Topics);
+            Category dbCopy = GetCompleteCategory(root.Name, dc);
 
-            //Debug.WriteLine("\t\tinsert: cat = " + root.Name);
-
-            foreach (Category c in root.Categories)
+            if (dbCopy == null)
             {
-                InsertTree(c, dc);
+                dc.CategoriesTable.InsertOnSubmit(root);
+                dc.CategoriesTable.InsertAllOnSubmit(root.Categories);
+                dc.TopicsTable.InsertAllOnSubmit(root.Topics);
             }
+            else
+            {
+                var catsToRemove = dbCopy.Categories.Except(root.Categories);
+                var catsToAdd = root.Categories.Except(dbCopy.Categories);
+                dc.CategoriesTable.InsertAllOnSubmit(catsToAdd);
+                dc.CategoriesTable.DeleteAllOnSubmit(catsToRemove);
+                //dc.TopicsTable.InsertAllOnSubmit(root.Topics);
+
+                //Debug.WriteLine("\t\tinsert: cat = " + root.Name);
+
+                //foreach (Category c in root.Categories)
+                //{
+                //    InsertTree(c, dc);
+                //}
+                //else 
+                //{
+                var topicsToRemove = dbCopy.Topics.Except(root.Topics);
+                var topicsToAdd = root.Topics.Except(dbCopy.Topics);
+                dc.TopicsTable.InsertAllOnSubmit(topicsToAdd);
+                dc.TopicsTable.DeleteAllOnSubmit(topicsToRemove);
+            }
+
+                //iterate through all children in all cases
+                foreach (Category c in root.Categories)
+                {
+                    InsertTree(c, dc);
+                }
         }
 
         /*
@@ -55,7 +81,7 @@ namespace iFixit7
                 return null;
 
             //get its child categories
-            n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).Distinct().ToList();
+            n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).OrderBy(c => c.Name).ToList();
             /*
             var qc = from c in dc.CategoriesTable
                      where c.parentName == catName
@@ -65,7 +91,7 @@ namespace iFixit7
             */
 
             //get its child topics
-            n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).Distinct().ToList();
+            n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).OrderBy(t => t.Name).Distinct().ToList();
             /*
             var qt = from t in dc.TopicsTable
                      where t.parentName == catName

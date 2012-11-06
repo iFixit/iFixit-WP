@@ -15,6 +15,7 @@ using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace iFixit7
 {
@@ -95,16 +96,19 @@ namespace iFixit7
                 if (tDB.DatabaseExists() == true)
                 {
                     //FIXME until we add code to remove duplicates, this is the easiest solution
-                    tDB.DeleteDatabase();
+                    //tDB.DeleteDatabase();
 
                     //MessageBox.Show("Loading data for the first time. This may take a moment...");
                 }
 
                 // Create the local database.
-                tDB.CreateDatabase();
+                if (!tDB.DatabaseExists())
+                {
+                    tDB.CreateDatabase();
 
-                // Save categories to the database.
-                tDB.SubmitChanges();
+                    // Save categories to the database.
+                    tDB.SubmitChanges();
+                }
             }
         }
 
@@ -165,47 +169,59 @@ namespace iFixit7
         //the callback hook that gets fired when the area hierarchy is finally retreived
         public void App_callAreasAPI(Category tree)
         {
-            if (tree == null)
+            var _Worker = new BackgroundWorker();
+            _Worker.DoWork += (s, e) =>
             {
-                //FIXME not sure this is what we really want to do
-                MessageBox.Show("No network connection. Please run this app when connected to the internet.");
-                (RootFrame.Content as MainPage).StopLoadingIndication(true);
-
-                return;
-            }
-
-            Debug.WriteLine("we got a tree, right? PROCESS IT");
-
-            //open up a new DB connection for this transaction
-            //mDB = new iFixitDataContext(DBConnectionString);
-
-
-            // Save categories to the database.
-            /*
-            mDB.SubmitChanges();
-            IQueryable<Category> query = from cats in mDB.CategoriesTable
-                                         where cats.Name == "Camera"
-                                         select cats;
-            var x = query.FirstOrDefault();
-            */
-            using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
-            {
-                //add the rest of the tree
-                DBHelpers.InsertTree(tree, db);
-                db.SubmitChanges();
-            }
-
-            //now async get images for all root categories
-            foreach (Category c in tree.Categories)
-            {
-                Debug.WriteLine("thumb = " + c.Thumbnail);
-                if (c.Thumbnail == "")
+                if (tree == null)
                 {
-                    new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
-                }
-            }
+                    //FIXME not sure this is what we really want to do
+                    MessageBox.Show("No network connection. Please run this app when connected to the internet.");
+                    (RootFrame.Content as MainPage).StopLoadingIndication(true);
 
-            (RootFrame.Content as MainPage).initDataBinding();
+                    return;
+                }
+
+                Debug.WriteLine("we got a tree, right? PROCESS IT");
+
+                //open up a new DB connection for this transaction
+                //mDB = new iFixitDataContext(DBConnectionString);
+
+
+                // Save categories to the database.
+                /*
+                mDB.SubmitChanges();
+                IQueryable<Category> query = from cats in mDB.CategoriesTable
+                                             where cats.Name == "Camera"
+                                             select cats;
+                var x = query.FirstOrDefault();
+                */
+                using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
+                {
+                    //add the rest of the tree
+                    Debug.WriteLine("about to insert tree");
+                    DBHelpers.InsertTree(tree, db);
+                    db.SubmitChanges();
+                    Debug.WriteLine("done inserting tree");
+
+                    //now async get images for all root categories
+                    //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
+                    List<Category> cats = tree.Categories;
+                    foreach (Category c in cats)
+                    {
+                        Debug.WriteLine("thumb = " + c.Thumbnail);
+                        if (c.Thumbnail == "")
+                        {
+                            new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
+                        }
+                    }
+                }
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    (RootFrame.Content as MainPage).initDataBinding();
+                });
+            };
+            _Worker.RunWorkerAsync();
         }
 
         /*
@@ -216,14 +232,18 @@ namespace iFixit7
         {
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                Category c = db.CategoriesTable.FirstOrDefault(cat => cat.Name == di.title);
+                Category c = db.CategoriesTable.Single(cat => cat.Name == di.title);
+                Debug.WriteLine("Category: " + c.Name + "| " + c.parentName + "| ");
 
                 if (c.Thumbnail != di.image.text + ".standard")
                 {
                     Debug.WriteLine("updating thumb");
 
                     NotifyPropertyChanging("Category.Thumbnail");
+                    Debug.WriteLine("thumbnail before assign: " + c.Thumbnail);
                     c.Thumbnail = di.image.text + ".standard";
+                    Debug.WriteLine("thumbnail after assign: " + c.Thumbnail);
+
 
                     //update the DB
                     db.SubmitChanges();

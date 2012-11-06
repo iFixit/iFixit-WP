@@ -34,7 +34,8 @@ namespace iFixit7
         public delegate void AreaCallEventHandler( Category tree);
         public event AreaCallEventHandler callAreasAPI;
 
-        public void doAPICallAsync(string uri) {
+        public void doAPICallAsync(string uri)
+        {
             Uri site = new Uri(uri);
 
             //FIXME this scares me... Do we need it if we only use this for categories now?
@@ -92,6 +93,10 @@ namespace iFixit7
             catch (WebException we)
             {
                 //there was an exception using the internet connection. Return null
+                this.callAreasAPI.Invoke(null);
+            }
+            catch (Newtonsoft.Json.JsonReaderException je)
+            {
                 this.callAreasAPI.Invoke(null);
             }
             

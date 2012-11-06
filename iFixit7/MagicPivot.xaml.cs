@@ -387,7 +387,7 @@ namespace iFixit7
             int index = 0;
             foreach (Category c in parentCat.Categories)
             {
-                //Debug.WriteLine("Got Cat " + c.Name);
+                Debug.WriteLine("Got Cat " + c.Name);
 
                 ColumnContent cc = new ColumnContent(c);
                 NotifyPropertyChanging("Columns");

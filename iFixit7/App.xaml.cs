@@ -175,8 +175,8 @@ namespace iFixit7
                 if (tree == null)
                 {
                     //FIXME not sure this is what we really want to do
-                    MessageBox.Show("No network connection. Please run this app when connected to the internet.");
-                    (RootFrame.Content as MainPage).StopLoadingIndication(true);
+                    //MessageBox.Show("No network connection. Please run this app when connected to the internet.");
+                    //(RootFrame.Content as MainPage).StopLoadingIndication(true);
 
                     return;
                 }

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows;
 
 namespace iFixit7
 {
@@ -139,10 +140,20 @@ namespace iFixit7
             PivotItem p = e.Item;
             MagicPivotViewModel.ColumnContent cc = p.Content as MagicPivotViewModel.ColumnContent;
 
-            if (cc.ColContent.Count > 0)
+            if (cc.ColContent.Count > 0 || cc.TypeRefs.Count > 0)
                 return;
 
-            cc.setColumnContent();
+            var _Worker = new BackgroundWorker();
+            _Worker.DoWork += (s, d) =>
+            {
+                cc.setColumnContent();
+            };
+            _Worker.RunWorkerCompleted += (s, d) =>
+            {
+                    vm.TabIndex = SmartPivot.SelectedIndex;
+                    Debug.WriteLine("Set content for " + cc.ColumnHeader + ". got " + cc.ColContent.Count + " items");
+            };
+            _Worker.RunWorkerAsync();
 
             //this.DataContext = null;
             //this.DataContext = vm;
@@ -151,10 +162,7 @@ namespace iFixit7
             //myPivot.DataContext = null;
             //myPivot.DataContext = this;
 
-            vm.TabIndex = SmartPivot.SelectedIndex;
-
-            Debug.WriteLine("Set content for " + cc.ColumnHeader + ". got " + cc.ColContent.Count + " items");
-
+            
         }
 
     }
@@ -205,7 +213,8 @@ namespace iFixit7
 
             //private List<string> AllCategories;
             //private List<string> AllTopics;
-            private Dictionary<string, string> TypeRefs;
+            public Dictionary<string, string> TypeRefs;
+            private bool HasBegunLoading = false;
 
             public ColumnContent(Category c)
             {
@@ -227,6 +236,9 @@ namespace iFixit7
 
             public void setColumnContent()
             {
+                if (HasBegunLoading)
+                    return;
+                HasBegunLoading = true;
                 Category colCat = null;
 
                 using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
@@ -265,6 +277,7 @@ namespace iFixit7
                         orderby cc
                         select cc;
                 ColContent = q.ToList();
+                HasBegunLoading = false;
             }
             #region INotifyPropertyChanged Members
 
@@ -275,7 +288,10 @@ namespace iFixit7
             {
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    });
                 }
             }
 
@@ -290,7 +306,10 @@ namespace iFixit7
             {
                 if (PropertyChanging != null)
                 {
-                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                    });
                 }
             }
 

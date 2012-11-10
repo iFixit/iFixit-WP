@@ -218,7 +218,9 @@ namespace iFixit7
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    (RootFrame.Content as MainPage).initDataBinding();
+                    MainPage m = RootFrame.Content as MainPage;
+                    if (m != null)
+                        m.initDataBinding();
                 });
             };
             _Worker.RunWorkerAsync();

@@ -91,7 +91,7 @@ namespace iFixit7
             */
 
             //get its child topics
-            n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).OrderBy(t => t.Name).Distinct().ToList();
+            n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).OrderBy(t => t.Name).ToList();
             /*
             var qt = from t in dc.TopicsTable
                      where t.parentName == catName

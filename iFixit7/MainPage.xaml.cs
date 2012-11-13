@@ -17,6 +17,7 @@ using System.Net;
 
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using Microsoft.Phone.Shell;
 
 namespace iFixit7
 {
@@ -91,10 +92,17 @@ namespace iFixit7
             string s = (sender as Grid).Tag as String;
             Debug.WriteLine("main page tapped > [" + s + "]");
 
-            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +
-                "&SelectedCategory=" + s +
-                "&SelectedType=" + "category",
-                UriKind.Relative));
+            Category navToCat = (App.Current as App).root.Categories.FirstOrDefault(c => c.Name == s);
+            navToCat.Parent = (App.Current as App).root;
+            Debug.WriteLine("Saving " + navToCat.Name + " at Key: " + navToCat.Parent.Name);
+            PhoneApplicationService.Current.State[navToCat.Parent.Name] = navToCat;
+
+            //NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +
+            //    "&SelectedCategory=" + s +
+            //    "&SelectedType=" + "category",
+            //    UriKind.Relative));
+
+            NavigationService.Navigate(new Uri("/MagicPivot.xaml?parent=" + navToCat.Parent.Name, UriKind.Relative));
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

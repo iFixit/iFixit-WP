@@ -8,6 +8,7 @@ using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.Phone.Shell;
 
 namespace iFixit7
 {
@@ -15,12 +16,14 @@ namespace iFixit7
     {
         private MagicPivotViewModel vm {get; set;}
 
-        private String navParentName = "";
-        private String navSelectedName = "";
-        private String navSelectedType = "";
+        //private String navParentName = "";
+        //private String navSelectedName = "";
+        //private String navSelectedType = "";
 
         public const string MagicTypeCategory = "category";
         public const string MagicTypeTopic = "topic";
+
+        public Category thisCat = null;
 
         public MagicPivot()
         {
@@ -28,16 +31,18 @@ namespace iFixit7
 
             Debug.WriteLine("starting a new magic pivot...");
 
-            this.SmartPivot.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(tb_Tap);
-            setupBinding();
+            //this.SmartPivot.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(tb_Tap);
+            //setupBinding();
         }
 
-        private void setupBinding()
+        private void setupBinding(Category c)
         {
             //instantiate view model
-            vm = new MagicPivotViewModel(navParentName, navSelectedName, SmartPivot);
+            //vm = new MagicPivotViewModel(navParentName, navSelectedName, SmartPivot);
+            vm = new MagicPivotViewModel(c, SmartPivot);
 
             this.DataContext = vm;
+            vm.Columns[vm.TabIndex].setColumnContent();
             SmartPivot.LoadingPivotItem += new EventHandler<PivotItemEventArgs>(SmartPivot_LoadingPivotItem);
 
             //set data context to the view model
@@ -64,6 +69,7 @@ namespace iFixit7
             string selected = (e.OriginalSource as TextBlock).Text as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 
+
             //get the parent
             MagicPivotViewModel.ColumnContent col = vm.Columns[vm.TabIndex];
             string parent = col.ColumnHeader;
@@ -72,14 +78,27 @@ namespace iFixit7
             //if we are about to navigate to a topic (leaf), navigate to a device info page
             if (type == MagicPivot.MagicTypeTopic)
             {
+                Debug.WriteLine("Saving " + col.colCat.Name + " at Key: " + col.colCat.Parent.Name);
+                PhoneApplicationService.Current.State[col.colCat.Parent.Name] = col.colCat;
                 NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + selected,
                 UriKind.Relative));
             }
+            else
+            {
+                Category temp = col.colCat.Categories.FirstOrDefault(c => c.Name == selected);
+                
+                Debug.WriteLine("Saving " + temp.Name + " at Key: " + temp.Parent.Name);
+                PhoneApplicationService.Current.State[temp.Parent.Name] = temp;
 
-            NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
-                "&SelectedCategory=" + selected +
-                "&SelectedType=" + type,
-                UriKind.Relative));
+                Debug.WriteLine("Saving " + temp.Parent.Name + " at Key: " + vm.selectedCategory.Parent.Name);
+                PhoneApplicationService.Current.State[vm.selectedCategory.Parent.Name] = temp.Parent;
+
+                //NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + parent +
+                //    "&SelectedCategory=" + selected +
+                //    "&SelectedType=" + type,
+                //    UriKind.Relative));
+                NavigationService.Navigate(new Uri("/MagicPivot.xaml?parent=" + temp.Parent.Name, UriKind.Relative));
+            }
         }
 
         /*
@@ -89,6 +108,8 @@ namespace iFixit7
         {
             base.OnNavigatingFrom(e);
 
+            //Debug.WriteLine("Saving in current.state: " + PhoneApplicationService.Current.State["Category"]);
+            //Debug.WriteLine("I'm going to try to pull a category out: " + (PhoneApplicationService.Current.State["Category"] as Category).Name);
             //FIXME save current index in VM? alter params?
             //FIXME finish...
             //State.Add("NavigatedToHeader", (this.SmartPivot.SelectedItem as MagicPivotViewModel.ColumnContent).ColumnHeader);
@@ -103,22 +124,34 @@ namespace iFixit7
 
             Debug.WriteLine("A MagicPivot has been navigated to...");
 
-            navParentName = NavigationContext.QueryString[App.MagicParentTag];
-            navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
-            if (State.Keys.Contains("NavigatedToHeader"))
-            {
-                navSelectedName = State["NavigatedToHeader"] as string;
-            }
-            else
-            {
-                //get parameters
-                navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
-            }
-
-            Debug.WriteLine("magic pivot got a type = " + navSelectedType);
-
-            setupBinding();
+            string navParentName = NavigationContext.QueryString[App.MagicParentTag];
+            Debug.WriteLine("Looking for Key: " + navParentName);
+            //navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
+            //if (State.Keys.Contains("NavigatedToHeader"))
+            //{
+            //    navSelectedName = State["NavigatedToHeader"] as string;
+            //}
+            //else
+            //{
+            //    //get parameters
+            //    navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
+            //}
+            //Debug.WriteLine("magic pivot got a type = " + navSelectedType);
+            if (PhoneApplicationService.Current.State.ContainsKey(navParentName))
+                this.thisCat = (Category)PhoneApplicationService.Current.State[navParentName];
+            Debug.WriteLine("Saving in current.state: " + this.thisCat);
+            Debug.WriteLine("I'm going to try to pull a category out: " + thisCat.Name);
+            
+            setupBinding(thisCat);
         }
+
+        //protected override void OnBackKeyPress(CancelEventArgs e)
+        //{
+        //    base.OnBackKeyPress(e);
+
+        //Category temp = vm.Columns[vm.TabIndex].colCat;
+        //PhoneApplicationService.Current.State[temp.Parent.Name] = temp;
+        //}
 
         /*
          * These two are the handlers for the application bar buttons
@@ -143,17 +176,17 @@ namespace iFixit7
             if (cc.ColContent.Count > 0 || cc.TypeRefs.Count > 0)
                 return;
 
-            var _Worker = new BackgroundWorker();
-            _Worker.DoWork += (s, d) =>
-            {
+            //var _Worker = new BackgroundWorker();
+            //_Worker.DoWork += (s, d) =>
+            //{
                 cc.setColumnContent();
-            };
-            _Worker.RunWorkerCompleted += (s, d) =>
-            {
+            //};
+            //_Worker.RunWorkerCompleted += (s, d) =>
+            //{
                     vm.TabIndex = SmartPivot.SelectedIndex;
                     Debug.WriteLine("Set content for " + cc.ColumnHeader + ". got " + cc.ColContent.Count + " items");
-            };
-            _Worker.RunWorkerAsync();
+            //};
+            //_Worker.RunWorkerAsync();
 
             //this.DataContext = null;
             //this.DataContext = vm;
@@ -211,6 +244,8 @@ namespace iFixit7
                 }
             }
 
+            public Category colCat = null;
+
             //private List<string> AllCategories;
             //private List<string> AllTopics;
             public Dictionary<string, string> TypeRefs;
@@ -218,6 +253,7 @@ namespace iFixit7
 
             public ColumnContent(Category c)
             {
+                this.colCat = c;
                 this.ColumnHeader = c.Name;
 
                 ColContent = new List<string>();
@@ -236,21 +272,21 @@ namespace iFixit7
 
             public void setColumnContent()
             {
-                if (HasBegunLoading)
+                if (HasBegunLoading || ColContent.Count > 0)
                     return;
                 HasBegunLoading = true;
-                Category colCat = null;
+                //Category colCat = null;
 
-                using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-                {
-                    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
-                    /*
-                    IQueryable<Category> query =
-                        from cats in App.mDB.CategoriesTable
-                        where cats.Name == ColumnHeader
-                        select cats;
-                        */
-                }
+                //using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+                //{
+                //    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
+                //    /*
+                //    IQueryable<Category> query =
+                //        from cats in App.mDB.CategoriesTable
+                //        where cats.Name == ColumnHeader
+                //        select cats;
+                //        */
+                //}
                 //add all sub categories
                 foreach (Category c in colCat.Categories)
                 {
@@ -356,24 +392,32 @@ namespace iFixit7
 
         //names
         //FIXME need to notify changed
-        public string ParentName { get; set; }
-        public string SelectedName { get; set; }
+        // ParentName and Selected name have been replaced by selectedCategory. 
+        // This category represents the selected column, and this category's parent is the
+        // category that will populate the entire PivotView (other columns)
+        //public string ParentName { get; set; }
+        //public string SelectedName { get; set; }
+        public Category selectedCategory { get; set; }
         public Pivot myPivot { get; set; }
 
-        public MagicPivotViewModel(string pName, string selName, Pivot sp)
+        //public MagicPivotViewModel(string pName, string selName, Pivot sp)
+        public MagicPivotViewModel(Category selectedCategory, Pivot sp)
         {
             TabIndex = 0;
             Columns = new List<ColumnContent>();
 
-            this.ParentName = pName;
-            this.SelectedName = selName;
+            //this.ParentName = pName;
+            //this.SelectedName = selName;
+            this.selectedCategory = selectedCategory;
 
             myPivot = sp;
 
-            Debug.WriteLine("Made a new MagicPivot View Model with parent = " + pName + " & cur = " + selName);
+            Debug.WriteLine("Current category is " + this.selectedCategory.Name + " who's parent is " + this.selectedCategory.Parent.Name);
+            //Debug.WriteLine("Made a new MagicPivot View Model with parent = " + pName + " & cur = " + selName);
 
             //force all data to update
-            if (ParentName != "" && Columns.Count == 0)
+            //if (ParentName != "" && Columns.Count == 0)
+            if (Columns.Count == 0)
                 UpdateData();
         }
 
@@ -392,17 +436,17 @@ namespace iFixit7
         {
             //run a query to fill the list of column headers
             //FIXME need to notify changed
-            Category parentCat = null;
-            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-            {
-                parentCat = DBHelpers.GetCompleteCategory(ParentName, db);
-                /*
-                IQueryable<Category> query =
-                    from cats in App.mDB.CategoriesTable
-                    where cats.Name == ParentName
-                    select cats;
-                 */
-            }
+            Category parentCat = this.selectedCategory.Parent;
+            //using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            //{
+            //    parentCat = DBHelpers.GetCompleteCategory(ParentName, db);
+            //    /*
+            //    IQueryable<Category> query =
+            //        from cats in App.mDB.CategoriesTable
+            //        where cats.Name == ParentName
+            //        select cats;
+            //     */
+            //}
             int index = 0;
             foreach (Category c in parentCat.Categories)
             {
@@ -414,7 +458,8 @@ namespace iFixit7
                 NotifyPropertyChanged("Columns");
                 //cc.setColumnContent();
 
-                if (c.Name == SelectedName)
+                //if (c.Name == SelectedName)
+                if (c.Name == this.selectedCategory.Name)
                 {
                     NotifyPropertyChanging("TabIndex");
                     TabIndex = index;

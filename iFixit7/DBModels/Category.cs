@@ -60,6 +60,7 @@ namespace iFixit7
         [Column]
         public string parentName { get; set; }
 
+        public Category Parent { get; set; }
         public List<Category> Categories = new List<Category>();
         public List<Topic> Topics = new List<Topic>();
 

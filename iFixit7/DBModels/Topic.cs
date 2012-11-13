@@ -42,6 +42,7 @@ namespace iFixit7
             this.Guides.Add(g);
         }
 
+        public Category Parent { get; set; }
 
         private string _name;
         [Column]

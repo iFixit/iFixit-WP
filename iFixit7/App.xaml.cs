@@ -26,9 +26,11 @@ namespace iFixit7
 
         //some constants
         public const string RootCategoryName = "root";
-        public const string MagicParentTag = "CategoryParent";
+        public const string MagicParentTag = "parent";
         public const string MagicSelectedTag = "SelectedCategory";
         public const string MagicTypeTag = "SelectedType";
+
+        public Category root { get; set; }
 
         private iFixitJSONHelper ifj;
 
@@ -44,6 +46,7 @@ namespace iFixit7
         /// </summary>
         public App()
         {
+            root = null;
 
             // Global handler for uncaught exceptions. 
             UnhandledException += Application_UnhandledException;
@@ -86,6 +89,7 @@ namespace iFixit7
             catch (Exception ex)
             { }
 
+            // TODO check for network
             //this has asynchroneous components that will run while the UI loads and whatnot
             getAreas();
 
@@ -95,6 +99,7 @@ namespace iFixit7
             {
                 if (tDB.DatabaseExists() == true)
                 {
+                    root = GetRootCategoryFromDB(tDB);
                     //FIXME until we add code to remove duplicates, this is the easiest solution
                     //tDB.DeleteDatabase();
 
@@ -110,6 +115,22 @@ namespace iFixit7
                     tDB.SubmitChanges();
                 }
             }
+        }
+
+        private Category GetRootCategoryFromDB(iFixitDataContext dc)
+        {
+            return BuildSubTree(DBHelpers.GetCompleteCategory("root", dc), dc);
+        }
+
+        private Category BuildSubTree(Category category, iFixitDataContext dc)
+        {
+            List<Category> newCats = new List<Category>();
+            foreach (Category c in category.Categories)
+            {
+                newCats.Add(BuildSubTree(DBHelpers.GetCompleteCategory(c.Name, dc), dc));
+            }
+            category.Categories = newCats;
+            return category;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -200,6 +221,8 @@ namespace iFixit7
                     //add the rest of the tree
                     Debug.WriteLine("about to insert tree");
                     DBHelpers.InsertTree(tree, db);
+                    if (root == null)
+                        root = tree;
                     db.SubmitChanges();
                     Debug.WriteLine("done inserting tree");
 

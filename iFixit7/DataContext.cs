@@ -82,6 +82,7 @@ namespace iFixit7
 
             //get its child categories
             n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).OrderBy(c => c.Name).ToList();
+            n.Parent = dc.CategoriesTable.FirstOrDefault(c => c.Name == n.parentName);
             /*
             var qc = from c in dc.CategoriesTable
                      where c.parentName == catName

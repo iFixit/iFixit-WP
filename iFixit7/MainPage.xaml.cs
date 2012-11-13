@@ -37,51 +37,57 @@ namespace iFixit7
          * setup the data binding stuff
          */
         public void initDataBinding(){
-            Category rootCat = null;
-            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            Category rootCat = (App.Current as App).root;
+            if (rootCat != null)
             {
-                //setup the data binding stuff for live column
-                rootCat = DBHelpers.GetCompleteCategory("root", db);
-                if(rootCat != null){
-                    this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
-                }
+                this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
             }
+            //using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            //{
+            //    //setup the data binding stuff for live column
+            //    rootCat = DBHelpers.GetCompleteCategory("root", db);
+            //    if(rootCat != null){
+            //        this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
+            //    }
+            //}
 
             //clear the loading bars when we are done loading data
-            StopLoadingIndication(false);
+            //StopLoadingIndication();
         }
 
         /*
          * A hook to disable the loading indicators and indicate no connectivity
          */
-        public void StopLoadingIndication(Boolean failure)
+        public void StopLoadingIndication()
         {
             this.LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
+            this.Loading.Visibility = System.Windows.Visibility.Collapsed;
+            ApplicationBar.IsVisible = true;
 
-            //replace the view with a view indicating failure
-            if (failure)
-            {
-                StackPanel sp = new StackPanel();
+            ////replace the view with a view indicating failure
+            //if (failure)
+            //{
+            //    StackPanel sp = new StackPanel();
 
-                Image i = new Image();
-                i.Source = new BitmapImage(new Uri("fist.png", UriKind.Relative));
-                i.Stretch = Stretch.UniformToFill;
-                i.HorizontalAlignment = HorizontalAlignment.Center;
-                i.VerticalAlignment = VerticalAlignment.Center;
+            //    Image i = new Image();
+            //    i.Source = new BitmapImage(new Uri("fist.png", UriKind.Relative));
+            //    i.Stretch = Stretch.UniformToFill;
+            //    i.HorizontalAlignment = HorizontalAlignment.Center;
+            //    i.VerticalAlignment = VerticalAlignment.Center;
 
-                TextBlock tb = new TextBlock();
-                tb.TextWrapping = TextWrapping.Wrap;
-                tb.Foreground = new SolidColorBrush(Colors.White);
-                tb.TextAlignment = TextAlignment.Center;
-                tb.FontSize = 45;
-                tb.Text = "Please connect to the internet and restart the app.";
+            //    TextBlock tb = new TextBlock();
+            //    tb.TextWrapping = TextWrapping.Wrap;
+            //    tb.Foreground = new SolidColorBrush(Colors.White);
+            //    tb.TextAlignment = TextAlignment.Center;
+            //    tb.FontSize = 45;
+            //    tb.Text = "Please connect to the internet and restart the app.";
 
-                sp.Children.Add(i);
-                sp.Children.Add(tb);
-                App.Current.RootVisual = sp;
+            //    sp.Children.Add(i);
+            //    sp.Children.Add(tb);
+            //    App.Current.RootVisual = sp;
 
-                ApplicationBar.IsVisible = false;
-            }
+            //    ApplicationBar.IsVisible = false;
+            //}
         }
 
         /*

@@ -183,7 +183,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README_FIRST.txt" />
-    <Content Include="SplashScreenImage.jpg" />
+    <None Include="SplashScreenImage.jpg1" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="iFixit_I - Square - Box.png" />

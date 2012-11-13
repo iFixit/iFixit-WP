@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using System.ComponentModel;
 using System.Windows.Threading;
+using System.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -29,6 +30,8 @@ namespace iFixit7
         public const string MagicParentTag = "parent";
         public const string MagicSelectedTag = "SelectedCategory";
         public const string MagicTypeTag = "SelectedType";
+
+        private static int thumbCount = 0;
 
         public Category root { get; set; }
 
@@ -89,23 +92,31 @@ namespace iFixit7
             catch (Exception ex)
             { }
 
-            // TODO check for network
-            //this has asynchroneous components that will run while the UI loads and whatnot
-            getAreas();
+            // POST LOADING SCREEN
 
+            //this has asynchroneous components that will run while the UI loads and whatnot
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                getAreas();
+            }
+            else
+            {
+                using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
+                {
+                    if (tDB.DatabaseExists() == true)
+                    {
+                        root = GetRootCategoryFromDB(tDB);
+                    }
+                }
+                // clear loading screen
+                (RootFrame.Content as MainPage).StopLoadingIndication();
+
+
+            }
             // Create the database if it does not exist.
             //the using statement guarntees that setup and teardown will always happen, and properly
             using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
             {
-                if (tDB.DatabaseExists() == true)
-                {
-                    root = GetRootCategoryFromDB(tDB);
-                    //FIXME until we add code to remove duplicates, this is the easiest solution
-                    //tDB.DeleteDatabase();
-
-                    //MessageBox.Show("Loading data for the first time. This may take a moment...");
-                }
-
                 // Create the local database.
                 if (!tDB.DatabaseExists())
                 {
@@ -221,19 +232,20 @@ namespace iFixit7
                     //add the rest of the tree
                     Debug.WriteLine("about to insert tree");
                     DBHelpers.InsertTree(tree, db);
-                    if (root == null)
-                        root = tree;
                     db.SubmitChanges();
+                    root = GetRootCategoryFromDB(db);
                     Debug.WriteLine("done inserting tree");
 
                     //now async get images for all root categories
                     //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
-                    List<Category> cats = tree.Categories;
+                    List<Category> cats = root.Categories;
+                    thumbCount = 0;
                     foreach (Category c in cats)
                     {
                         Debug.WriteLine("thumb = " + c.Thumbnail);
                         if (c.Thumbnail == "")
                         {
+                            ++thumbCount;
                             new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
                         }
                     }
@@ -245,6 +257,11 @@ namespace iFixit7
                     if (m != null)
                         m.initDataBinding();
                 });
+            };
+            _Worker.RunWorkerCompleted += (s, e) =>
+            {
+                if (thumbCount == 0)
+                    (RootFrame.Content as MainPage).StopLoadingIndication();
             };
             _Worker.RunWorkerAsync();
         }
@@ -273,8 +290,18 @@ namespace iFixit7
                     //update the DB
                     db.SubmitChanges();
                     NotifyPropertyChanged("Category.Thumbnail");
+                    --thumbCount;
 
-                    //(RootFrame.Content as MainPage).initDataBinding();
+                    if (thumbCount == 0)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            using (iFixitDataContext tdb = new iFixitDataContext(App.DBConnectionString))
+                                root = GetRootCategoryFromDB(tdb);
+                            (RootFrame.Content as MainPage).initDataBinding();
+                            (RootFrame.Content as MainPage).StopLoadingIndication();
+                        });
+                    }
                 }
             }
 

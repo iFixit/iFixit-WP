@@ -33,7 +33,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
         <!-- stack two views ontop of eachother for effect -->
         <StackPanel Grid.Row="0">
             <Image
@@ -106,12 +105,21 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Grid x:Name="Loading" Background="Black" Width="480" Height="800" Grid.Row="0" Grid.RowSpan="4">
+            <Rectangle Fill="Black" Grid.Row="0"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Gathering iFixit Data..." HorizontalAlignment="Center"/>
+                <ProgressBar Foreground="DarkOrange" IsIndeterminate="True" Width="480"/>
+            </StackPanel>
+        </Grid>
+
     </Grid>
  
     <!--ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
         <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+        <shell:ApplicationBar x:Name="AppBar" IsVisible="False" IsMenuEnabled="False">
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
                                             Click="AppBarSearch_Click"/>
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"

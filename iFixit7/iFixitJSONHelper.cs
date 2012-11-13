@@ -38,6 +38,8 @@ namespace iFixit7
         {
             Uri site = new Uri(uri);
 
+            mRootGroup.parentName = "";
+
             //FIXME this scares me... Do we need it if we only use this for categories now?
             categories = uri == IFIXIT_API_CATEGORIES;
 

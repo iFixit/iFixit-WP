@@ -4,12 +4,32 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace iFixit7
 {
     [Table (Name = "AllCategories")]
     public class Category : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public override bool Equals(object obj)
+        {
+            Category other = obj as Category;
+
+            if (obj == null || other == null)
+                return false;
+
+            //Debug.WriteLine("myname = " + this.Name + " other name = " + other.Name);
+            return (other.Name.Equals(this.Name)) && (other.parentName.Equals(this.parentName));
+        }
+
+        public override int GetHashCode()
+        {
+            //this is a hack for force LINQ to use our equals method every time
+            return 0;
+        }
+
+
+
         public Category()
         {
         }
@@ -25,37 +45,6 @@ namespace iFixit7
             get; set;
         }
         
-        ////the M side side of the 1:M of categories
-        //[Column(Name = "IFI_Category")] private int? categoryId;
-        //private EntitySet<Category> _categories = new EntitySet<Category>();
-        //[Association(Name = "FK_Category_Category", Storage = "_categories",
-        //    OtherKey = "categoryId", ThisKey = "Id")]
-        ////should these be 'ObservableCollection's?
-        //public ICollection<Category> Categories
-        //{
-        //    get { return _categories; }
-        //    set {
-        //        NotifyPropertyChanging("Categories");
-        //        _categories.Assign(value);
-        //        NotifyPropertyChanged("Categories");
-        //    }
-        //}
-
-
-
-        //1 side of 1:M for topics
-        //private EntitySet<Topic> _Topics = new EntitySet<Topic>();
-        //[Association(Name = "CategoryToTopic", Storage = "_Topics", ThisKey = "Id", OtherKey = "topID")]
-        //public ICollection<Topic> Topics
-        //{
-        //    get { return this._Topics; }
-        //    set
-        //    {
-        //        NotifyPropertyChanging("Topics");
-        //        this._Topics.Assign(value);
-        //        NotifyPropertyChanged("Topics");
-        //    }
-        //}
 
         [Column]
         public string parentName { get; set; }

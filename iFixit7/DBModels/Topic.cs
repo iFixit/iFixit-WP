@@ -10,26 +10,25 @@ namespace iFixit7
     [Table]
     public class Topic : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public override bool Equals(object obj)
+        {
+            Topic other = obj as Topic;
+
+            if (obj == null || other == null)
+                return false;
+
+            return (other.Name.Equals(this.Name)) && (other.parentName.Equals(this.parentName));
+        }
+        public override int GetHashCode()
+        {
+            //this is a hack for force LINQ to use our equals method every time
+            return 0;
+        }
+
         //the primary key
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
-        ////The M side of the 1:M of categories to guides
-        //[Column(Name = "topID")] private int? topID { get; set; }
-
-        ////1 side of 1:M for the collection of guides
-        //private EntitySet<Guide> _guides = new EntitySet<Guide>();
-        //[Association(Name = "TopicToGuides", Storage = "_guides", ThisKey = "Id", OtherKey = "guideGroupID")]
-        //public ICollection<Guide> Guides
-        //{
-        //    get { return this._guides; }
-        //    set
-        //    {
-        //        NotifyPropertyChanging("Guides");
-        //        this._guides.Assign(value);
-        //        NotifyPropertyChanged("Guides");
-        //    }
-        //}
 
         [Column]
         public string parentName { get; set; }

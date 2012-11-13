@@ -206,27 +206,12 @@ namespace iFixit7
             {
                 if (tree == null)
                 {
-                    //FIXME not sure this is what we really want to do
-                    //MessageBox.Show("No network connection. Please run this app when connected to the internet.");
-                    //(RootFrame.Content as MainPage).StopLoadingIndication(true);
-
+                    //FIXME not sure this is what we really want to do...
                     return;
                 }
 
                 Debug.WriteLine("we got a tree, right? PROCESS IT");
 
-                //open up a new DB connection for this transaction
-                //mDB = new iFixitDataContext(DBConnectionString);
-
-
-                // Save categories to the database.
-                /*
-                mDB.SubmitChanges();
-                IQueryable<Category> query = from cats in mDB.CategoriesTable
-                                             where cats.Name == "Camera"
-                                             select cats;
-                var x = query.FirstOrDefault();
-                */
                 using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
                 {
                     //add the rest of the tree
@@ -286,22 +271,36 @@ namespace iFixit7
                     c.Thumbnail = di.image.text + ".standard";
                     Debug.WriteLine("thumbnail after assign: " + c.Thumbnail);
 
-
                     //update the DB
                     db.SubmitChanges();
                     NotifyPropertyChanged("Category.Thumbnail");
+
                     --thumbCount;
 
-                    if (thumbCount == 0)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            using (iFixitDataContext tdb = new iFixitDataContext(App.DBConnectionString))
-                                root = GetRootCategoryFromDB(tdb);
-                            (RootFrame.Content as MainPage).initDataBinding();
-                            (RootFrame.Content as MainPage).StopLoadingIndication();
+                            //manually force the cache to save the image
+                            //ImgCache.RetrieveAndCacheByURL(di.image.text);
+
+                            if (thumbCount == 0)
+                            {
+
+                                //update the root categories so the handle has thumbnails
+                                using (iFixitDataContext tdb = new iFixitDataContext(App.DBConnectionString))
+                                {
+                                    for (int i = 0; i < root.Categories.Count; i++)
+                                    {
+                                        Category roots = root.Categories.ElementAt(i);
+                                        Category newCat = tdb.CategoriesTable.FirstOrDefault(r => r.Name == roots.Name);
+
+                                        roots.Thumbnail = newCat.Thumbnail;
+                                    }
+                                }
+                                (RootFrame.Content as MainPage).initDataBinding();
+                                (RootFrame.Content as MainPage).StopLoadingIndication();
+
+                            }
                         });
-                    }
                 }
             }
 

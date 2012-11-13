@@ -32,6 +32,7 @@ namespace iFixit7
         {
             Category dbCopy = GetCompleteCategory(root.Name, dc);
 
+            //if it isnt in the DB, insert it without any more work
             if (dbCopy == null)
             {
                 dc.CategoriesTable.InsertOnSubmit(root);
@@ -40,31 +41,25 @@ namespace iFixit7
             }
             else
             {
+                //if it was in the DB, insert all new children and remove all orhpans (categories and topics)
                 var catsToRemove = dbCopy.Categories.Except(root.Categories);
                 var catsToAdd = root.Categories.Except(dbCopy.Categories);
                 dc.CategoriesTable.InsertAllOnSubmit(catsToAdd);
                 dc.CategoriesTable.DeleteAllOnSubmit(catsToRemove);
-                //dc.TopicsTable.InsertAllOnSubmit(root.Topics);
 
-                //Debug.WriteLine("\t\tinsert: cat = " + root.Name);
-
-                //foreach (Category c in root.Categories)
-                //{
-                //    InsertTree(c, dc);
-                //}
-                //else 
-                //{
                 var topicsToRemove = dbCopy.Topics.Except(root.Topics);
                 var topicsToAdd = root.Topics.Except(dbCopy.Topics);
                 dc.TopicsTable.InsertAllOnSubmit(topicsToAdd);
                 dc.TopicsTable.DeleteAllOnSubmit(topicsToRemove);
+
+                //Debug.WriteLine("\yremoved " + topicsToRemove.Count() + " added " + topicsToAdd.Count());
             }
 
-                //iterate through all children in all cases
-                foreach (Category c in root.Categories)
-                {
-                    InsertTree(c, dc);
-                }
+            //iterate through all children in all cases
+            foreach (Category c in root.Categories)
+            {
+                InsertTree(c, dc);
+            }
         }
 
         /*

@@ -60,7 +60,6 @@ namespace iFixit7
          */
         public void StopLoadingIndication()
         {
-            this.LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
             this.Loading.Visibility = System.Windows.Visibility.Collapsed;
             ApplicationBar.IsVisible = true;
 

@@ -42,16 +42,6 @@
                 Height="100"
                 Margin="0, 0, 0, 10"/>
         </StackPanel>
-        
-        <!--
-        <StackPanel Grid.Row="1">
-            <Rectangle Fill="DarkOrange" Height="2" HorizontalAlignment="Stretch" />
-        </StackPanel>
-        -->
-
-        <ProgressBar Grid.Row="2"
-                x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="DarkOrange"
-                Margin="0, 8"/>
 
         <!-- to get hub tiles, replace the way a list lays out its content, then tell it to build HubTiles -->
         <!-- FIXME if height is hard coded, works -->
@@ -106,11 +96,12 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
+        <!-- This is the loading indicator that covers the entire screen -->
         <Grid x:Name="Loading" Background="Black" Width="480" Height="800" Grid.Row="0" Grid.RowSpan="4">
             <Rectangle Fill="Black" Grid.Row="0"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="Gathering iFixit Data..." HorizontalAlignment="Center"/>
                 <ProgressBar Foreground="DarkOrange" IsIndeterminate="True" Width="480"/>
+                <TextBlock Text="Gathering iFixit Data..." HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
 

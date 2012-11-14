@@ -51,8 +51,6 @@ namespace iFixit7
                 var topicsToAdd = root.Topics.Except(dbCopy.Topics);
                 dc.TopicsTable.InsertAllOnSubmit(topicsToAdd);
                 dc.TopicsTable.DeleteAllOnSubmit(topicsToRemove);
-
-                //Debug.WriteLine("\yremoved " + topicsToRemove.Count() + " added " + topicsToAdd.Count());
             }
 
             //iterate through all children in all cases

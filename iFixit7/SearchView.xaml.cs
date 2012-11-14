@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -24,6 +25,15 @@ namespace iFixit7
         private void SearchButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             SearchProgressStack.Visibility = System.Windows.Visibility.Visible;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                //hide progress indicator
+                SearchProgressStack.Visibility = System.Windows.Visibility.Collapsed;
+
+                MessageBox.Show("Search cannot be used without an internet connection.");
+                return;
+            }
 
             string searchQuery = SearchQueryTB.Text;
 
@@ -58,17 +68,26 @@ namespace iFixit7
         private void Search_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string name = (sender as StackPanel).Tag as String;
+
+            //mark the tapped item as tapped using the accent color
+            var oldBack = (sender as StackPanel).Background;
+            (sender as StackPanel).Background = App.Current.Resources["PhoneAccentBrush"] as Brush;
+
+
             Debug.WriteLine("main page tapped SEARCH topic name > [" + name + "]");
 
             //FIXME can we tap on device pages as well as guides? We need to be able to handle that...
             //maybe a single char at the start of the tag? build that string in the SearchResult object
             //for now, can only tap on topics (which lead to device info)
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + name, UriKind.Relative));
+
+            (sender as StackPanel).Background = oldBack;
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            this.SearchQueryTB.Focus();
+            if(SearchResultList.Items.Count == 0)
+                this.SearchQueryTB.Focus();
         }
 
         /*

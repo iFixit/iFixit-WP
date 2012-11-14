@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -158,6 +159,12 @@ namespace iFixit7
          */
         private void AppBarSearch_Click(object sender, EventArgs e)
         {
+            // error out and go back if there is no netowork connection
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show("Search cannot be used without an internet connection.");
+                return;
+            }
             NavigationService.Navigate(new Uri("/SearchView.xaml", UriKind.Relative));
         }
         private void AppBarFavorites_Click(object sender, EventArgs e)

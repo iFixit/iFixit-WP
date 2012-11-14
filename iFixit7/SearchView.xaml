@@ -66,22 +66,27 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" 
                                 Tag="{Binding title, Mode=OneWay}" Tap="Search_Tap"
                                 Margin="4">
-
-                        <Image Source="{Binding thumbnail, Converter={StaticResource ImageCacheConverter}}" 
+                        <StackPanel>
+                            <Image Source="{Binding thumbnail, Converter={StaticResource ImageCacheConverter}}" 
                                Stretch="Uniform" Width="100"
                                Margin="4"/>
-                        
+                            <TextBlock
+                               Text="{Binding name, Mode=OneWay}" 
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               Margin="2, 4" VerticalAlignment="Center"/>
+                        </StackPanel>
+
                         <StackPanel>
                             <TextBlock
-                                Text="{Binding title, Mode=OneWay}" 
+                               Text="{Binding display_title, Mode=OneWay}" 
                                Style="{StaticResource PhoneTextLargeStyle}"
                                Margin="2, 4" VerticalAlignment="Center"/>
                             
                             <TextBlock 
-                                Text="{Binding shortSummary, Mode=OneWay}" TextWrapping="Wrap"
+                               Text="{Binding shortSummary, Mode=OneWay}" TextWrapping="Wrap"
                                HorizontalAlignment="Stretch" Width="360"
-                                Style="{StaticResource PhoneTextSmallStyle}"
-                                Margin="2, 4"/>
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               Margin="2, 4"/>
                     </StackPanel>
                         
                     </StackPanel>

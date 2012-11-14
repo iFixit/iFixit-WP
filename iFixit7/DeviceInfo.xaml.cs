@@ -14,6 +14,7 @@ using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -59,6 +60,14 @@ namespace iFixit7
          */
         private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo)
         {
+            //something is wrong and the device was not found. Bail
+            if (devInfo == null)
+            {
+                Debug.WriteLine("something went terribly wrong with a DeviceInfo. Bailing");
+                NavigationService.GoBack();
+                return false;
+            }
+
             Topic top = null;
             Debug.WriteLine("putting device info into DB...");
 
@@ -162,6 +171,12 @@ namespace iFixit7
          */
         private void AppBarSearch_Click(object sender, EventArgs e)
         {
+            // error out and go back if there is no netowork connection
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show("Search cannot be used without an internet connection.");
+                return;
+            }
             NavigationService.Navigate(new Uri("/SearchView.xaml", UriKind.Relative));
         }
         private void AppBarFavorites_Click(object sender, EventArgs e)

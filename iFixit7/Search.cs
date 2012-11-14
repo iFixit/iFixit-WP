@@ -29,6 +29,7 @@ namespace iFixit7
     }
     public class SRResult
     {
+        public string name { get; set; }
         public string title { get; set; }
         public string display_title { get; set; }
         public string summary { get; set; }

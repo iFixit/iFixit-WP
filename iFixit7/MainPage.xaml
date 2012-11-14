@@ -43,6 +43,29 @@
                 Margin="0, 0, 0, 10"/>
         </StackPanel>
 
+        <!-- the header/title -->
+        <Grid Grid.Row="1" Margin="14, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Image Grid.Row="0" Grid.RowSpan="2" Height="60"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
+                               Source="GuideTitleBack.jpg" />
+
+            <Rectangle Grid.Row="1"
+                                   Fill="Black" Opacity=".5"/>
+            <TextBlock Grid.Row="1"
+                                VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                                Margin="4, 0"
+                                FontSize="{StaticResource PhoneFontSizeLarge}" Foreground="White"
+                                Text="Browse Guides" />
+        </Grid>
+
         <!-- to get hub tiles, replace the way a list lays out its content, then tell it to build HubTiles -->
         <!-- FIXME if height is hard coded, works -->
         <ListBox Grid.Row="3"

@@ -174,6 +174,9 @@
     <Content Include="fist-white.png" />
     <Content Include="fist.png" />
     <Resource Include="iFixit_logo_white.png" />
+    <Resource Include="GuideTitleBack.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Images\appbar.favs.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

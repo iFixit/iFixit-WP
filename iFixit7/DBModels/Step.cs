@@ -24,26 +24,30 @@ namespace iFixit7
             this.Image1 = "";
             this.Image2 = "";
             this.Image3 = "";
-            switch (st.media.image.Length)
+
+            if (st.media.image != null)
             {
-                default:
-                    //no images, or we have no idea
-                    break;
+                switch (st.media.image.Length)
+                {
+                    default:
+                        //no images, or we have no idea
+                        break;
 
-                case 1:
-                    this.Image1 = st.media.image[0].text;
-                    break;
+                    case 1:
+                        this.Image1 = st.media.image[0].text;
+                        break;
 
-                case 2:
-                    this.Image1 = st.media.image[0].text;
-                    this.Image2 = st.media.image[1].text;
-                    break;
+                    case 2:
+                        this.Image1 = st.media.image[0].text;
+                        this.Image2 = st.media.image[1].text;
+                        break;
 
-                case 3:
-                    this.Image1 = st.media.image[0].text;
-                    this.Image2 = st.media.image[1].text;
-                    this.Image3 = st.media.image[2].text;
-                    break;
+                    case 3:
+                        this.Image1 = st.media.image[0].text;
+                        this.Image2 = st.media.image[1].text;
+                        this.Image3 = st.media.image[2].text;
+                        break;
+                }
             }
 
             //add each line

@@ -25,7 +25,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-            Text="Favorite Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+            Text="Previously Viewed Topics" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
 
         <ListBox Grid.Row="1"
              x:Name="CachedList">

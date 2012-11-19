@@ -42,8 +42,14 @@ namespace iFixit7
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            //if there is already a VM, dont build a new one
+            if (infoVM != null)
+                return;
+
             //get the device name that was passed and stash it
             this.navTopicName = this.NavigationContext.QueryString["Topic"];
+
+            //build a new view model. IMMEDIATELY runs a DB query to fill itself
             infoVM = new TopicInfoViewModel(navTopicName);
 
             Debug.WriteLine("Showing device info for [" + this.navTopicName + "]");
@@ -75,18 +81,11 @@ namespace iFixit7
             //if it fails, make a new one. if it works, update the old
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                //top = db.TopicsTable.SingleOrDefault(t => t.Name == devInfo.topic_info.name);
                 top = DBHelpers.GetCompleteTopic(devInfo.topic_info.name, db);
 
                 if (top == null)
                 {
                     top = new Topic();
-                }
-                else
-                {
-                    //nuke the existing one so we dont collide on insert
-                    //db.TopicsTable.DeleteOnSubmit(top);
-                    //db.SubmitChanges();
                 }
 
                 //translate devInfo in a Topic()
@@ -126,7 +125,6 @@ namespace iFixit7
                     gNew.FillFieldsFromDeviceInfo(navTopicName, g);
 
                     // hang it below the topic, it its collection of guides
-                    //newTop.Guides.Add(gNew);
                     top.AddGuide(gNew);
 
                     //FIXME do we need to specifically add this to the guide table? is that magic?
@@ -135,7 +133,6 @@ namespace iFixit7
                 }
 
                 //update the Topic() into the database
-                //db.TopicsTable.InsertOnSubmit(newTop);
                 db.SubmitChanges();
 
                 //force the view model to update

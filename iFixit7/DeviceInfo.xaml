@@ -19,7 +19,6 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
@@ -28,7 +27,8 @@
         </Grid.Resources>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <controls:Panorama Title="{Binding Name, Mode=OneWay}" x:Name="InfoPano">
+        <controls:Panorama Grid.Row="0"
+            Title="{Binding Name, Mode=OneWay}" x:Name="InfoPano">
             <!-- restyle the panorama title -->
             <controls:Panorama.TitleTemplate>
                 <DataTemplate>
@@ -72,14 +72,23 @@
             
 
             <!-- The column that is a list of guides -->
-            <StackPanel x:Name="GuidesStack" VerticalAlignment="Stretch">
-                
-                <TextBlock Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+            <Grid x:Name="GuidesStack" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <ProgressBar x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
+
+                <TextBlock Grid.Row="0"
+                    Text="Guides" Style="{StaticResource PhoneTextBlockBase}" FontSize="{StaticResource PhoneFontSizeExtraLarge}"/>
+
+                <ProgressBar Grid.Row="1"
+                     x:Name="LoadingBarGuides" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
                 
                 <!-- the strange height binding allows it to fill the StackPanel around it and scroll properly -->
-                <ListBox x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" 
+                <ListBox Grid.Row="2"
+                         x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" 
                          Height="{Binding ElementName=GuidesStack, Path=ActualHeight, Mode=OneWay}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -121,7 +130,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
+            </Grid>
         </controls:Panorama>
     </Grid>
 

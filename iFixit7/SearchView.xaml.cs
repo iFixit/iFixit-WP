@@ -17,6 +17,9 @@ namespace iFixit7
 {
     public partial class SearchView : PhoneApplicationPage
     {
+        private Brush SelectedOriginalBack;
+        private StackPanel Selected;
+
         public SearchView()
         {
             InitializeComponent();
@@ -70,8 +73,9 @@ namespace iFixit7
             string name = (sender as StackPanel).Tag as String;
 
             //mark the tapped item as tapped using the accent color
-            var oldBack = (sender as StackPanel).Background;
-            (sender as StackPanel).Background = App.Current.Resources["PhoneAccentBrush"] as Brush;
+            SelectedOriginalBack = (sender as StackPanel).Background;
+            Selected = (sender as StackPanel);
+            Selected.Background = App.Current.Resources["PhoneAccentBrush"] as Brush;
 
 
             Debug.WriteLine("main page tapped SEARCH topic name > [" + name + "]");
@@ -80,14 +84,17 @@ namespace iFixit7
             //maybe a single char at the start of the tag? build that string in the SearchResult object
             //for now, can only tap on topics (which lead to device info)
             NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + name, UriKind.Relative));
-
-            (sender as StackPanel).Background = oldBack;
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if(SearchResultList.Items.Count == 0)
+            if (SearchResultList.Items.Count == 0)
                 this.SearchQueryTB.Focus();
+            else
+            {
+                //clear the selection marker
+                Selected.Background = SelectedOriginalBack;
+            }
         }
 
         /*

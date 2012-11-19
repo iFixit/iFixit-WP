@@ -62,6 +62,29 @@ namespace iFixit7
             }
         }
 
+        /*
+         * a hook to get a shortened version of the title if the full thing is too long
+         */
+        public string ShortName
+        {
+            get
+            {
+                if (_name != null)
+                {
+                    if (_name.Length > 27)
+                        return _name.Replace(parentName + " ", "");
+                    return _name;
+                }
+                return "";
+            }
+            set
+            {
+                ShortName = "";
+            }
+        }
+
+
+
         private string _description = "this is a description";
         [Column]
         public string Description

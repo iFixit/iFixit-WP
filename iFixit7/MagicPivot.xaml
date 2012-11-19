@@ -10,7 +10,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="PortraitOrLandscape"
+    SupportedOrientations="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
@@ -30,7 +30,6 @@
             </controls:Pivot.HeaderTemplate>
 
             <!-- this is for each item underneath -->
-            <!--Height="{Binding ElementName=LayoutRoot, Path=ActualHeight, Mode=OneWay}"-->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="CategoryChildList" 
@@ -39,13 +38,10 @@
                         
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"
-                                           Margin="0, 4"/>
+                                <TextBlock Text="{Binding Name, Mode=OneWay}" Tag="{Binding Tag, Mode=OneWay}"
+                                           Tap="tb_Tap" Margin="0, 4"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                        
-                        <!-- this wasn't being used -->
-                        <!--<TextBlock Text="{Binding ., Mode=OneWay}" Tap="tb_Tap"/>-->
                     </ListBox>
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>

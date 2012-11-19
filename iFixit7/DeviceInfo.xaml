@@ -12,7 +12,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="PortraitOrLandscape"
+    SupportedOrientations="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
@@ -116,7 +116,7 @@
                                            VerticalAlignment="Bottom" Margin="3"
                                            TextWrapping="Wrap"
                                            FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="White"
-                                           Text="{Binding Title, Mode=OneWay}" />
+                                           Text="{Binding ShortTitle, Mode=OneWay}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

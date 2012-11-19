@@ -55,28 +55,6 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
-
-        /*
-        //the M hook of the 1:M of topics to guides
-        [Column(Name = "guideGroupID")]
-        private int? guideGroupID;
-
-
-        //1 side of 1:M for the collection of guides
-        private EntitySet<Step> _steps = new EntitySet<Step>();
-        [Association(Name = "GuideToSteps", Storage = "_steps", ThisKey = "Id", OtherKey = "stepGroupID")]
-        public ICollection<Step> Steps
-        {
-            get { return this._steps; }
-            set
-            {
-                NotifyPropertyChanging("Steps");
-                this._steps.Assign(value);
-                NotifyPropertyChanged("Steps");
-            }
-        }
-         * */
-
         [Column]
         public string parentName { get; set; }
 
@@ -105,6 +83,27 @@ namespace iFixit7
                     _title = value;
                     NotifyPropertyChanged("Title");
                 }
+            }
+        }
+
+        /*
+         * a hook to get the shortened version of the title for binding
+         */
+        public string ShortTitle
+        {
+            get
+            {
+                if (_title != null)
+                {
+                    //if _title.Length > XXX
+                    //remove topic name (and leading space) from guide titles
+                    return _title.Replace(" " + _topic, "");
+                }
+                return "";
+            }
+            set
+            {
+                ShortTitle = "";
             }
         }
 

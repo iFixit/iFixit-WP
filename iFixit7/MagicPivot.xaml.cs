@@ -31,22 +31,16 @@ namespace iFixit7
             InitializeComponent();
 
             Debug.WriteLine("starting a new magic pivot...");
-
-            //this.SmartPivot.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(tb_Tap);
-            //setupBinding();
         }
 
         private void setupBinding(Category c)
         {
             //instantiate view model
-            //vm = new MagicPivotViewModel(navParentName, navSelectedName, SmartPivot);
             vm = new MagicPivotViewModel(c, SmartPivot);
 
             this.DataContext = vm;
             vm.Columns[vm.TabIndex].setColumnContent();
             SmartPivot.LoadingPivotItem += new EventHandler<PivotItemEventArgs>(SmartPivot_LoadingPivotItem);
-
-            //set data context to the view model
         }
 
 
@@ -59,15 +53,8 @@ namespace iFixit7
                 return;
             }
 
-            /*
-            //make sure we arent reacting to tapping a header
-            if ((string)(sender as TextBlock).Tag.ToString() == "HEADER")
-            {
-                return;
-            }
-             */
-
-            string selected = (e.OriginalSource as TextBlock).Text as String;
+            //string selected = (e.OriginalSource as TextBlock).Text as String;
+            string selected = (e.OriginalSource as TextBlock).Tag as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 
 
@@ -103,20 +90,6 @@ namespace iFixit7
         }
 
         /*
-         * Called right as we are being navigated from
-         */
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-
-            //Debug.WriteLine("Saving in current.state: " + PhoneApplicationService.Current.State["Category"]);
-            //Debug.WriteLine("I'm going to try to pull a category out: " + (PhoneApplicationService.Current.State["Category"] as Category).Name);
-            //FIXME save current index in VM? alter params?
-            //FIXME finish...
-            //State.Add("NavigatedToHeader", (this.SmartPivot.SelectedItem as MagicPivotViewModel.ColumnContent).ColumnHeader);
-        }
-
-        /*
          * Called right as we are being navigated to
          */
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -127,17 +100,7 @@ namespace iFixit7
 
             string navParentName = NavigationContext.QueryString[App.MagicParentTag];
             Debug.WriteLine("Looking for Key: " + navParentName);
-            //navSelectedType = NavigationContext.QueryString[App.MagicTypeTag];
-            //if (State.Keys.Contains("NavigatedToHeader"))
-            //{
-            //    navSelectedName = State["NavigatedToHeader"] as string;
-            //}
-            //else
-            //{
-            //    //get parameters
-            //    navSelectedName = NavigationContext.QueryString[App.MagicSelectedTag];
-            //}
-            //Debug.WriteLine("magic pivot got a type = " + navSelectedType);
+
             if (PhoneApplicationService.Current.State.ContainsKey(navParentName))
                 this.thisCat = (Category)PhoneApplicationService.Current.State[navParentName];
             Debug.WriteLine("Saving in current.state: " + this.thisCat);
@@ -145,14 +108,6 @@ namespace iFixit7
             
             setupBinding(thisCat);
         }
-
-        //protected override void OnBackKeyPress(CancelEventArgs e)
-        //{
-        //    base.OnBackKeyPress(e);
-
-        //Category temp = vm.Columns[vm.TabIndex].colCat;
-        //PhoneApplicationService.Current.State[temp.Parent.Name] = temp;
-        //}
 
         /*
          * These two are the handlers for the application bar buttons
@@ -201,8 +156,6 @@ namespace iFixit7
             //var thing = myPivot.DataContext;
             //myPivot.DataContext = null;
             //myPivot.DataContext = this;
-
-            
         }
 
     }
@@ -214,6 +167,48 @@ namespace iFixit7
          */
         public class ColumnContent : INotifyPropertyChanged, INotifyPropertyChanging
         {
+            //this extra internal layer is heinous and makes me feed bad
+            public class InnerColumnContent
+            {
+                public InnerColumnContent(string name, string tag)
+                {
+                    this.Name = name;
+                    this.Tag = tag;
+                }
+
+                private string _name = "";
+                public string Name
+                {
+                    get
+                    {
+                        return _name;
+                    }
+                    set
+                    {
+                        if (_name != value)
+                        {
+                            _name = value;
+                        }
+                    }
+                }
+
+                private string _tag = "";
+                public string Tag
+                {
+                    get
+                    {
+                        return _tag;
+                    }
+                    set
+                    {
+                        if (_tag != value)
+                        {
+                            _tag = value;
+                        }
+                    }
+                }
+            }
+
             private string _columnHeader = "";
             //FIXME need to notify changed?
             public string ColumnHeader
@@ -233,8 +228,8 @@ namespace iFixit7
                 }
             }
 
-            private List<string> _colContent = new List<string>();
-            public List<string> ColContent
+            private List<InnerColumnContent> _colContent = new List<InnerColumnContent>();
+            public List<InnerColumnContent> ColContent
             {
                 get
                 {
@@ -253,8 +248,6 @@ namespace iFixit7
 
             public Category colCat = null;
 
-            //private List<string> AllCategories;
-            //private List<string> AllTopics;
             public Dictionary<string, string> TypeRefs;
             private bool HasBegunLoading = false;
 
@@ -263,7 +256,7 @@ namespace iFixit7
                 this.colCat = c;
                 this.ColumnHeader = c.Name;
 
-                ColContent = new List<string>();
+                ColContent = new List<InnerColumnContent>();
 
                 TypeRefs = new Dictionary<string, string>();
             }
@@ -282,42 +275,33 @@ namespace iFixit7
                 if (HasBegunLoading || ColContent.Count > 0)
                     return;
                 HasBegunLoading = true;
-                //Category colCat = null;
 
-                //using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-                //{
-                //    colCat = DBHelpers.GetCompleteCategory(ColumnHeader, db);
-                //    /*
-                //    IQueryable<Category> query =
-                //        from cats in App.mDB.CategoriesTable
-                //        where cats.Name == ColumnHeader
-                //        select cats;
-                //        */
-                //}
                 //add all sub categories
                 foreach (Category c in colCat.Categories)
                 {
                     //Debug.WriteLine("col content " + c.Name);
                     NotifyPropertyChanging("ColContent");
-                    ColContent.Add(c.Name);
+                    //ColContent.Add(c.Name);
+                    ColContent.Add(new InnerColumnContent(c.ShortName, c.Name));
                     NotifyPropertyChanged("ColContent");
                     TypeRefs.Add(c.Name, MagicPivot.MagicTypeCategory);
                 }
 
                 //add all topics
-                foreach (Topic c in colCat.Topics)
+                foreach (Topic t in colCat.Topics)
                 {
-                    //Debug.WriteLine("col content topic " + c.Name);
+                    //Debug.WriteLine("col content topic " + t.Name);
 
                     NotifyPropertyChanging("ColContent");
-                    ColContent.Add(c.Name);
+                    //ColContent.Add(t.Name);
+                    ColContent.Add(new InnerColumnContent(t.ShortName, t.Name));
                     NotifyPropertyChanged("ColContent");
-                    TypeRefs.Add(c.Name, MagicPivot.MagicTypeTopic);
+                    TypeRefs.Add(t.Name, MagicPivot.MagicTypeTopic);
                 }
 
-                //FIXME forces sorting...
+                //FIXME sort by .Tag?
                 var q = from cc in ColContent
-                        orderby cc
+                        orderby cc.Name
                         select cc;
                 ColContent = q.ToList();
                 HasBegunLoading = false;

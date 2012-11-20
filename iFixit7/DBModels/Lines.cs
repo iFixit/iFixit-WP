@@ -42,10 +42,10 @@ namespace iFixit7
 
                 {"white", Colors.White},
 
-                //what should these be?
-                {"icon_note", Colors.Magenta},
-                {"icon_reminder", Colors.Cyan},
-                {"icon_caution", Colors.Brown}
+                //what should these be? >> black now that we have icons
+                {"icon_note", Colors.Black},
+                {"icon_reminder", Colors.Black},
+                {"icon_caution", Colors.Black}
             };
 
             //index into it and return
@@ -56,11 +56,6 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
-        /*
-        //the M hook of the 1:M of step to lines
-        [Column(Name = "lineStepID")]
-        private int? lineStepID { get; set; }
-        */
 
         [Column]
         public string parentName { get; set; }
@@ -86,12 +81,43 @@ namespace iFixit7
             }
         }
 
+        /*
+         * <Rectangle Grid.Column="0" Grid.ColumnSpan="2" Height="60"
+                                                Fill="White" Opacity=".5"/>
+         */
+        //returns the path to a local image representing this line if it is a note (note), reminder (pin), caution (caution)
+        public string SpecialLineImage
+        {
+            get
+            {
+                if (_colorString.Equals("icon_note"))
+                    return "/Images/Note.png";
+                else if (_colorString.Equals("icon_reminder"))
+                    return "/Images/Reminder.png";
+                else if (_colorString.Equals("icon_caution"))
+                    return "/Images/Caution.png";
+
+                return "";
+            }
+            set
+            {
+                //dummy
+                SpecialLineImage = "";
+            }
+        }
+
         //color
         //FIXME there is no LINQ type for color, so convert when retreived (but dont store it)
         public SolidColorBrush ColorBrush
         {
             get
             {
+                //become trasparent if we are displaying the image overlay
+                if (_colorString.Equals("icon_note") ||
+                    _colorString.Equals("icon_reminder") ||
+                    _colorString.Equals("icon_caution"))
+                    return new SolidColorBrush(Colors.Transparent);
+
                 return new SolidColorBrush(Lines.ConvertToColor(_colorString));
             }
             set

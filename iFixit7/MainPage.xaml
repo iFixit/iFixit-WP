@@ -34,6 +34,7 @@
         </Grid.RowDefinitions>
 
         <!-- stack two views ontop of eachother for effect -->
+        <Rectangle Grid.Row="0" Fill="Black" Opacity=".2"/>
         <StackPanel Grid.Row="0">
             <Image
                 Source="iFixit_logo_white.png"
@@ -120,8 +121,14 @@
         </ListBox>
 
         <!-- This is the loading indicator that covers the entire screen -->
-        <Grid x:Name="Loading" Background="Black" Width="480" Height="800" Grid.Row="0" Grid.RowSpan="4">
-            <Rectangle Fill="Black" Grid.Row="0"/>
+        <Grid x:Name="Loading"
+              Width="480" Height="800" Grid.Row="0" Grid.RowSpan="4">
+
+            <Rectangle Grid.Row="0">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{StaticResource PhoneBackgroundColor}"  />
+                </Rectangle.Fill>
+            </Rectangle>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ProgressBar Foreground="DarkOrange" IsIndeterminate="True" Width="480"/>
                 <TextBlock Text="Gathering iFixit Data..." HorizontalAlignment="Center"/>

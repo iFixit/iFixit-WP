@@ -80,10 +80,29 @@ namespace iFixit7
                 if (_title != value)
                 {
                     NotifyPropertyChanging("Title");
-                    _title = value;
+
+                    //strip HTML formatting the hard way http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
+                    var v = ReplaceAllInstancesOf(value, "&quot;", "\"");
+                    v = ReplaceAllInstancesOf(v, "&amp;", "&");
+                    v = ReplaceAllInstancesOf(v, "&nbsp;", " ");
+                    /*
+                    var v = value.Replace("&quot;", "\"");
+                    v = v.Replace("&amp;", "&");
+                    v = v.Replace("&nbsp;", " ");
+                     * */
+                    _title = v;
                     NotifyPropertyChanged("Title");
                 }
             }
+        }
+
+        // a tiny function for replacing all instances of a string inside of another string with a third string
+        static private string ReplaceAllInstancesOf(string source, string toReplace, string replacement)
+        {
+            string o = source;
+            while(o.Contains(toReplace))
+                o = o.Replace(toReplace, replacement);
+            return o;
         }
 
         /*

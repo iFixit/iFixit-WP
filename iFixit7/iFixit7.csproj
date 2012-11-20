@@ -177,7 +177,7 @@
     <Resource Include="GuideTitleBack.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Images\Alert.png">
+    <Content Include="Images\Caution.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\appbar.favs.rest.png">
@@ -189,7 +189,7 @@
     <Content Include="Images\Note.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Pin.png">
+    <Content Include="Images\Reminder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README_FIRST.txt" />

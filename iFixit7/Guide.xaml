@@ -67,13 +67,9 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             
-                                            <!-- this is the image which only appears if it is a notification or simillar -->
-                                            
-                                            <Image Grid.Column="0" Grid.ColumnSpan="2" Height="60"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
-                                                   Source="{Binding SpecialLineImage}" />
 
                                             <!-- This is a hidden rectangle which is used to space bullets -->
                                             <Rectangle Grid.Column="0"
@@ -87,6 +83,11 @@
                                             <local:HtmlTextBlock Grid.Column="2"
                                                  Text="{Binding Text}" TextWrapping="Wrap"
                                                  Margin="8, 2, 2, 2"/>
+                                            
+                                            <!-- this is the image which only appears if it is a notification or simillar -->
+                                            <Image Grid.Column="3" Height="60"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
+                                                   Source="{Binding SpecialLineImage}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

@@ -55,7 +55,7 @@ namespace iFixit7
             {
                 SourceGuide = g;
 
-                GuideTitle = g.Title;
+                GuideTitle = g.ShortTitle;
                 GuideTopic = g.Topic;
 
                 ColHeaders = new ObservableCollection<ColContent>();

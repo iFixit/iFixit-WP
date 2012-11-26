@@ -43,9 +43,9 @@ namespace iFixit7
                 {"white", Colors.White},
 
                 //what should these be? >> black now that we have icons
-                {"icon_note", Colors.Black},
-                {"icon_reminder", Colors.Black},
-                {"icon_caution", Colors.Black}
+                {"icon_note", Colors.DarkGray},
+                {"icon_reminder", Colors.DarkGray},
+                {"icon_caution", Colors.DarkGray}
             };
 
             //index into it and return

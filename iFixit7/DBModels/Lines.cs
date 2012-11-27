@@ -43,9 +43,9 @@ namespace iFixit7
                 {"white", Colors.White},
 
                 //what should these be? >> black now that we have icons
-                {"icon_note", Colors.DarkGray},
-                {"icon_reminder", Colors.DarkGray},
-                {"icon_caution", Colors.DarkGray}
+                {"icon_note", Colors.White},
+                {"icon_reminder", Colors.White},
+                {"icon_caution", Colors.White}
             };
 
             //index into it and return
@@ -113,10 +113,10 @@ namespace iFixit7
             get
             {
                 //become trasparent if we are displaying the image overlay
-                if (_colorString.Equals("icon_note") ||
-                    _colorString.Equals("icon_reminder") ||
-                    _colorString.Equals("icon_caution"))
-                    return new SolidColorBrush(Colors.Transparent);
+                //if (_colorString.Equals("icon_note") ||
+                //    _colorString.Equals("icon_reminder") ||
+                //    _colorString.Equals("icon_caution"))
+                //    return new SolidColorBrush(Colors.Transparent);
 
                 return new SolidColorBrush(Lines.ConvertToColor(_colorString));
             }

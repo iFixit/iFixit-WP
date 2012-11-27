@@ -5,6 +5,7 @@ using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System;
 
 namespace iFixit7
 {
@@ -44,7 +45,18 @@ namespace iFixit7
         {
             get; set;
         }
-        
+
+        public Uri url
+        {
+            get
+            {
+                return new Uri("http://www.ifixit.com/Device/" + _name.Replace(" ", "_"));
+            }
+            set
+            {
+                url = value;
+            }
+        }
 
         [Column]
         public string parentName { get; set; }

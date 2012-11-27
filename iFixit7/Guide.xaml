@@ -87,7 +87,7 @@
                                             <!-- this is the image which only appears if it is a notification or simillar -->
                                             <Image Grid.Column="3" Height="60"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
-                                                   Source="{Binding SpecialLineImage}" />
+                                                   Source="{Binding SpecialLineImage}" Margin="8,0,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

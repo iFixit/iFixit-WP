@@ -74,9 +74,9 @@
             <!-- The column that is a list of guides -->
             <Grid x:Name="GuidesStack" VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
 
@@ -88,8 +88,7 @@
                 
                 <!-- the strange height binding allows it to fill the StackPanel around it and scroll properly -->
                 <ListBox Grid.Row="2"
-                         x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch" 
-                         Height="{Binding ElementName=GuidesStack, Path=ActualHeight, Mode=OneWay}">
+                         x:Name="GuideList" ItemsSource="{Binding GuideList}" VerticalAlignment="Stretch">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <toolkit:WrapPanel/>
@@ -137,7 +136,7 @@
     <!--ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
         <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False" >
+        <shell:ApplicationBar Opacity="1" IsVisible="True" IsMenuEnabled="False" >
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.feature.search.rest.png" Text="Search"
                                             Click="AppBarSearch_Click"/>
 

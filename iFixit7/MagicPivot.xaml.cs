@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Windows;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Net.NetworkInformation;
+using Microsoft.Phone.Tasks;
 
 namespace iFixit7
 {
@@ -156,6 +157,14 @@ namespace iFixit7
             //var thing = myPivot.DataContext;
             //myPivot.DataContext = null;
             //myPivot.DataContext = this;
+        }
+
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            MagicPivotViewModel.ColumnContent col = vm.Columns[vm.TabIndex];
+            WebBrowserTask wbt = new WebBrowserTask();
+            wbt.Uri = col.colCat.url;
+            wbt.Show();
         }
 
     }

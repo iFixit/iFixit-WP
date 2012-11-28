@@ -154,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="iFixit_I - Square.png" />
-    <None Include="iFixit7_2012_11_13_11_42_55.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
@@ -177,6 +176,9 @@
     <Resource Include="GuideTitleBack.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Images\appbar.folder.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Caution.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

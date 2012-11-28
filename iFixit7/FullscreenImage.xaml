@@ -21,7 +21,8 @@
         </StackPanel.Resources>
         
         <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
-        
+
+        <!-- replace with: http://msdn.microsoft.com/en-us/library/ff426933.aspx ? -->
         <Canvas x:Name="MyImage" 
                 Width="480"  Height="720"
                 Visibility="Collapsed">

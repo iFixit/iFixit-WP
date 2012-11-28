@@ -13,6 +13,7 @@ using System.Xml;
 using HtmlAgilityPack;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace WP7_Mango_HtmlTextBlockControl
 {
@@ -322,6 +323,12 @@ namespace WP7_Mango_HtmlTextBlockControl
         public string VisibleText
         {
             get { return _textBlock.Text; }
+        }
+
+        private List<string> _allLinks = new List<string>();
+        public List<string> AllLinks
+        {
+            get { return _allLinks; }
         }
 
         // Specifies whether the browser DOM can be used to attempt to parse invalid XHTML

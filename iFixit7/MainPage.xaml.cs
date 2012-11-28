@@ -120,6 +120,13 @@ namespace iFixit7
 
             //force an update
             initDataBinding();
+
+            //check if we should leave the loading screen up or hide it
+            if(PhoneApplicationService.Current.State.ContainsKey(App.InitializeWithLoadingScreen)){
+                if(!(bool)PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen]){
+                    this.StopLoadingIndication();
+                }
+            }
         }
 
         /*

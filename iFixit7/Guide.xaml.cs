@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace iFixit7
 {
@@ -152,6 +153,21 @@ namespace iFixit7
             //FIXME navigate to fullscreen image w/ URL (just URL?)
             NavigationService.Navigate(new Uri("/FullscreenImage.xaml?ImgURI=" + srcUrl,
                 UriKind.Relative));
+        }
+
+        //occurs when a line is tapped
+        private void GuideLine_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
+
+            Debug.WriteLine("tapped with text: " + tb.Text);
+            Debug.WriteLine("visible     text: " + tb.VisibleText);
+            foreach (string s in tb.AllLinks)
+            {
+                Debug.WriteLine(s);
+            }
+            //tb.Inlines
+            Debug.WriteLine("inlines = " + tb.Inlines);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

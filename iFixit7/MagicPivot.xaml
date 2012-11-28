@@ -59,7 +59,7 @@
                                             Click="AppBarSearch_Click"/>
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"
                                             Click="AppBarFavorites_Click"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="More Info"
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.folder.rest.png" Text="More Info"
                                             Click="ApplicationBarIconButton_Click"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

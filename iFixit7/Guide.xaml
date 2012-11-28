@@ -20,6 +20,24 @@
     <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding}">
         <Grid.Resources>
             <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
+            
+            <!-- this is a style to prevent list box items from showing selection when tapped -->
+            <Style x:Key="ListBoxStyle" TargetType="ListBoxItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Stretch" 
+                                                      Margin="{TemplateBinding Padding}" 
+                                                      x:Name="contentPresenter"                                                       
+                                                      Content="{TemplateBinding Content}" 
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -56,6 +74,7 @@
                         <StackPanel>
                             <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
                                  FontSize="{StaticResource PhoneFontSizeMedium}"
+                                     ItemContainerStyle="{StaticResource ListBoxStyle}"
                                  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -80,14 +99,14 @@
                                                  Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
                                                  Fill="{Binding ColorBrush}"/>
                                             
-                                            <local:HtmlTextBlock Grid.Column="2"
+                                            <local:HtmlTextBlock Grid.Column="2" Tap="GuideLine_Tap"
                                                  Text="{Binding Text}" TextWrapping="Wrap"
                                                  Margin="8, 2, 2, 2"/>
                                             
                                             <!-- this is the image which only appears if it is a notification or simillar -->
-                                            <Image Grid.Column="3" Height="60"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
-                                                   Source="{Binding SpecialLineImage}" Margin="8,0,0,0"/>
+                                            <Image Grid.Column="3" Height="45"
+                                                   VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="UniformToFill"
+                                                   Source="{Binding SpecialLineImage}" Margin="8,4,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

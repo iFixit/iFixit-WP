@@ -37,6 +37,10 @@ namespace iFixit7
         }
 
         /*
+         * Replace with http://msdn.microsoft.com/en-us/library/ff426933.aspx ?
+         */
+
+        /*
          * Taken almost entirely from:
          * http://www.codeproject.com/Articles/335069/Nice-panning-and-zooming-in-Windows-Phone-7
          */

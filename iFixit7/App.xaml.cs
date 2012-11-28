@@ -31,6 +31,10 @@ namespace iFixit7
         public const string MagicSelectedTag = "SelectedCategory";
         public const string MagicTypeTag = "SelectedType";
 
+        //initial state variable keys
+        public const string LastUpdateKey = ">>LAST_UPDATED<<";
+        public const string InitializeWithLoadingScreen = ">>INIT_LOADING_SCREEN<<";
+
         private static int thumbCount = 0;
 
         public Category root { get; set; }
@@ -94,8 +98,17 @@ namespace iFixit7
 
             // POST LOADING SCREEN
 
+            //FIXME temporary: now check the last time the data was refreshed. If past threshold, refresh again
+            DateTime last = DateTime.MinValue;
+            if (IsolatedStorageSettings.ApplicationSettings.Contains(App.LastUpdateKey))
+            {
+                last = (DateTime)IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey];
+
+                Debug.WriteLine("got last use = " + last);
+            }
+
             //this has asynchroneous components that will run while the UI loads and whatnot
-            if (NetworkInterface.GetIsNetworkAvailable())
+            if ((last.AddDays(1.0) < DateTime.Now) && NetworkInterface.GetIsNetworkAvailable())
             {
                 getAreas();
             }
@@ -109,7 +122,8 @@ namespace iFixit7
                     }
                 }
                 // clear loading screen
-                (RootFrame.Content as MainPage).StopLoadingIndication();
+                //(RootFrame.Content as MainPage).StopLoadingIndication();
+                PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen] = false;
 
 
             }
@@ -176,6 +190,9 @@ namespace iFixit7
                     db.SubmitChanges();
                     root = GetRootCategoryFromDB(db);
                     Debug.WriteLine("done inserting tree");
+
+                    //update datestamp
+                    IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey] = DateTime.Now;
 
                     //now async get images for all root categories
                     //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
@@ -273,12 +290,14 @@ namespace iFixit7
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            //restore state from PhoneApplicationService.Current.State
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            //save state from PhoneApplicationService.Current.State
         }
 
         // Code to execute when the application is closing (eg, user hit Back)

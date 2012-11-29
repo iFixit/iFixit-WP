@@ -23,7 +23,6 @@ namespace iFixit7
     {
         // Use the 1.0 api
         public static string IFIXIT_API_CATEGORIES = "http://www.ifixit.com/api/1.0/categories";
-        public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/0.1/guide/");
         public static string IFIXIT_CATEGORY_OBJECT_KEY = "TOPICS";
         private static bool categories;
         private static string jsonResponse;
@@ -38,6 +37,7 @@ namespace iFixit7
             Uri site = new Uri(uri);
 
             mRootGroup.parentName = "";
+            mRootGroup.Parent = null;
 
             //FIXME this scares me... Do we need it if we only use this for categories now?
             categories = uri == IFIXIT_API_CATEGORIES;
@@ -76,6 +76,8 @@ namespace iFixit7
                             Category curr = new Category(p.Name);
 
                             mRootGroup.AddCategory(curr);
+                            curr.Parent = mRootGroup;
+                            curr.parentName = mRootGroup.Name;
                             //mRootGroup.Categories.Add(curr);
 
                             if (!p.HasValues)
@@ -122,6 +124,8 @@ namespace iFixit7
                     //FIXME this is where we add to the 1:M, right?
                     //group.Categories.Add(curr);
                     group.AddCategory(curr);
+                    curr.Parent = group;
+                    curr.parentName = group.Name;
                     if (jt.HasValues)
                     {
                         IJEnumerable<JToken> values = jt.Values();
@@ -147,6 +151,8 @@ namespace iFixit7
                          */
                         //group.Topics.Add(d);
                         group.AddTopic(d);
+                        d.Parent = group;
+                        d.parentName = group.Name;
                         
                         //node.getChildrenList().Add(new Node(dev.ToString(), null));
 //                        Debug.WriteLine("  " + dev.ToString());

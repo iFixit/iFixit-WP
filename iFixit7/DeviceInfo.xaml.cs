@@ -58,7 +58,23 @@ namespace iFixit7
 
             //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
             //on its own when the operation completes
-            new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
+            if (DeviceNetworkInformation.IsNetworkAvailable)
+            {
+                new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
+            }
+            else
+            {
+                //force the view model to update
+                infoVM.UpdateData();
+
+                //force the views to update
+                this.InfoStack.DataContext = infoVM;
+                this.GuidesStack.DataContext = infoVM;
+
+                //disable the loading bars
+                this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+                this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
+            }
         }
 
         /*
@@ -81,11 +97,13 @@ namespace iFixit7
             //if it fails, make a new one. if it works, update the old
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
+                bool gotTopicFromDB = true;
                 top = DBHelpers.GetCompleteTopic(devInfo.topic_info.name, db);
 
                 if (top == null)
                 {
                     top = new Topic();
+                    gotTopicFromDB = false;
                 }
 
                 //translate devInfo in a Topic()
@@ -132,6 +150,11 @@ namespace iFixit7
                     db.SubmitChanges();
                 }
 
+                if (!gotTopicFromDB)
+                {
+                    db.TopicsTable.InsertOnSubmit(top);
+                }
+
                 //update the Topic() into the database
                 db.SubmitChanges();
 
@@ -169,7 +192,7 @@ namespace iFixit7
         private void AppBarSearch_Click(object sender, EventArgs e)
         {
             // error out and go back if there is no netowork connection
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            if (!DeviceNetworkInformation.IsNetworkAvailable)
             {
                 MessageBox.Show("Search cannot be used without an internet connection.");
                 return;
@@ -222,6 +245,7 @@ namespace iFixit7
             }
             if (top == null)
             {
+                Debug.WriteLine(">>couldnt find DeviceInfo topic in DB to display it");
                 return;
             }
 

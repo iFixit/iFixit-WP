@@ -29,7 +29,7 @@ namespace iFixit7
         {
             SearchProgressStack.Visibility = System.Windows.Visibility.Visible;
 
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            if (!DeviceNetworkInformation.IsNetworkAvailable)
             {
                 //hide progress indicator
                 SearchProgressStack.Visibility = System.Windows.Visibility.Collapsed;

@@ -15,7 +15,7 @@ namespace iFixit7
         { }
 
         // Specify all tables?
-        public Table<Category> CategoriesTable;
+        //public Table<Category> CategoriesTable;
         public Table<Topic> TopicsTable;
         public Table<Guide> GuidesTable;
         public Table<Step> StepsTable;
@@ -25,77 +25,6 @@ namespace iFixit7
 
     public class DBHelpers
     {
-        /*
-         * Recursively inserts an entire fully-formed tree (with topics) into the DB
-         */
-        public static void InsertTree(Category root, iFixitDataContext dc)
-        {
-            Category dbCopy = GetCompleteCategory(root.Name, dc);
-
-            //if it isnt in the DB, insert it without any more work
-            if (dbCopy == null)
-            {
-                dc.CategoriesTable.InsertOnSubmit(root);
-                dc.CategoriesTable.InsertAllOnSubmit(root.Categories);
-                dc.TopicsTable.InsertAllOnSubmit(root.Topics);
-            }
-            else
-            {
-                //if it was in the DB, insert all new children and remove all orhpans (categories and topics)
-                var catsToRemove = dbCopy.Categories.Except(root.Categories);
-                var catsToAdd = root.Categories.Except(dbCopy.Categories);
-                dc.CategoriesTable.InsertAllOnSubmit(catsToAdd);
-                dc.CategoriesTable.DeleteAllOnSubmit(catsToRemove);
-
-                var topicsToRemove = dbCopy.Topics.Except(root.Topics);
-                var topicsToAdd = root.Topics.Except(dbCopy.Topics);
-                dc.TopicsTable.InsertAllOnSubmit(topicsToAdd);
-                dc.TopicsTable.DeleteAllOnSubmit(topicsToRemove);
-            }
-
-            //iterate through all children in all cases
-            foreach (Category c in root.Categories)
-            {
-                InsertTree(c, dc);
-            }
-        }
-
-        /*
-         * Get a node of the tree, and populate its collections
-         */
-        public static Category GetCompleteCategory(string catName, iFixitDataContext dc)
-        {
-            Category n = null;
-
-            //get the node
-            n = dc.CategoriesTable.FirstOrDefault(c => c.Name == catName);
-
-            if (n == null)
-                return null;
-
-            //get its child categories
-            n.Categories = dc.CategoriesTable.Where(c => c.parentName == catName).OrderBy(c => c.Name).ToList();
-            n.Parent = dc.CategoriesTable.FirstOrDefault(c => c.Name == n.parentName);
-            /*
-            var qc = from c in dc.CategoriesTable
-                     where c.parentName == catName
-                     orderby c.Name
-                     select c;
-            n.Categories = qc.Distinct().ToList();
-            */
-
-            //get its child topics
-            n.Topics = dc.TopicsTable.Where(t => t.parentName == catName).OrderBy(t => t.Name).ToList();
-            /*
-            var qt = from t in dc.TopicsTable
-                     where t.parentName == catName
-                     orderby t.Name
-                     select t;
-            n.Topics = qt.Distinct().ToList();
-            */
-            return n;
-        }
-
         /*
          * FIXME add methods simillar to above for Topic, Guide, Step!
          */

@@ -17,6 +17,7 @@ using System.IO.IsolatedStorage;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Net.NetworkInformation;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -107,25 +108,16 @@ namespace iFixit7
                 Debug.WriteLine("got last use = " + last);
             }
 
-            //this has asynchroneous components that will run while the UI loads and whatnot
-            if ((last.AddDays(1.0) < DateTime.Now) && NetworkInterface.GetIsNetworkAvailable())
+            //this has asynchroneous components that will run while the UI loads and whatnot NetworkInterface.GetIsNetworkAvailable()
+            if ((last.AddDays(1.0) < DateTime.Now) && DeviceNetworkInformation.IsNetworkAvailable)
             {
                 getAreas();
             }
             else
             {
-                using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
-                {
-                    if (tDB.DatabaseExists() == true)
-                    {
-                        root = GetRootCategoryFromDB(tDB);
-                    }
-                }
                 // clear loading screen
                 //(RootFrame.Content as MainPage).StopLoadingIndication();
                 PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen] = false;
-
-
             }
             // Create the database if it does not exist.
             //the using statement guarntees that setup and teardown will always happen, and properly
@@ -140,22 +132,6 @@ namespace iFixit7
                     tDB.SubmitChanges();
                 }
             }
-        }
-
-        private Category GetRootCategoryFromDB(iFixitDataContext dc)
-        {
-            return BuildSubTree(DBHelpers.GetCompleteCategory("root", dc), dc);
-        }
-
-        private Category BuildSubTree(Category category, iFixitDataContext dc)
-        {
-            List<Category> newCats = new List<Category>();
-            foreach (Category c in category.Categories)
-            {
-                newCats.Add(BuildSubTree(DBHelpers.GetCompleteCategory(c.Name, dc), dc));
-            }
-            category.Categories = newCats;
-            return category;
         }
 
         public void getAreas()
@@ -182,30 +158,19 @@ namespace iFixit7
 
                 Debug.WriteLine("we got a tree, right? PROCESS IT");
 
-                using (iFixitDataContext db = new iFixitDataContext(DBConnectionString))
+                root = tree;
+
+                //now async get images for all root categories
+                //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
+                List<Category> cats = root.Categories;
+                thumbCount = 0;
+                foreach (Category c in cats)
                 {
-                    //add the rest of the tree
-                    Debug.WriteLine("about to insert tree");
-                    DBHelpers.InsertTree(tree, db);
-                    db.SubmitChanges();
-                    root = GetRootCategoryFromDB(db);
-                    Debug.WriteLine("done inserting tree");
-
-                    //update datestamp
-                    IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey] = DateTime.Now;
-
-                    //now async get images for all root categories
-                    //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
-                    List<Category> cats = root.Categories;
-                    thumbCount = 0;
-                    foreach (Category c in cats)
+                    Debug.WriteLine("thumb = " + c.Thumbnail);
+                    if (c.Thumbnail == "")
                     {
-                        Debug.WriteLine("thumb = " + c.Thumbnail);
-                        if (c.Thumbnail == "")
-                        {
-                            ++thumbCount;
-                            new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
-                        }
+                        ++thumbCount;
+                        new JSONInterface2().populateDeviceInfo(c.Name, storeJSONCategoryInDB);
                     }
                 }
 
@@ -230,52 +195,23 @@ namespace iFixit7
          */
         bool storeJSONCategoryInDB(DeviceInfoHolder di)
         {
-            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-            {
-                Category c = db.CategoriesTable.Single(cat => cat.Name == di.title);
-                Debug.WriteLine("Category: " + c.Name + "| " + c.parentName + "| ");
+            Category c = root.Categories.Single(cat => cat.Name == di.title);
+            Debug.WriteLine("Category: " + c.Name + "| " + c.parentName + "| ");
 
-                if (c.Thumbnail != di.image.text + ".standard")
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Debug.WriteLine("updating thumb");
-
-                    NotifyPropertyChanging("Category.Thumbnail");
-                    Debug.WriteLine("thumbnail before assign: " + c.Thumbnail);
                     c.Thumbnail = di.image.text + ".standard";
-                    Debug.WriteLine("thumbnail after assign: " + c.Thumbnail);
-
-                    //update the DB
-                    db.SubmitChanges();
-                    NotifyPropertyChanged("Category.Thumbnail");
-
                     --thumbCount;
 
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            //manually force the cache to save the image
-                            //ImgCache.RetrieveAndCacheByURL(di.image.text);
+                    //manually force the cache to save the image
+                    //ImgCache.RetrieveAndCacheByURL(di.image.text);
 
-                            if (thumbCount == 0)
-                            {
-
-                                //update the root categories so the handle has thumbnails
-                                using (iFixitDataContext tdb = new iFixitDataContext(App.DBConnectionString))
-                                {
-                                    for (int i = 0; i < root.Categories.Count; i++)
-                                    {
-                                        Category roots = root.Categories.ElementAt(i);
-                                        Category newCat = tdb.CategoriesTable.FirstOrDefault(r => r.Name == roots.Name);
-
-                                        roots.Thumbnail = newCat.Thumbnail;
-                                    }
-                                }
-                                (RootFrame.Content as MainPage).initDataBinding();
-                                (RootFrame.Content as MainPage).StopLoadingIndication();
-
-                            }
-                        });
-                }
-            }
+                    if (thumbCount == 0)
+                    {
+                        (RootFrame.Content as MainPage).initDataBinding();
+                        (RootFrame.Content as MainPage).StopLoadingIndication();
+                    }
+                });
 
             return true;
         }

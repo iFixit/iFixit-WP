@@ -43,17 +43,6 @@ namespace iFixit7
             {
                 this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
             }
-            //using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-            //{
-            //    //setup the data binding stuff for live column
-            //    rootCat = DBHelpers.GetCompleteCategory("root", db);
-            //    if(rootCat != null){
-            //        this.CatagoryList.ItemsSource = rootCat.Categories.OrderBy(n => n.Name);
-            //    }
-            //}
-
-            //clear the loading bars when we are done loading data
-            //StopLoadingIndication();
         }
 
         /*
@@ -63,31 +52,6 @@ namespace iFixit7
         {
             this.Loading.Visibility = System.Windows.Visibility.Collapsed;
             ApplicationBar.IsVisible = true;
-
-            ////replace the view with a view indicating failure
-            //if (failure)
-            //{
-            //    StackPanel sp = new StackPanel();
-
-            //    Image i = new Image();
-            //    i.Source = new BitmapImage(new Uri("fist.png", UriKind.Relative));
-            //    i.Stretch = Stretch.UniformToFill;
-            //    i.HorizontalAlignment = HorizontalAlignment.Center;
-            //    i.VerticalAlignment = VerticalAlignment.Center;
-
-            //    TextBlock tb = new TextBlock();
-            //    tb.TextWrapping = TextWrapping.Wrap;
-            //    tb.Foreground = new SolidColorBrush(Colors.White);
-            //    tb.TextAlignment = TextAlignment.Center;
-            //    tb.FontSize = 45;
-            //    tb.Text = "Please connect to the internet and restart the app.";
-
-            //    sp.Children.Add(i);
-            //    sp.Children.Add(tb);
-            //    App.Current.RootVisual = sp;
-
-            //    ApplicationBar.IsVisible = false;
-            //}
         }
 
         /*
@@ -103,11 +67,6 @@ namespace iFixit7
             Debug.WriteLine("Saving " + navToCat.Name + " at Key: " + navToCat.Parent.Name);
             PhoneApplicationService.Current.State[navToCat.Parent.Name] = navToCat;
 
-            //NavigationService.Navigate(new Uri("/MagicPivot.xaml?CategoryParent=" + App.RootCategoryName +
-            //    "&SelectedCategory=" + s +
-            //    "&SelectedType=" + "category",
-            //    UriKind.Relative));
-
             NavigationService.Navigate(new Uri("/MagicPivot.xaml?parent=" + navToCat.Parent.Name, UriKind.Relative));
         }
 
@@ -121,10 +80,11 @@ namespace iFixit7
             //force an update
             initDataBinding();
 
-            //check if we should leave the loading screen up or hide it
+            //check if we should leave the loading screen up or hide it. If we want to hide it, we must be offline so navigate to cached
             if(PhoneApplicationService.Current.State.ContainsKey(App.InitializeWithLoadingScreen)){
                 if(!(bool)PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen]){
-                    this.StopLoadingIndication();
+                    //this.StopLoadingIndication();
+                    NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
                 }
             }
         }
@@ -135,7 +95,7 @@ namespace iFixit7
         private void AppBarSearch_Click(object sender, EventArgs e)
         {
             // error out and go back if there is no netowork connection
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            if (!DeviceNetworkInformation.IsNetworkAvailable)
             {
                 MessageBox.Show("Search cannot be used without an internet connection.");
                 return;

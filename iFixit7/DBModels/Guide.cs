@@ -4,6 +4,8 @@
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
+using Microsoft.Phone.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace iFixit7
 {
@@ -34,8 +36,12 @@ namespace iFixit7
             //copy over steps
             foreach (GHStep s in gh.guide.steps)
             {
-                this.Steps.Add(new Step(s));
+                Step dbStep = new Step(s);
+                dbStep.parentName = this.Title;
+                this.Steps.Add(dbStep);
             }
+
+            this.Populated = true;
         }
 
         /*
@@ -49,6 +55,7 @@ namespace iFixit7
             this.URL = g.url;
             this.GuideID = g.guideid;
             this.Thumbnail = g.thumbnail;
+            this.Populated = false;
         }
 
         //the primary key
@@ -82,27 +89,13 @@ namespace iFixit7
                     NotifyPropertyChanging("Title");
 
                     //strip HTML formatting the hard way http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
-                    var v = ReplaceAllInstancesOf(value, "&quot;", "\"");
-                    v = ReplaceAllInstancesOf(v, "&amp;", "&");
-                    v = ReplaceAllInstancesOf(v, "&nbsp;", " ");
-                    /*
                     var v = value.Replace("&quot;", "\"");
                     v = v.Replace("&amp;", "&");
                     v = v.Replace("&nbsp;", " ");
-                     * */
                     _title = v;
                     NotifyPropertyChanged("Title");
                 }
             }
-        }
-
-        // a tiny function for replacing all instances of a string inside of another string with a third string
-        static private string ReplaceAllInstancesOf(string source, string toReplace, string replacement)
-        {
-            string o = source;
-            while(o.Contains(toReplace))
-                o = o.Replace(toReplace, replacement);
-            return o;
         }
 
         /*
@@ -200,6 +193,46 @@ namespace iFixit7
                     _guideID = value;
                     NotifyPropertyChanged("GuideID");
                 }
+            }
+        }
+
+        /*
+         * A column to store if this topic has been populated from the web yet (AKA cached)
+         */
+        private bool _populated = false;
+        [Column]
+        public bool Populated
+        {
+            get
+            {
+                return _populated;
+            }
+            set
+            {
+                Debug.WriteLine(this.ShortTitle + ": setting populated to " + value);
+                if (_populated != value)
+                {
+                    NotifyPropertyChanging("Populated");
+                    _populated = value;
+                    NotifyPropertyChanged("Populated");
+                }
+            }
+        }
+
+        /*
+         * A hacky property to bind to to set opacity based on populated
+         */
+        public double PopulatedOpacity
+        {
+            get
+            {
+                if (_populated || DeviceNetworkInformation.IsNetworkAvailable)
+                {
+                    Debug.WriteLine(this.ShortTitle + ": populated");
+                    return 1.0;
+                }
+                Debug.WriteLine(this.ShortTitle + ": UNpopulated");
+                return 0.5;
             }
         }
 

@@ -44,18 +44,18 @@ namespace iFixit7
             return t;
         }
 
-        public static Guide GetCompleteGuide(string title, iFixitDataContext dc)
+        public static Guide GetCompleteGuide(string guideID, iFixitDataContext dc)
         {
             Guide g = null;
 
             //get the node
-            g = dc.GuidesTable.FirstOrDefault(c => c.Title == title);
+            g = dc.GuidesTable.FirstOrDefault(c => c.GuideID == guideID);
 
             if (g == null)
                 return null;
 
-            //get its child guides
-            g.Steps = dc.StepsTable.Where(s => s.parentName == title).Distinct().ToList();
+            //get its child steps
+            g.Steps = dc.StepsTable.Where(s => s.parentName == g.Title).Distinct().ToList();
 
             return g;
         }
@@ -70,7 +70,7 @@ namespace iFixit7
             if (s == null)
                 return null;
 
-            //get its child guides
+            //get its child lines
             s.Lines = dc.LinesTable.Where(l => l.parentName == title).Distinct().ToList();
 
             return s;

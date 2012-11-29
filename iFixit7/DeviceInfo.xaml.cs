@@ -20,10 +20,13 @@ namespace iFixit7
 {
     public partial class DeviceInfo : PhoneApplicationPage
     {
+        public static string NETWORK_FLAG = "OfflineCached";
+
         //FIXME if we implement the property changing stuff here, the do we need to do the funny assignments?
         public TopicInfoViewModel infoVM = null;
 
         private string navTopicName;
+        private bool InOfflineMode = false;
 
         public DeviceInfo()
         {
@@ -48,6 +51,12 @@ namespace iFixit7
 
             //get the device name that was passed and stash it
             this.navTopicName = this.NavigationContext.QueryString["Topic"];
+
+            //figure out if it was sent while offline
+            if (this.NavigationContext.QueryString.ContainsKey(DeviceInfo.NETWORK_FLAG))
+            {
+                InOfflineMode = true;
+            }
 
             //build a new view model. IMMEDIATELY runs a DB query to fill itself
             infoVM = new TopicInfoViewModel(navTopicName);
@@ -182,8 +191,20 @@ namespace iFixit7
         {
             string guideTag = "";
             guideTag = (sender as Grid).Tag.ToString();
+            double opacity = (sender as Grid).Opacity;
+
             Debug.WriteLine("device info tapped guide id = " + guideTag);
-            NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
+
+            //figure out if the guide can be navigated to
+            //if online or opacity is 1 (it has been cached), can navigate there
+            if (!InOfflineMode || opacity == 1.0)
+            {
+                NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
+            }
+            else
+            {
+                MessageBox.Show("This guide has not been cached for offline viewing.");
+            }
         }
 
         /*

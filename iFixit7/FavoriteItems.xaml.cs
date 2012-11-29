@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -26,15 +27,29 @@ namespace iFixit7
          */
         private void Cached_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            string toAppend = "";
+
             string s = (sender as StackPanel).Tag as String;
-            //Debug.WriteLine("main page tapped CACHED > [" + s + "]");
-            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s,
+
+            //if we are offline, send a flag along with the navigation
+            if (!DeviceNetworkInformation.IsNetworkAvailable)
+            {
+                toAppend = "&" + DeviceInfo.NETWORK_FLAG + "=true";
+            }
+
+            NavigationService.Navigate(new Uri("/DeviceInfo.xaml?Topic=" + s + toAppend,
                 UriKind.Relative));
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            //remove main page from back stack if offline
+            if (!DeviceNetworkInformation.IsNetworkAvailable)
+            {
+                NavigationService.RemoveBackEntry();
+            }
 
             //force an update of binding for the cached column
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))

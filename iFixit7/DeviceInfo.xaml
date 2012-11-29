@@ -100,6 +100,7 @@
                         <DataTemplate>
 
                             <Grid Width="195" Height="150" Margin="4"
+                                  Opacity="{Binding PopulatedOpacity}"
                                    Tag="{Binding GuideID}" Tap="StackPanel_Tap">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -114,6 +115,7 @@
                                            Fill="DarkGray" Opacity=".2" />
 
                                 <Image Grid.Row="0" Grid.RowSpan="2"
+                                       Opacity="{Binding PopulatedOpacity}"
                                        VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
                                        Source="{Binding Path=Thumbnail, Converter={StaticResource ImageCacheConverter}}"  />
 
@@ -121,6 +123,7 @@
                                            Fill="Black" Opacity=".7"/>
                                 
                                 <TextBlock Grid.Row="1"
+                                           Opacity="{Binding PopulatedOpacity}"
                                            VerticalAlignment="Bottom" Margin="3"
                                            TextWrapping="Wrap"
                                            FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="White"

@@ -325,12 +325,6 @@ namespace WP7_Mango_HtmlTextBlockControl
             get { return _textBlock.Text; }
         }
 
-        private List<string> _allLinks = new List<string>();
-        public List<string> AllLinks
-        {
-            get { return _allLinks; }
-        }
-
         // Specifies whether the browser DOM can be used to attempt to parse invalid XHTML
         // Note: Deliberately not a DependencyProperty because setting this has security implications
         public bool UseDomAsParser { get; set; }

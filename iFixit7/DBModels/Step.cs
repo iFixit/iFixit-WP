@@ -17,9 +17,14 @@ namespace iFixit7
          */
         public Step(GHStep st)
         {
+            this.FillFields(st);
+        }
+
+        public void FillFields(GHStep st)
+        {
             this.StepIndex = st.number;
             this.Title = st.title;
-            
+
             //add images (in a strange way...)
             this.Image1 = "";
             this.Image2 = "";
@@ -53,7 +58,9 @@ namespace iFixit7
             //add each line
             foreach (GHStepLines l in st.lines)
             {
-                this.Lines.Add(new Lines(l));
+                Lines dbLine = new Lines(l);
+                dbLine.parentName = this.Title;
+                this.Lines.Add(dbLine);
             }
         }
 
@@ -61,27 +68,6 @@ namespace iFixit7
         [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
-
-        /*
-        //the M hook of the 1:M of guides to steps
-        [Column(Name = "stepGroupID")]
-        private int? stepGroupID { get; set; }
-
-
-        //1 side of 1:M for the collection of lines in this step
-        private EntitySet<Lines> _lines = new EntitySet<Lines>();
-        [Association(Name = "GuideToSteps", Storage = "_lines", ThisKey = "Id", OtherKey = "lineStepID")]
-        public IList<Lines> Lines
-        {
-            get { return this._lines; }
-            set
-            {
-                NotifyPropertyChanging("Lines");
-                this._lines.Assign(value);
-                NotifyPropertyChanged("Lines");
-            }
-        }
-         * */
         [Column]
         public string parentName { get; set; }
 

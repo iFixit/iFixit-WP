@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -55,12 +56,15 @@ namespace iFixit7
              */
             public GuideViewModel(Guide g)
             {
+                ColHeaders = new ObservableCollection<ColContent>();
+
+                if (g == null)
+                    return;
+
                 SourceGuide = g;
 
                 GuideTitle = g.ShortTitle;
                 GuideTopic = g.Topic;
-
-                ColHeaders = new ObservableCollection<ColContent>();
 
                 //FIXME manually add info page
                 AddInfoTab(g);
@@ -133,6 +137,8 @@ namespace iFixit7
         {
             InitializeComponent();
 
+            vm = null;
+
             this.DataContext = vm;
         }
 
@@ -181,40 +187,65 @@ namespace iFixit7
             this.guideID = this.NavigationContext.QueryString["GuideID"];
             Debug.WriteLine("\tgot guide id = " + guideID);
 
-            //get the guide, if it already exists
-            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            //if the VM is already populated, don't reload it
+            if (vm != null)
+                return;
+            
+            //if online, do an api call. The callback will be fired to populate the view
+            if (DeviceNetworkInformation.IsNetworkAvailable)
             {
-                SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
-                if (SourceGuide != null)
-                {
-                    Debug.WriteLine("\tgot guide title = " + SourceGuide.Title);
+                Debug.WriteLine("onine. Querying for new guide content");
 
-                    //clear the existing Guide from the DB
-                    db.GuidesTable.DeleteOnSubmit(SourceGuide);
-                    db.SubmitChanges();
-                }
-                else
-                {
-                    //FIXME the API must be queried to get the guide if we got here. It wasnt in the DB
-                    //this.guideID
-                    //FIXME doesnt this happen after the JSON interface call below?
-                }
                 vm = new GuideViewModel(SourceGuide);
-            }
 
-            //api call. The callback will be fired to populate the view
-            new JSONInterface2().populateGuideView(this.guideID, insertGuideIntoDB);
+                new JSONInterface2().populateGuideView(this.guideID, insertGuideIntoDB);
+            }
+            //if not online, populate view from DB
+            else
+            {
+                Debug.WriteLine("offline. Using DB for guide content");
+                using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+                {
+                    //get the guide, if it already exists
+                    SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+                    vm = new GuideViewModel(SourceGuide);
+
+                    //force view model to update
+                    vm.UpdateContentFromGuide(SourceGuide);
+                    this.DataContext = vm;
+
+                    //hide the loading bar
+                    LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
         }
         public bool insertGuideIntoDB(GuideHolder guide){
             //convert the GuideHolder we got into a DB object
 
-            //FIXME should change this to re-use the existing guide so we dont delete then add it
-            SourceGuide = new Guide(guide);
+            Debug.WriteLine("inserting guide " + guide.guide.title + " into db from net");
 
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
+                //SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+                SourceGuide = DBHelpers.GetCompleteGuide(this.guideID, db);
+
+                if (SourceGuide == null)
+                {
+                    Debug.WriteLine("\tdid not find old");
+                    SourceGuide = new Guide(guide);
+                    db.GuidesTable.InsertOnSubmit(SourceGuide);
+                }
+                else
+                {
+                    Debug.WriteLine("\tfound old");
+                    SourceGuide.FillFields(guide);
+                }
+
+                InsertStepsAndLines(SourceGuide, guide.guide.steps, db);
+
                 //insert it into the DB
-                db.GuidesTable.InsertOnSubmit(SourceGuide);
+                SourceGuide.Populated = true;
+
                 db.SubmitChanges();
             }
 
@@ -225,6 +256,49 @@ namespace iFixit7
             //hide the loading bar
             LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
             return true;
+        }
+
+        /*
+         * Iterate through all steps and their lines, inserting them into the DB
+         */
+        private void InsertStepsAndLines(Guide parentGuide, GHStep[] steps, iFixitDataContext db)
+        {
+            //loop through all steps and attempt to insert them
+            foreach (GHStep newStep in steps)
+            {
+                //see if it exists
+                //Step sOld = db.StepsTable.FirstOrDefault(s => s.Title == newStep.title);
+                Step sOld = DBHelpers.GetCompleteStep(newStep.title, db);
+                if (sOld == null)
+                {
+                    //insert it
+                    Step dbStep = new Step(newStep);
+                    dbStep.parentName = parentGuide.Title;
+                    db.StepsTable.InsertOnSubmit(dbStep);
+                }
+                else
+                {
+                    //update it
+                    sOld.FillFields(newStep);
+                }
+
+                //go through all lines
+                foreach (GHStepLines newLine in newStep.lines)
+                {
+                    Lines oldLine = db.LinesTable.FirstOrDefault(l => l.Text == newLine.text);
+                    if (oldLine == null)
+                    {
+                        //insert it
+                        db.LinesTable.InsertOnSubmit(new Lines(newLine));
+                    }
+                    else
+                    {
+                        //add it
+                        oldLine.FillFields(newLine);
+                        oldLine.parentName = newStep.title;
+                    }
+                }
+            }
         }
 
         #region INotifyPropertyChanged Members

@@ -18,6 +18,10 @@ namespace iFixit7
         }
         public Lines(GHStepLines l)
         {
+            this.FillFields(l);
+        }
+        public void FillFields(GHStepLines l)
+        {
             this.Text = l.text;
             this.Level = l.level.ToString();
             this.ColorString = l.bullet;

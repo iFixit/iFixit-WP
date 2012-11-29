@@ -7,6 +7,7 @@ using System;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using Microsoft.Phone.Tasks;
 
 namespace iFixit7
 {
@@ -159,15 +160,19 @@ namespace iFixit7
         private void GuideLine_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
-
-            Debug.WriteLine("tapped with text: " + tb.Text);
-            Debug.WriteLine("visible     text: " + tb.VisibleText);
-            foreach (string s in tb.AllLinks)
+            int firstOpen = tb.VisibleText.IndexOf("<");
+            int firstClose = tb.VisibleText.IndexOf(">");
+            string linkEnd;
+            string link;
+            if (firstOpen >= 0 && firstClose >= 0)
             {
-                Debug.WriteLine(s);
+                int length = firstClose - firstOpen;
+                linkEnd = tb.VisibleText.Substring(firstOpen + 1, length - 1);
+                link = "http://www.ifixit.com" + linkEnd;
+                WebBrowserTask wbt = new WebBrowserTask();
+                wbt.Uri = new Uri(link);
+                wbt.Show();
             }
-            //tb.Inlines
-            Debug.WriteLine("inlines = " + tb.Inlines);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

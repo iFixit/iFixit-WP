@@ -33,11 +33,12 @@ namespace iFixit7
             this.Thumbnail = gh.guide.image.medium;
             this.TitleImage = gh.guide.image.standard;
 
+            this.Steps.Clear();
             //copy over steps
             foreach (GHStep s in gh.guide.steps)
             {
                 Step dbStep = new Step(s);
-                dbStep.parentName = this.Title;
+                dbStep.parentName = this.GuideID;
                 this.Steps.Add(dbStep);
             }
 

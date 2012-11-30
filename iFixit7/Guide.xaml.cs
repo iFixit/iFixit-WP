@@ -207,11 +207,12 @@ namespace iFixit7
                 using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
                 {
                     //get the guide, if it already exists
-                    SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+                    //SourceGuide = db.GuidesTable.SingleOrDefault(g => g.GuideID == this.guideID);
+                    SourceGuide = DBHelpers.GetCompleteGuide(this.guideID, db);
                     vm = new GuideViewModel(SourceGuide);
 
                     //force view model to update
-                    vm.UpdateContentFromGuide(SourceGuide);
+                    //vm.UpdateContentFromGuide(SourceGuide);
                     this.DataContext = vm;
 
                     //hide the loading bar
@@ -268,13 +269,13 @@ namespace iFixit7
             {
                 //see if it exists
                 //Step sOld = db.StepsTable.FirstOrDefault(s => s.Title == newStep.title);
-                Step sOld = DBHelpers.GetCompleteStep(newStep.title, db);
+                Step sOld = DBHelpers.GetCompleteStep(parentGuide.GuideID, newStep.number, db);
                 if (sOld == null)
                 {
                     //insert it
-                    Step dbStep = new Step(newStep);
-                    dbStep.parentName = parentGuide.Title;
-                    db.StepsTable.InsertOnSubmit(dbStep);
+                    sOld = new Step(newStep);
+                    sOld.parentName = parentGuide.GuideID;
+                    db.StepsTable.InsertOnSubmit(sOld);
                 }
                 else
                 {
@@ -285,17 +286,19 @@ namespace iFixit7
                 //go through all lines
                 foreach (GHStepLines newLine in newStep.lines)
                 {
-                    Lines oldLine = db.LinesTable.FirstOrDefault(l => l.Text == newLine.text);
+                    Lines oldLine = db.LinesTable.FirstOrDefault(l => l.parentName == sOld.parentName + sOld.StepIndex);
                     if (oldLine == null)
                     {
                         //insert it
-                        db.LinesTable.InsertOnSubmit(new Lines(newLine));
+                        Lines l = new Lines(newLine);
+                        l.parentName = sOld.parentName + sOld.StepIndex;
+                        db.LinesTable.InsertOnSubmit(l);
                     }
                     else
                     {
                         //add it
                         oldLine.FillFields(newLine);
-                        oldLine.parentName = newStep.title;
+                        oldLine.parentName = sOld.parentName + sOld.StepIndex;
                     }
                 }
             }

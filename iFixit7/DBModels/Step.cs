@@ -59,7 +59,7 @@ namespace iFixit7
             foreach (GHStepLines l in st.lines)
             {
                 Lines dbLine = new Lines(l);
-                dbLine.parentName = this.Title;
+                dbLine.parentName = this.parentName + this.StepIndex;
                 this.Lines.Add(dbLine);
             }
         }

@@ -147,7 +147,7 @@ namespace iFixit7
             //if not, get it from the web, save it, then return that
             if (outImage == null)
             {
-                //Debug.WriteLine("\timage not found in cache, caching now");
+                Debug.WriteLine("\timage not found in cache, caching now");
                 outImage = ImgCache.RetrieveAndCacheByURL(url);
                 
                 //outImage = ImgCache.GetImageByURL(url);

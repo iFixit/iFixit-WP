@@ -55,23 +55,33 @@ namespace iFixit7
                 return null;
 
             //get its child steps
-            g.Steps = dc.StepsTable.Where(s => s.parentName == g.Title).Distinct().ToList();
+            g.Steps = dc.StepsTable.Where(s => s.parentName == g.GuideID).Distinct().ToList();
+
+            List<Step> completeSteps = new List<Step>();
+            for (int i = 0; i < g.Steps.Count; ++i)
+            {
+                string parentGuideId = g.Steps.ElementAt(i).parentName;
+                string stepIndex = g.Steps.ElementAt(i).StepIndex;
+                completeSteps.Add(GetCompleteStep(parentGuideId, stepIndex, dc));
+            }
+
+            g.Steps = completeSteps;
 
             return g;
         }
 
-        public static Step GetCompleteStep(string title, iFixitDataContext dc)
+        public static Step GetCompleteStep(string parentGuideId, string stepNumber, iFixitDataContext dc)
         {
             Step s = null;
 
             //get the node
-            s = dc.StepsTable.FirstOrDefault(c => c.Title == title);
+            s = dc.StepsTable.FirstOrDefault(c => c.parentName == parentGuideId && c.StepIndex == stepNumber);
 
             if (s == null)
                 return null;
 
             //get its child lines
-            s.Lines = dc.LinesTable.Where(l => l.parentName == title).Distinct().ToList();
+            s.Lines = dc.LinesTable.Where(l => l.parentName == s.parentName + stepNumber).Distinct().ToList();
 
             return s;
         }

@@ -86,7 +86,8 @@ namespace iFixit7
 
 
         private string _description = "this is a description";
-        [Column]
+        //text
+        [Column(DbType = "NText")]
         public string Description
         {
             get

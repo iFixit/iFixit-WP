@@ -66,8 +66,9 @@
                         <Image 
                                 x:Name="InfoImage" Source="{Binding ImageURL, Converter={StaticResource ImageCacheConverter}}"  />
 
-                        <local:HtmlTextBlock 
-                                x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
+                        <phone:WebBrowser x:Name="InfoBrowser"
+                                          Width="{Binding ElementName=InfoStack, Path=ActualWidth}"
+                                          Height="500"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

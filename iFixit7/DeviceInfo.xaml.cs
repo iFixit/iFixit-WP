@@ -73,6 +73,8 @@ namespace iFixit7
             }
             else
             {
+                InfoBrowser.NavigateToString(infoVM.Description);
+
                 //force the views to update
                 this.InfoStack.DataContext = infoVM;
                 this.GuidesStack.DataContext = infoVM;
@@ -122,8 +124,13 @@ namespace iFixit7
                 //FIXME string can only be a max of 4k long!
                 //top.Description = devInfo.description;
                 top.Description = "<html><body>" + devInfo.contents + "</body></html>";
+                InfoBrowser.NavigateToString(top.Description);
+
+                //trim if it is too long (LINQ doesnt like it...)
+                /*
                 if (top.Description.Length > 4000)
                     top.Description = top.Description.Substring(0, 3999);
+                 */
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)

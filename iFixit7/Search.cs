@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using HtmlAgilityPack;
 using System.IO;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace iFixit7
 {
@@ -54,6 +55,8 @@ namespace iFixit7
         }
         public string id { get; set; }
 
+        public string guid { get; set; }
+
         //images
         public string mini { get; set; }
         public string thumbnail { get; set; }
@@ -90,7 +93,20 @@ namespace iFixit7
                 //unpack the JSON into objects
                 SRHolder sr = JsonConvert.DeserializeObject<SRHolder>(rawJSON);
 
-                resultHook(sr.results.ToList());
+                //resultHook(sr.results.ToList());
+
+                List<SRResult> outList = new List<SRResult>();
+
+                foreach (SRResult r in sr.results)
+                {
+                    Debug.WriteLine(r.title + ": " + r.guid);
+                    if (r.guid != null)
+                        outList.Add(r);
+                }
+
+                resultHook(outList);
+
+                //actually runs to here
                 return;
             }, wr);
         }

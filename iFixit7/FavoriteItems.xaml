@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:c="clr-namespace:iFixit7"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -29,17 +30,40 @@
 
         <ListBox Grid.Row="1"
              x:Name="CachedList">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="0, 2" Tag="{Binding Name, Mode=OneWay}" Tap="Cached_Tap">
-                        
-                        <Image VerticalAlignment="Top" Source="{Binding Path=ImageURL, Converter={StaticResource ImageCacheConverter}}" 
-                                       Width="100" Stretch="Uniform" Margin="2"/>
+                    <Grid Width="220" Height="170" Margin="5"
+                          Tag="{Binding Name, Mode=OneWay}" Tap="Cached_Tap" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                        <TextBlock Text="{Binding Name, Mode=OneWay}"
-                                   Style="{StaticResource PhoneTextLargeStyle}" 
-                                   Width="360" Margin="4, 0" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                    </StackPanel>
+                        <!-- this is the background of the entire tile, which is usually hidden by the image -->
+                        <Rectangle Grid.Row="0" Grid.RowSpan="2"
+                                   Fill="DarkGray" Opacity=".2" />
+
+                        <Image Grid.Row="0" Grid.RowSpan="2"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"
+                               Source="{Binding Path=ImageURL, Mode=OneWay, Converter={StaticResource ImageCacheConverter}}" />
+
+                        <Rectangle Grid.Row="1"
+                                   Fill="Black" Opacity=".7"/>
+                        <TextBlock Grid.Row="1"
+                                   VerticalAlignment="Bottom" Margin="3"
+                                   TextWrapping="Wrap"
+                                   FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="White"
+                                   Text="{Binding Name, Mode=OneWay}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

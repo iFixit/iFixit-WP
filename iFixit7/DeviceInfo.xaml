@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:local="clr-namespace:WP7_Mango_HtmlTextBlockControl"
     xmlns:c="clr-namespace:iFixit7"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -64,7 +65,8 @@
                     <StackPanel>
                         <Image 
                                 x:Name="InfoImage" Source="{Binding ImageURL, Converter={StaticResource ImageCacheConverter}}"  />
-                        <TextBlock 
+
+                        <local:HtmlTextBlock 
                                 x:Name="Description" Text="{Binding Description}" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>

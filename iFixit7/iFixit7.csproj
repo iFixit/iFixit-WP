@@ -78,6 +78,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BindingWebBrowser.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DBModels\Lines.cs" />
     <Compile Include="DBModels\Topic.cs" />

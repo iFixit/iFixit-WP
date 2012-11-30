@@ -65,7 +65,7 @@ namespace iFixit7
                 completeSteps.Add(GetCompleteStep(parentGuideId, stepIndex, dc));
             }
 
-            g.Steps = completeSteps.OrderBy(s => s.StepIndex).ToList();
+            g.Steps = completeSteps.OrderBy(s => int.Parse(s.StepIndex)).ToList();
 
             return g;
         }

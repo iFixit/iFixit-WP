@@ -73,10 +73,6 @@ namespace iFixit7
             }
             else
             {
-                //force the view model to update
-                //NOT NEEDED. Happens when it is built
-                //infoVM.UpdateData();
-
                 //force the views to update
                 this.InfoStack.DataContext = infoVM;
                 this.GuidesStack.DataContext = infoVM;
@@ -120,11 +116,14 @@ namespace iFixit7
                 //name is already the same
                 top.Name = devInfo.topic_info.name;
                 top.parentName = devInfo.title;
-                top.Description = devInfo.description;
                 top.ImageURL = devInfo.image.text + ".medium";       //scales the image
                 top.Populated = true;
 
-                top.Description = devInfo.description;
+                //FIXME string can only be a max of 4k long!
+                //top.Description = devInfo.description;
+                top.Description = "<html><body>" + devInfo.contents + "</body></html>";
+                if (top.Description.Length > 4000)
+                    top.Description = top.Description.Substring(0, 3999);
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)
@@ -138,19 +137,6 @@ namespace iFixit7
                     {
                         gOld = new Guide();
                         db.GuidesTable.InsertOnSubmit(gOld);
-                        /*
-                        db.GuidesTable.DeleteOnSubmit(gOld);
-                        db.SubmitChanges();
-
-                        //transfer info
-                        gNew.Title = gOld.Title;
-                        gNew.parentName = gOld.parentName;
-                        gNew.Summary = gOld.Summary;
-                        gNew.URL = gOld.URL;
-                        gNew.GuideID = gOld.GuideID;
-                        gNew.Thumbnail = gOld.Thumbnail;
-                        gNew.TitleImage = gOld.TitleImage;
-                         * */
                     }
 
                     gOld.FillFieldsFromDeviceInfo(navTopicName, g);

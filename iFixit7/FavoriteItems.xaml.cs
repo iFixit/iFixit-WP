@@ -29,7 +29,7 @@ namespace iFixit7
         {
             string toAppend = "";
 
-            string s = (sender as StackPanel).Tag as String;
+            string s = (sender as Grid).Tag as String;
 
             //if we are offline, send a flag along with the navigation
             if (!DeviceNetworkInformation.IsNetworkAvailable)

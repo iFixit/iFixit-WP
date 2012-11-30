@@ -39,7 +39,7 @@ namespace iFixit7
                 return null;
 
             //get its child guides
-            t.Guides = dc.GuidesTable.Where(g => g.parentName == name).Distinct().ToList();
+            t.Guides = dc.GuidesTable.Where(g => g.parentName == name).Distinct().OrderBy(g => g.Title).ToList();
 
             return t;
         }
@@ -65,7 +65,7 @@ namespace iFixit7
                 completeSteps.Add(GetCompleteStep(parentGuideId, stepIndex, dc));
             }
 
-            g.Steps = completeSteps;
+            g.Steps = completeSteps.OrderBy(s => s.StepIndex).ToList();
 
             return g;
         }

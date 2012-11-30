@@ -61,14 +61,6 @@ namespace iFixit7
                 if (g == null)
                     return;
 
-                SourceGuide = g;
-
-                GuideTitle = g.ShortTitle;
-                GuideTopic = g.Topic;
-
-                //FIXME manually add info page
-                AddInfoTab(g);
-
                 UpdateContentFromGuide(g);
             }
 
@@ -77,7 +69,14 @@ namespace iFixit7
              */
             public void UpdateContentFromGuide(Guide g)
             {
+                SourceGuide = g;
+
+                this.GuideTitle = g.ShortTitle;
+                this.GuideTopic = g.Topic;
+
+                //FIXME manually add info page
                 AddInfoTab(g);
+
                 foreach(Step s in g.Steps)
                 {
                     ColHeaders.Add(new ColContent(s));
@@ -197,6 +196,7 @@ namespace iFixit7
                 Debug.WriteLine("onine. Querying for new guide content");
 
                 vm = new GuideViewModel(SourceGuide);
+                this.DataContext = vm;
 
                 new JSONInterface2().populateGuideView(this.guideID, insertGuideIntoDB);
             }
@@ -252,6 +252,8 @@ namespace iFixit7
 
             //force view model to update
             vm.UpdateContentFromGuide(SourceGuide);
+            this.gTitle.Text = vm.GuideTitle;
+            this.gTopic.Text = vm.GuideTopic;
             this.DataContext = vm;
 
             //hide the loading bar

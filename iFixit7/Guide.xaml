@@ -46,8 +46,8 @@
 
         <!--holds the name of the device, then name of topic-->
         <StackPanel>
-            <TextBlock x:Name="GuideTopic" Text="{Binding GuideTopic, Mode=OneWay}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
-            <TextBlock x:Name="GuideTitle" Text="{Binding GuideTitle, Mode=OneWay}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock x:Name="gTopic" Text="{Binding GuideTopic, Mode=OneWay}" Margin="0,0,0,-5" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock x:Name="gTitle" Text="{Binding GuideTitle, Mode=OneWay}" Margin="0,0,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
 
             <ProgressBar x:Name="LoadingBarInfo" IsIndeterminate="True" Visibility="Visible" Foreground="Orange"/>
         </StackPanel>

@@ -74,7 +74,8 @@ namespace iFixit7
             else
             {
                 //force the view model to update
-                infoVM.UpdateData();
+                //NOT NEEDED. Happens when it is built
+                //infoVM.UpdateData();
 
                 //force the views to update
                 this.InfoStack.DataContext = infoVM;
@@ -131,11 +132,13 @@ namespace iFixit7
                     Debug.WriteLine("\tguide " + g.title);
 
                     //search if the guide already exists, and get or update it
-                    Guide gNew = new Guide();
                     Guide gOld = null;
                     gOld = db.GuidesTable.FirstOrDefault(other => other.Title == g.title);
-                    if (gOld != null)
+                    if (gOld == null)
                     {
+                        gOld = new Guide();
+                        db.GuidesTable.InsertOnSubmit(gOld);
+                        /*
                         db.GuidesTable.DeleteOnSubmit(gOld);
                         db.SubmitChanges();
 
@@ -147,15 +150,15 @@ namespace iFixit7
                         gNew.GuideID = gOld.GuideID;
                         gNew.Thumbnail = gOld.Thumbnail;
                         gNew.TitleImage = gOld.TitleImage;
+                         * */
                     }
 
-                    gNew.FillFieldsFromDeviceInfo(navTopicName, g);
+                    gOld.FillFieldsFromDeviceInfo(navTopicName, g);
 
                     // hang it below the topic, it its collection of guides
-                    top.AddGuide(gNew);
+                    top.AddGuide(gOld);
 
                     //FIXME do we need to specifically add this to the guide table? is that magic?
-                    db.GuidesTable.InsertOnSubmit(gNew);
                     db.SubmitChanges();
                 }
 

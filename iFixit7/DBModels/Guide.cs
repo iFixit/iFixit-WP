@@ -20,6 +20,9 @@ namespace iFixit7
          */
         public Guide(GuideHolder gh)
         {
+            //set this once
+            this.Thumbnail = gh.guide.image.medium;
+
             this.FillFields(gh);
         }
 
@@ -30,8 +33,10 @@ namespace iFixit7
             this.Summary = gh.guide.summary;
             this.URL = gh.url;
             this.GuideID = gh.guideid;
-            this.Thumbnail = gh.guide.image.medium;
             this.TitleImage = gh.guide.image.standard;
+
+            //do not change this after initial set
+            //this.Thumbnail = gh.guide.image.medium;
 
             this.Steps.Clear();
             //copy over steps
@@ -42,7 +47,7 @@ namespace iFixit7
                 this.Steps.Add(dbStep);
             }
 
-            this.Populated = true;
+            //this.Populated = true;
         }
 
         /*
@@ -56,7 +61,8 @@ namespace iFixit7
             this.URL = g.url;
             this.GuideID = g.guideid;
             this.Thumbnail = g.thumbnail;
-            this.Populated = false;
+
+            //this.Populated = false;
         }
 
         //the primary key

@@ -59,6 +59,9 @@ namespace iFixit7
         {
             root = null;
 
+            // check for WAS_TOMBSTONED in isostore
+            //
+
             // Global handler for uncaught exceptions. 
             UnhandledException += Application_UnhandledException;
 
@@ -247,8 +250,6 @@ namespace iFixit7
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(SerialStore, FileMode.Open);
                         DataContractSerializer ser = new DataContractSerializer(typeof(Category));
                         root = ser.ReadObject(fileStream) as Category;
-                        ser = new DataContractSerializer(RootFrame.GetType());
-                        RootFrame = ser.ReadObject(fileStream) as PhoneApplicationFrame;
                         fileStream.Close();
                     }
                 }
@@ -273,9 +274,11 @@ namespace iFixit7
 
                 DataContractSerializer ser = new DataContractSerializer(root.GetType());
                 ser.WriteObject(fileStream, root);
-                ser = new DataContractSerializer(RootFrame.GetType());
-                ser.WriteObject(fileStream, RootFrame);
                 fileStream.Close();
+
+                // save that we've been tombstoned into the isostore so we can know not to getAreas later
+                //
+
             }
         }
 

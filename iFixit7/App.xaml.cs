@@ -18,6 +18,8 @@ using System.ComponentModel;
 using System.Windows.Threading;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.IO;
+using System.Runtime.Serialization;
 
 namespace iFixit7
 {
@@ -31,6 +33,7 @@ namespace iFixit7
         public const string MagicParentTag = "parent";
         public const string MagicSelectedTag = "SelectedCategory";
         public const string MagicTypeTag = "SelectedType";
+        public const string SerialStore = "iFixitSerial.osl";
 
         //initial state variable keys
         public const string LastUpdateKey = ">>LAST_UPDATED<<";
@@ -64,6 +67,7 @@ namespace iFixit7
 
             // Phone-specific initialization
             InitializePhoneApplication();
+            Debug.WriteLine(">>>In constructor");
 
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
@@ -220,6 +224,7 @@ namespace iFixit7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            Debug.WriteLine("LAUNCHING");
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -227,6 +232,21 @@ namespace iFixit7
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             //restore state from PhoneApplicationService.Current.State
+            Debug.WriteLine("ACTIVATING");
+
+            if (root == null || root.Categories == null || root.Categories.Count == 0)
+            {
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (myIsolatedStorage.FileExists(SerialStore))
+                    {
+                        IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(SerialStore, FileMode.Open);
+                        DataContractSerializer ser = new DataContractSerializer(typeof(Category));
+                        root = ser.ReadObject(fileStream) as Category;
+                        fileStream.Close();
+                    }
+                }
+            }
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -234,12 +254,28 @@ namespace iFixit7
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             //save state from PhoneApplicationService.Current.State
+            Debug.WriteLine("DEACTIVATING");
+            // Create virtual store and file stream. Check for duplicate files
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(SerialStore))
+                {
+                    myIsolatedStorage.DeleteFile(SerialStore);
+                }
+
+                IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(SerialStore);
+
+                DataContractSerializer ser = new DataContractSerializer(root.GetType());
+                ser.WriteObject(fileStream, root);
+                fileStream.Close();
+            }
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            Debug.WriteLine("CLOSING");
         }
 
         // Code to execute if a navigation fails

@@ -6,10 +6,12 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;
+using System.Runtime.Serialization;
 
 namespace iFixit7
 {
-    [Table (Name = "AllCategories")]
+    [Table(Name = "AllCategories")]
+    [DataContract(IsReference = true)]
     public class Category : INotifyPropertyChanged, INotifyPropertyChanging
     {
         public override bool Equals(object obj)
@@ -40,12 +42,14 @@ namespace iFixit7
         }
 
         //the primary key
-        [Column( AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        [Column(AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
+        [DataMember]
         public int Id
         {
             get; set;
         }
 
+        [DataMember]
         public Uri url
         {
             get
@@ -59,10 +63,15 @@ namespace iFixit7
         }
 
         [Column]
+        [DataMember]
         public string parentName { get; set; }
 
+        [DataMember]
         public Category Parent { get; set; }
+
+        [DataMember]
         public List<Category> Categories = new List<Category>();
+        [DataMember]
         public List<Topic> Topics = new List<Topic>();
 
         public void AddCategory(Category c)
@@ -80,6 +89,7 @@ namespace iFixit7
 
         private string _name = "";
         [Column]
+        [DataMember]
         public string Name
         {
             get
@@ -100,6 +110,7 @@ namespace iFixit7
         /*
          * a hook to get a shortened version of the title if the full thing is too long
          */
+        [DataMember]
         public string ShortName
         {
             get
@@ -120,6 +131,7 @@ namespace iFixit7
 
         private string _thumbnail = "";
         [Column]
+        [DataMember]
         public string Thumbnail
         {
             get

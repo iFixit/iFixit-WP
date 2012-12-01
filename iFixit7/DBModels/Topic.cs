@@ -4,10 +4,12 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace iFixit7
 {
     [Table]
+    [DataContract(IsReference = true)]
     public class Topic : INotifyPropertyChanged, INotifyPropertyChanging
     {
         public override bool Equals(object obj)

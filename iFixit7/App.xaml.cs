@@ -212,8 +212,12 @@ namespace iFixit7
 
                     if (thumbCount == 0)
                     {
-                        (RootFrame.Content as MainPage).initDataBinding();
-                        (RootFrame.Content as MainPage).StopLoadingIndication();
+                        MainPage temp = RootFrame.Content as MainPage;
+                        if (temp != null)
+                        {
+                            temp.initDataBinding();
+                            temp.StopLoadingIndication();
+                        }
                     }
                 });
 
@@ -243,6 +247,8 @@ namespace iFixit7
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(SerialStore, FileMode.Open);
                         DataContractSerializer ser = new DataContractSerializer(typeof(Category));
                         root = ser.ReadObject(fileStream) as Category;
+                        ser = new DataContractSerializer(RootFrame.GetType());
+                        RootFrame = ser.ReadObject(fileStream) as PhoneApplicationFrame;
                         fileStream.Close();
                     }
                 }
@@ -267,6 +273,8 @@ namespace iFixit7
 
                 DataContractSerializer ser = new DataContractSerializer(root.GetType());
                 ser.WriteObject(fileStream, root);
+                ser = new DataContractSerializer(RootFrame.GetType());
+                ser.WriteObject(fileStream, RootFrame);
                 fileStream.Close();
             }
         }

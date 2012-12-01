@@ -49,6 +49,7 @@ namespace iFixit7
             get; set;
         }
 
+        private Uri _url;
         [DataMember]
         public Uri url
         {
@@ -58,7 +59,7 @@ namespace iFixit7
             }
             set
             {
-                url = value;
+                _url = value;
             }
         }
 
@@ -110,7 +111,6 @@ namespace iFixit7
         /*
          * a hook to get a shortened version of the title if the full thing is too long
          */
-        [DataMember]
         public string ShortName
         {
             get

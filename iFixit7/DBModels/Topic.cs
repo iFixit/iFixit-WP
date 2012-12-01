@@ -33,8 +33,10 @@ namespace iFixit7
 
 
         [Column]
+        [DataMember]
         public string parentName { get; set; }
-
+        
+        [DataMember]
         public List<Guide> Guides = new List<Guide>();
 
         public void AddGuide(Guide g)
@@ -43,10 +45,12 @@ namespace iFixit7
             this.Guides.Add(g);
         }
 
+        [DataMember]
         public Category Parent { get; set; }
 
         private string _name;
         [Column]
+        [DataMember]
         public string Name
         {
             get
@@ -90,6 +94,7 @@ namespace iFixit7
         private string _description = "this is a description";
         //text
         [Column(DbType = "NText")]
+        [DataMember]
         public string Description
         {
             get
@@ -113,6 +118,7 @@ namespace iFixit7
          */
         private bool _populated = false;
         [Column]
+        [DataMember]
         public bool Populated
         {
             get
@@ -132,6 +138,7 @@ namespace iFixit7
 
         private string _imageUrl;
         [Column]
+        [DataMember]
         public string ImageURL
         {
             get

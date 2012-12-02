@@ -42,6 +42,31 @@ namespace iFixit7.DBModels
         [DataMember]
         public string locale { get; set; }
 
+        private string _shortName;
+        public string shortName
+        {
+            get
+            {
+                if (_shortName != null && _shortName != "")
+                {
+                    return _shortName;
+                }
+                else
+                {
+                    return text;
+                }
+            }
+            set
+            {
+                if (_shortName != value)
+                {
+                    NotifyPropertyChanging("shortName");
+                    _shortName = value;
+                    NotifyPropertyChanged("shortName");
+                }
+            }
+        }
+
         public Prereq()
             : base()
         { }

@@ -56,19 +56,21 @@ namespace iFixit7
             }
 
             //this.Populated = true;
-
+            this.parts.Clear();
             foreach (GHPart p in gh.guide.parts)
             {
                 Part dbPart = new Part(p);
                 this.AddPart(dbPart);
             }
 
+            this.prereqs.Clear();
             foreach (GHPrereq p in gh.guide.prereqs)
             {
                 Prereq dbPrereq = new Prereq(p);
                 this.AddPrereq(dbPrereq);
             }
 
+            this.tools.Clear();
             foreach (GHTool t in gh.guide.tools)
             {
                 Tool dbTool = new Tool(t);

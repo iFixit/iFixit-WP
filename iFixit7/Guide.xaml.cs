@@ -70,10 +70,77 @@ namespace iFixit7
                 public string TitleImage { get; set; }
                 public string Introduction { get; set; }
                 public string Difficulty { get; set; }
+                public string diffText
+                {
+                    get
+                    {
+                        return "Difficulty: " + Difficulty;
+                    }
+                }
                 public string Author { get; set; }
+                public string authorText
+                {
+                    get
+                    {
+                        return "Author: " + Author;
+                    }
+                }
                 public List<Part> Parts { get; set; }
                 public List<Prereq> Prereqs { get; set; }
                 public List<Tool> Tools { get; set; }
+                public Visibility hasParts
+                {
+                    get
+                    {
+                        if (Parts != null && Parts.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+                public Visibility hasPrereqs
+                {
+                    get
+                    {
+                        if (Prereqs != null && Prereqs.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+                public Visibility hasTools
+                {
+                    get
+                    {
+                        if (Tools != null && Tools.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+
+                public void createShortNames(string topic)
+                {
+                    if (Prereqs != null)
+                    {
+                        foreach (Prereq p in Prereqs)
+                        {
+                            p.shortName = p.text.Replace(topic + " ", "");
+                        }
+                    }
+                }
             }
 
 
@@ -172,7 +239,7 @@ namespace iFixit7
 
                 if (g.Introduction != null && g.Introduction.Length > 0)
                 {
-                    infoTab.Introduction = g.Introduction;
+                    infoTab.Introduction = g.Introduction.Replace("<p>", "").Replace("</p>", "");
                 }
 
                 if (g.Difficulty != null && g.Difficulty.Length > 0)
@@ -199,6 +266,7 @@ namespace iFixit7
                 {
                     infoTab.Tools = g.tools;
                 }
+                infoTab.createShortNames(g.parentName);
                 return infoTab;
             }
         }

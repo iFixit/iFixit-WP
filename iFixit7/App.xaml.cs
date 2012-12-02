@@ -106,8 +106,14 @@ namespace iFixit7
             catch (Exception ex)
             { }
 
-            // POST LOADING SCREEN
+            //new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
+            //FIXME REMOVE
+            JSONInterface2.populateCollectionView(fillCollection);
+        }
 
+        public bool fillCollection(CVCollection[] c)
+        {
+            return true;
         }
 
         public void getAreas()

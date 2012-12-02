@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using System.Text;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace iFixit7
 {
@@ -30,8 +31,9 @@ namespace iFixit7
     public class JSONInterface2
     {
         public static string IFIXIT_API_AREAS = "http://www.ifixit.com/api/1.0/categories/";
-        public static string IFIXIT_API_GUIDES = ("http://www.ifixit.com/api/1.0/guide/");          //takes guide id
-        public static string IFIXIT_API_DEVICE_INFO = ("http://www.ifixit.com/api/1.0/topic/");    //takes string name
+        public static string IFIXIT_API_GUIDES = "http://www.ifixit.com/api/1.0/guide/";          //takes guide id
+        public static string IFIXIT_API_DEVICE_INFO = "http://www.ifixit.com/api/1.0/topic/";    //takes string name
+        public static string IFIXIT_API_COLLECTIONS = "http://www.ifixit.com/api/1.0/collections";
 
         private Func<DeviceInfoHolder, bool> devInfoCallback = null;
         private Func<GuideHolder, bool> guidePopulateCallback = null;
@@ -97,6 +99,32 @@ namespace iFixit7
             catch (JsonSerializationException ex)
             {}
             guidePopulateCallback(gde);
+        }
+
+        public static void populateCollectionView(Func<CVCollection[], bool> f)
+        {
+            //request
+            WebClient client = new WebClient();
+            MemoryStream stream = new MemoryStream();
+            client.OpenReadAsync(new Uri(IFIXIT_API_COLLECTIONS), stream);
+            client.OpenReadCompleted += (sender, e) =>{
+                string rawJSON = new StreamReader(e.Result).ReadToEnd();
+                CVCollection[] col = null;
+
+                try
+                {
+                    col = JsonConvert.DeserializeObject<CVCollection[]>(rawJSON);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    Debug.WriteLine("json except");
+                }
+
+                f(col);
+                return;
+            };
+
+            stream.Close();
         }
     }
 
@@ -278,5 +306,17 @@ namespace iFixit7
         public string type { get; set; }
         public string width { get; set; }
         public string height { get; set; }
+    }
+
+    /*
+     * Class for the collections view
+     */
+    public class CVCollection
+    {
+        public int collectionid { get; set; }
+        public string title { get; set; }
+        public int date { get; set; }
+        public int[] guideids { get; set; }
+        public GHImage image { get; set; }
     }
 }

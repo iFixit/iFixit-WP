@@ -53,7 +53,7 @@
         </StackPanel>
         
         <!--ContentPanel - place additional content here-->
-        <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding ColHeaders}">
+        <controls:Pivot x:Name="GuidePivot" Grid.Row="1" ItemsSource="{Binding ColHeaders}" VerticalAlignment="Stretch">
 
             <!--the style for the title of each step-->
             <controls:Pivot.HeaderTemplate>
@@ -70,7 +70,7 @@
             <!-- template for each step column -->
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
-                    <c:GuideTemplateSelector Content="{Binding}">
+                    <c:GuideTemplateSelector VerticalAlignment="Top" Content="{Binding}">
                         <c:GuideTemplateSelector.InfoTab>
                             <DataTemplate>
                                 <ScrollViewer>
@@ -85,18 +85,18 @@
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <HyperlinkButton NavigateUri="{Binding navUri}" Content="{Binding text}"
-                                                                     TargetName="_blank" MaxWidth="{Binding ElementName=Img1}"
+                                                                     TargetName="_blank" MaxWidth="{Binding ElementName=Img1, Path=ActualWidth}"
                                                                      HorizontalContentAlignment="Left" Margin="8,4,0,0" HorizontalAlignment="Left"/>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>
                                         <TextBlock Text="Required Tools:" Margin="8,12,0,0" Visibility="{Binding hasTools}"/>
-                                        <ListBox ItemsSource="{Binding Tools}"
+                                        <ListBox ItemsSource="{Binding Tools}" Visibility="{Binding hasTools}"
                                                 VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <HyperlinkButton NavigateUri="{Binding navUri}" Content="{Binding text}"
-                                                                     TargetName="_blank" MaxWidth="{Binding ElementName=Img1}"
+                                                                     TargetName="_blank" MaxWidth="{Binding ElementName=Img1, Path=ActualWidth}"
                                                                      HorizontalContentAlignment="Left" Margin="8,4,0,0" HorizontalAlignment="Left"/>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -108,7 +108,7 @@
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <HyperlinkButton NavigateUri="{Binding uri}" Content="{Binding shortName}"
-                                                                     TargetName ="_blank" MaxWidth="{Binding ElementName=Img1}"
+                                                                     TargetName ="_blank" MaxWidth="{Binding ElementName=Img1, Path=ActualWidth}"
                                                                      HorizontalContentAlignment="Left" Margin="8,4,0,0" HorizontalAlignment="Left"/>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -119,8 +119,8 @@
                         </c:GuideTemplateSelector.InfoTab>
                         <c:GuideTemplateSelector.StepTab>
                             <DataTemplate>
-                                <ScrollViewer>
-                                    <StackPanel>
+                                <ScrollViewer VerticalAlignment="Stretch">
+                                    <StackPanel VerticalAlignment="Stretch">
                                         <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
                                  FontSize="{StaticResource PhoneFontSizeMedium}" Tap="GuideLine_Tap"
                                      ItemContainerStyle="{StaticResource ListBoxStyle}"
@@ -129,7 +129,7 @@
                                                 <DataTemplate>
                                                     <Grid Margin="0, 4">
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="*"/>
                                                         </Grid.RowDefinitions>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />

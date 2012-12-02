@@ -61,7 +61,7 @@ namespace iFixit7
                 Debug.WriteLine("\tsetting browser height to " + height);
                 double newHeight = height * 1.5;
 
-                InfoBrowser.Height = newHeight;
+                InfoBrowser.Height = newHeight + 0;
             }
             //if we got a URL to navigate to
             else if (Uri.IsWellFormedUriString(e.Value, UriKind.RelativeOrAbsolute))
@@ -184,9 +184,7 @@ namespace iFixit7
 
                 //TODO inject metatdata here like # answers
                 top.Description = "";
-                top.Description += "<h2>" + devInfo.guides.Length + " Guides</h2>";
-                top.Description += "<h2>" + devInfo.solutions.count + " Solutions</h2>";
-                top.Description += prepHTML(devInfo.contents);
+                top.Description += prepHTML(devInfo.contents, devInfo);
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)
@@ -274,7 +272,7 @@ namespace iFixit7
         /*
          * adds needed stuff to the HTML to be displayed in the browser
          */
-        private string prepHTML(string baseHTML)
+        private string prepHTML(string baseHTML, DeviceInfoHolder devInfo)
         {
             string o = "";
             o += "<html><head>";
@@ -343,6 +341,8 @@ namespace iFixit7
             o += "</head>";
             o += "<body><div id='content'>";
             //o += "<img src='" + infoVM.ImageURL + "'>";
+            o += "<h2>" + devInfo.guides.Length + " Guides</h2>";
+            o += "<h2>" + devInfo.solutions.count + " Solutions</h2>";
             o += baseHTML.Trim();
             o += "</div></body>";
             o += "</html>";

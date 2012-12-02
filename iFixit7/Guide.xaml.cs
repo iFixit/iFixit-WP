@@ -337,6 +337,7 @@ namespace iFixit7
         }
 
         //occurs when a line is tapped
+        TextBlock tapped = null;
         private void GuideLine_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             base.OnTap(e);
@@ -350,6 +351,8 @@ namespace iFixit7
             Lines selected = selectedOver.SelectedItem as Lines;
 
             int firstOpen = selected.Text.IndexOf("<a href=\"") + "<a href=\"".Length;
+            if (firstOpen > selected.Text.Length)
+                return;
             int firstClose = selected.Text.IndexOf("\"", firstOpen);
             string linkEnd;
             string link;
@@ -371,6 +374,7 @@ namespace iFixit7
                 if (t != null)
                 {
                     t.Foreground = App.Current.Resources["PhoneAccentBrush"] as Brush;
+                    tapped = t;
                 }
 
                 WebBrowserTask wbt = new WebBrowserTask();
@@ -392,9 +396,14 @@ namespace iFixit7
             this.guideID = this.NavigationContext.QueryString["GuideID"];
             Debug.WriteLine("\tgot guide id = " + guideID);
 
+            if (tapped != null)
+                tapped.Foreground = App.Current.Resources["PhoneForegroundBrush"] as Brush;
+
             //if the VM is already populated, don't reload it
             if (vm != null)
                 return;
+
+
             int numCols = -1;
             string key = guideID;
             //if online, do an api call. The callback will be fired to populate the view
@@ -441,133 +450,6 @@ namespace iFixit7
                 }
             }
         }
-
-        // =( don't judge me
-        //private PivotItem buildInfoPivotItem()
-        //{
-        //    PivotItem infoTabPivotItem = new PivotItem();
-        //    InfoTabModel itm = vm.infoTab;
-
-        //    // create pivot header
-        //    TextBlock title = new TextBlock();
-        //    title.Text = vm.infoTab.Title;
-        //    title.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //    Rectangle underline = new Rectangle();
-        //    underline.Fill = new SolidColorBrush(Colors.Orange);
-        //    underline.Height = 2;
-        //    underline.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-        //    StackPanel sp = new StackPanel();
-        //    sp.Children.Add(title);
-        //    sp.Children.Add(underline);
-        //    infoTabPivotItem.Header = sp;
-
-        //    // build the content section
-        //    StackPanel sp2 = new StackPanel();
-
-        //    if (itm.TitleImage != null)
-        //    {
-        //        // title image
-        //        Image i = new Image();
-        //        ImageCacheConverter c = new ImageCacheConverter();
-        //        i.Height = 45;
-        //        i.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-        //        i.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-        //        i.Stretch = Stretch.UniformToFill;
-        //        i.Source = c.Convert(itm.TitleImage, null, null, null) as ImageSource;
-        //        i.Margin = new System.Windows.Thickness(8, 4, 0, 0);
-        //        sp2.Children.Add(i);
-        //    }
-
-        //    if (itm.Introduction != null)
-        //    {
-        //        // introduction textblock
-        //        TextBlock intro = new TextBlock();
-        //        intro.Text = itm.Introduction;
-        //        intro.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(intro);
-        //    }
-
-        //    if (itm.Difficulty != null)
-        //    {
-        //        // difficulty textblock
-        //        TextBlock diff = new TextBlock();
-        //        diff.Text = itm.Difficulty;
-        //        diff.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(diff);
-        //    }
-
-        //    if (itm.Author != null)
-        //    {
-        //        // author textblock
-        //        TextBlock author = new TextBlock();
-        //        author.Text = itm.Author;
-        //        author.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(author);
-        //    }
-
-        //    if (itm.Tools != null)
-        //    {
-        //        // tools heading
-        //        TextBlock tools = new TextBlock();
-        //        tools.Text = "Required Tools";
-        //        tools.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(tools);
-
-        //        // tool html buttons
-        //        foreach (Tool t in itm.Tools)
-        //        {
-        //            HyperlinkButton hlb = new HyperlinkButton();
-        //            hlb.NavigateUri = new Uri(t.url);
-        //            hlb.Content = t.text;
-        //            hlb.TargetName = "_blank";
-        //            sp2.Children.Add(hlb);
-        //        }
-        //    }
-
-        //    // parts heading
-        //    if (itm.Parts != null)
-        //    {
-        //        TextBlock parts = new TextBlock();
-        //        parts.Text = "Required Parts";
-        //        parts.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(parts);
-
-        //        // parts html buttons
-        //        foreach (Part p in itm.Parts)
-        //        {
-        //            HyperlinkButton hlb = new HyperlinkButton();
-        //            hlb.NavigateUri = new Uri(p.url);
-        //            hlb.Content = p.text;
-        //            hlb.TargetName = "_blank";
-        //            sp2.Children.Add(hlb);
-        //        }
-        //    }
-
-        //    if (itm.Prereqs != null)
-        //    {
-        //        // prereqs heading
-        //        TextBlock prereqs = new TextBlock();
-        //        prereqs.Text = "Prerequisite Guides";
-        //        prereqs.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-        //        sp2.Children.Add(prereqs);
-
-        //        // prereqs html buttons
-        //        foreach (Prereq p in itm.Prereqs)
-        //        {
-        //            HyperlinkButton hlb = new HyperlinkButton();
-        //            hlb.NavigateUri = new Uri("/Guide.xaml?GuideID=" + p.guideid, UriKind.Relative);
-        //            hlb.Content = p.text;
-        //            hlb.TargetName = "_blank";
-        //            sp2.Children.Add(hlb);
-        //        }
-        //    }
-
-        //    ScrollViewer sv = new ScrollViewer();
-        //    sv.Content = sp2;
-        //    infoTabPivotItem.Content = sv;
-
-        //    return infoTabPivotItem;
-        //}
 
         public bool insertGuideIntoDB(GuideHolder guide){
             //convert the GuideHolder we got into a DB object

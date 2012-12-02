@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -31,9 +32,14 @@ namespace iFixit7
             if (SourceURI == "")
                 NavigationService.GoBack();
 
-            this.DataContext = this;
+            //make sure the image is in the cache or we are online
+            if (!DeviceNetworkInformation.IsNetworkAvailable && ImgCache.GetImageByURL(SourceURI) == null)
+            {
+                MessageBox.Show("There is no network connection, and the selected image is not cached for offline viewing.");
+                NavigationService.GoBack();
+            }
 
-            
+            this.DataContext = this;
         }
 
         /*
@@ -139,8 +145,10 @@ namespace iFixit7
          */
         private void TheImage_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
+            Debug.WriteLine("image loaded");
+
             MyImage.Visibility = System.Windows.Visibility.Visible;
+            LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
         }
     }
 }

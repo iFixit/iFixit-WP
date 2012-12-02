@@ -81,6 +81,8 @@ namespace iFixit7
             public class ColContent : TabContainer
             {
                 public string Title { get; set; }
+                public string EmbedURL { get; set; }
+                public System.Windows.Visibility EmbedVisibility { get; set; }
                 public string Image1 { get; set; }
                 public string Image2 { get; set; }
                 public string Image3 { get; set; }
@@ -89,10 +91,23 @@ namespace iFixit7
                 public ColContent(Step s)
                 {
                     this.Title = "Step " + s.StepIndex;
-                    //FIXME this is probably bad. We are always assuming there is a .standard availible
-                    this.Image1 = s.Image1 + ".standard";
-                    this.Image2 = s.Image2 + ".standard";
-                    this.Image3 = s.Image3 + ".standard";
+
+                    //check type
+                    if (s.MediaType == Step.MediaType_Embed)
+                    {
+
+                        EmbedVisibility = System.Windows.Visibility.Visible;
+                        EmbedURL = s.EmbedURL;
+                    }
+                    //else if (s.MediaType == Step.MediaType_Image)
+                    else
+                    {
+                        EmbedVisibility = System.Windows.Visibility.Collapsed;
+                        //FIXME this is probably bad. We are always assuming there is a .standard availible
+                        this.Image1 = s.Image1 + ".standard";
+                        this.Image2 = s.Image2 + ".standard";
+                        this.Image3 = s.Image3 + ".standard";
+                    }
 
                     Lines = new ObservableCollection<Lines>();
                     foreach (Lines l in s.Lines)
@@ -221,6 +236,20 @@ namespace iFixit7
         }
 
         /*
+         * Fires when someone taps on the embedded frame
+         */
+        private void Embed_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (DeviceNetworkInformation.IsNetworkAvailable)
+            {
+                //open the browser
+                string target = (sender as Grid).Tag.ToString();
+                WebBrowserTask wbt = new WebBrowserTask() { Uri = new Uri(target, UriKind.Absolute) };
+                wbt.Show();
+            }
+        }
+
+        /*
          * Look at the tag from the sending Image to figure out which was touched.
          */
         private void Img_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -232,7 +261,6 @@ namespace iFixit7
             String srcUrl = (src.Source as BitmapImage).UriSource.ToString();
 
             //modify it to get the huge version
-            //srcUrl = srcUrl.Replace(".standard", ".huge");
             srcUrl = srcUrl.Replace(".standard", "");
             
             //FIXME navigate to fullscreen image w/ URL (just URL?)
@@ -243,16 +271,26 @@ namespace iFixit7
         //occurs when a line is tapped
         private void GuideLine_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
-            int firstOpen = tb.VisibleText.IndexOf("<");
-            int firstClose = tb.VisibleText.IndexOf(">");
+            base.OnTap(e);
+
+            //WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
+            var selectedOver = sender as ListBox;
+
+            if (selectedOver == null)
+                return;
+
+            Lines selected = selectedOver.SelectedItem as Lines;
+
+            int firstOpen = selected.Text.IndexOf("<a href=\"") + "<a href=\"".Length;
+            int firstClose = selected.Text.IndexOf("\"", firstOpen);
             string linkEnd;
             string link;
+
             if (firstOpen >= 0 && firstClose >= 0)
             {
                 int length = firstClose - firstOpen;
-                linkEnd = tb.VisibleText.Substring(firstOpen + 1, length - 1);
-                if (linkEnd.StartsWith("www.") || linkEnd.StartsWith("http://www."))
+                linkEnd = selected.Text.Substring(firstOpen, length);
+                if (linkEnd.Contains("www.") || linkEnd.Contains("http://"))
                 {
                     link = linkEnd;
                 }
@@ -260,10 +298,19 @@ namespace iFixit7
                 {
                     link = "http://www.ifixit.com" + linkEnd;
                 }
+
+                var t = (e.OriginalSource as TextBlock);
+                if (t != null)
+                {
+                    t.Foreground = App.Current.Resources["PhoneAccentBrush"] as Brush;
+                }
+
                 WebBrowserTask wbt = new WebBrowserTask();
                 wbt.Uri = new Uri(link);
                 wbt.Show();
             }
+
+            //selectedOver.Foreground = App.Current.Resources["PhoneForegroundBrush"] as Brush;
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)

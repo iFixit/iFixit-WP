@@ -108,6 +108,7 @@
     <Compile Include="jsonImage.cs" />
     <Compile Include="JSONInterface2.cs" />
     <Compile Include="jsonLines.cs" />
+    <Compile Include="LinqToVisualTree.cs" />
     <Compile Include="MagicPivot.xaml.cs">
       <DependentUpon>MagicPivot.xaml</DependentUpon>
     </Compile>
@@ -121,6 +122,7 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="StepTemp.cs" />
+    <Compile Include="WebBrowserHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -183,6 +185,9 @@
     <Content Include="Images\appbar.folder.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\appbar.gotoaddressbar.rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Caution.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -195,7 +200,11 @@
     <Content Include="Images\Note.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\play_overlay.png" />
     <Content Include="Images\Reminder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\no_image.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README_FIRST.txt" />

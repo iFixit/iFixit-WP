@@ -20,7 +20,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding}">
         <Grid.Resources>
             <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
-            
+
             <!-- this is a style to prevent list box items from showing selection when tapped -->
             <Style x:Key="ListBoxStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
@@ -37,7 +37,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -129,7 +129,7 @@
                                 <ScrollViewer>
                                     <StackPanel>
                                         <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
-                                 FontSize="{StaticResource PhoneFontSizeMedium}"
+                                 FontSize="{StaticResource PhoneFontSizeMedium}" Tap="GuideLine_Tap"
                                      ItemContainerStyle="{StaticResource ListBoxStyle}"
                                  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                             <ListBox.ItemTemplate>
@@ -154,8 +154,7 @@
                                                         <Rectangle Grid.Column="1"
                                                  Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
                                                  Fill="{Binding ColorBrush}"/>
-
-                                                        <local:HtmlTextBlock Grid.Column="2" Tap="GuideLine_Tap"
+                                                        <local:HtmlTextBlock Grid.Column="2"
                                                  Text="{Binding Text}" TextWrapping="Wrap"
                                                  Margin="8, 2, 2, 2"/>
 
@@ -168,7 +167,11 @@
                                             </ListBox.ItemTemplate>
                                         </ListBox>
 
-                                        <Image x:Name="Img1" Source="{Binding Image1, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="1" Tap="Img_Tap" />
+                                        <Grid Tag="{Binding EmbedURL}"  Tap="Embed_Tap">
+                                                    <Image x:Name="ImgEmbed" Source="Images/no_image.jpg" Visibility="{Binding EmbedVisibility}"  />
+                                                    <Image Source="Images/play_overlay.png" Visibility="{Binding EmbedVisibility}" Width="100"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Grid>
+    <Image x:Name="Img1" Source="{Binding Image1, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="1" Tap="Img_Tap" />
                                         <Image x:Name="Img2" Source="{Binding Image2, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="2" Tap="Img_Tap" />
                                         <Image x:Name="Img3" Source="{Binding Image3, Converter={StaticResource ImageCacheConverter}}" Margin="2" Tag="3" Tap="Img_Tap" />
                                     </StackPanel>
@@ -176,6 +179,7 @@
                             </DataTemplate>
                         </c:GuideTemplateSelector.StepTab>
                     </c:GuideTemplateSelector>
+
                 </DataTemplate>
             </controls:Pivot.ItemTemplate>
         </controls:Pivot>

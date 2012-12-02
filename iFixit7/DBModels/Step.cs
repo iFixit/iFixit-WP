@@ -3,12 +3,16 @@ using System.Windows.Media;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace iFixit7
 {
     [Table]
     public class Step : INotifyPropertyChanged, INotifyPropertyChanging
     {
+        public static string MediaType_Image = "image";
+        public static string MediaType_Embed = "embed";
+
         public Step() : base()
         {}
 
@@ -25,33 +29,48 @@ namespace iFixit7
             this.StepIndex = st.number;
             this.Title = st.title;
 
-            //add images (in a strange way...)
-            this.Image1 = "";
-            this.Image2 = "";
-            this.Image3 = "";
+            this.MediaType = st.media.type;
 
-            if (st.media.image != null)
+            if (st.media.type == Step.MediaType_Embed)
             {
-                switch (st.media.image.Length)
+                this.EmbedURL = st.media.embed.url;
+
+                //process the URL to extract the real one we want
+                Debug.WriteLine(this.EmbedURL);
+                int start = this.EmbedURL.LastIndexOf("//");
+                this.EmbedURL = "http://" + this.EmbedURL.Substring(start + "//".Length);
+                Debug.WriteLine(this.EmbedURL);
+            }
+            else if (st.media.type == Step.MediaType_Image)
+            {
+                //add images (in a strange way...)
+                this.Image1 = "";
+                this.Image2 = "";
+                this.Image3 = "";
+
+                if (st.media.image != null)
                 {
-                    default:
-                        //no images, or we have no idea
-                        break;
+                    switch (st.media.image.Length)
+                    {
+                        default:
+                            //no images, or we have no idea
+                            break;
 
-                    case 1:
-                        this.Image1 = st.media.image[0].text;
-                        break;
+                        case 1:
+                            this.Image1 = st.media.image[0].text;
+                            break;
 
-                    case 2:
-                        this.Image1 = st.media.image[0].text;
-                        this.Image2 = st.media.image[1].text;
-                        break;
+                        case 2:
+                            this.Image1 = st.media.image[0].text;
+                            this.Image2 = st.media.image[1].text;
+                            break;
 
-                    case 3:
-                        this.Image1 = st.media.image[0].text;
-                        this.Image2 = st.media.image[1].text;
-                        this.Image3 = st.media.image[2].text;
-                        break;
+                        case 3:
+                            this.Image1 = st.media.image[0].text;
+                            this.Image2 = st.media.image[1].text;
+                            this.Image3 = st.media.image[2].text;
+                            break;
+                    }
                 }
             }
 
@@ -79,7 +98,14 @@ namespace iFixit7
             this.Lines.Add(l);
         }
 
+        //the type of this step's media. (IE image, embed, video)
+        //http://oembed.com/
+        [Column]
+        public string MediaType { get; set; }
 
+        //the URL of the page in the embedded frame
+        [Column]
+        public string EmbedURL { get; set; }
 
         private string _title;
         [Column]

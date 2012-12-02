@@ -67,8 +67,9 @@
                                 x:Name="InfoImage" Source="{Binding ImageURL, Converter={StaticResource ImageCacheConverter}}"  />
 
                         <phone:WebBrowser x:Name="InfoBrowser" IsScriptEnabled="True" ScriptNotify="InfoBrowser_ScriptNotify"
-                                          Width="{Binding ElementName=InfoStack, Path=ActualWidth}"
-                                          Visibility="Collapsed" IsHitTestVisible="False"/>
+                                            Width="{Binding ElementName=InfoStack, Path=ActualWidth}"
+                                            Visibility="Collapsed" IsHitTestVisible="False"/>
+                            
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
@@ -148,6 +149,9 @@
 
             <shell:ApplicationBarIconButton IconUri="/Images/appbar.favs.rest.png" Text="Cached"
                                             Click="AppBarFavorites_Click"/>
+
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.gotoaddressbar.rest.png" Text="More Info"
+                                            Click="ApplicationBarIconButton_Click"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

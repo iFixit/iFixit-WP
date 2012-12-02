@@ -45,7 +45,7 @@
                    x:Name="TheImage"
                    Source="{Binding SourceURI, Converter={StaticResource ImageCacheConverter}}"
                    CacheMode="BitmapCache"
-                   Loaded="TheImage_Loaded">
+                   ImageOpened="TheImage_Loaded">
             </Image>
         </Canvas>
     </StackPanel>

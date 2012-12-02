@@ -30,6 +30,9 @@ namespace iFixit7
         private string navTopicName;
         private bool InOfflineMode = false;
 
+        //used to prevent scrolling in browser
+        private WebBrowserHelper browserHelper;
+
         public DeviceInfo()
         {
             InitializeComponent();
@@ -37,8 +40,8 @@ namespace iFixit7
             this.InfoStack.DataContext = infoVM;
             this.GuidesStack.DataContext = infoVM;
 
-            //add the script handler to the browser
-            //InfoBrowser.ScriptNotify += InfoBrowser_ScriptNotify;
+            browserHelper = new WebBrowserHelper(InfoBrowser);
+            browserHelper.ScrollDisabled = true;
         }
 
         /*
@@ -49,6 +52,8 @@ namespace iFixit7
             Debug.WriteLine("e.value == " + e.Value);
 
             int height = -1;
+
+            browserHelper.ScrollDisabled = true;
 
             //if we got the resize info http://dan.clarke.name/2011/05/resizing-wp7-webbrowser-height-to-fit-content/
             if (int.TryParse(e.Value, out height))
@@ -102,8 +107,15 @@ namespace iFixit7
 
             InfoPano.Title = navTopicName;
 
+            string key = InfoPano.Title.ToString();
+            bool resuming = false;
+            if (this.State.ContainsKey(key))
+            {
+                resuming = true;
+            }
+
             //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
-            //on its own when the operation completes
+            //on its own when the operation completes  && !resuming
             if (DeviceNetworkInformation.IsNetworkAvailable)
             {
                 new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
@@ -122,12 +134,12 @@ namespace iFixit7
             }
 
             // if there is a saved index, re-navigate to it
-            string key = InfoPano.Title.ToString();
-            if (this.State.ContainsKey(key))
+            if(resuming)
             {
                 int selectedTabIndex = (int) this.State[key];
                 if (0 <= selectedTabIndex && selectedTabIndex < InfoPano.Items.Count)
                 {
+                    var t = InfoPano.Items[selectedTabIndex];
                     InfoPano.SetValue(Panorama.SelectedItemProperty, InfoPano.Items[selectedTabIndex]);
                 }
             }
@@ -166,12 +178,15 @@ namespace iFixit7
                 //name is already the same
                 top.Name = devInfo.topic_info.name;
                 top.parentName = devInfo.title;
-                top.ImageURL = devInfo.image.text + ".medium";       //scales the image
+                top.Contents = devInfo.description;
+                top.ImageURL = devInfo.image.text + ".medium";
                 top.Populated = true;
 
-                //top.Description = devInfo.description;
-                top.Description = prepHTML(devInfo.contents);
-                updateInfoBrowser();
+                //TODO inject metatdata here like # answers
+                top.Description = "";
+                top.Description += "<h2>" + devInfo.guides.Length + " Guides</h2>";
+                top.Description += "<h2>" + devInfo.solutions.count + " Solutions</h2>";
+                top.Description += prepHTML(devInfo.contents);
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)
@@ -207,6 +222,7 @@ namespace iFixit7
 
                 //force the view model to update
                 infoVM.UpdateData();
+                updateInfoBrowser();
 
                 //force the views to update
                 this.InfoStack.DataContext = infoVM;
@@ -264,7 +280,7 @@ namespace iFixit7
             o += "<html><head>";
 
             //prevent zooming
-            o += "<meta name='viewport' content='user-scalable=no'/>";
+            o += "<meta name='viewport' content='width=320,user-scalable=no'/>";
 
             //inject the theme
             o += "<style type='text/css'>" +
@@ -293,6 +309,30 @@ namespace iFixit7
                             window.external.Notify(elem.scrollHeight + '');
                         }
                     ";
+
+            //remove all anchors
+            while (baseHTML.Contains("<a class=\"anchor\""))
+            {
+                int start = baseHTML.IndexOf("<a class=\"anchor\"");
+                int end = baseHTML.IndexOf("</h2>", start);
+
+                baseHTML = baseHTML.Remove(start, end - start);
+            }
+
+            //FIXME remove this when we fix the webbrowser
+            //remove all links
+            while (baseHTML.Contains("<a href"))
+            {
+                //remove most of the link
+                int start = baseHTML.IndexOf("<a href");
+                int end = baseHTML.IndexOf(">", start);
+
+                baseHTML = baseHTML.Remove(start, end + 1 - start);
+
+                //remove end tag
+                start = baseHTML.IndexOf("</a>", start);
+                baseHTML = baseHTML.Remove(start, "</a>".Length);
+            }
 
             o += @"window.onload = function() {
                     Scroll();
@@ -347,6 +387,13 @@ namespace iFixit7
         {
             NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
         }
+
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            WebBrowserTask wbt = new WebBrowserTask();
+            wbt.Uri = new Uri(infoVM.BaseURL, UriKind.Absolute);
+            wbt.Show();
+        }
     }
 
     /*
@@ -358,7 +405,9 @@ namespace iFixit7
     {
         public String Name { get; set; }
         public String ImageURL { get; set; }
+        public String Contents { get; set; }
         public String Description { get; set; }
+        public String BaseURL { get; set; }
 
         //this is the list of guides
         public ObservableCollection<Guide> GuideList { get; set; }
@@ -368,6 +417,8 @@ namespace iFixit7
             this.Name = name;
             ImageURL = "";
             Description = "";
+            Contents = "";
+            BaseURL = "";
             GuideList = new ObservableCollection<Guide>();
 
             UpdateData();
@@ -384,7 +435,6 @@ namespace iFixit7
             Topic top = null;
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                //top = db.TopicsTable.SingleOrDefault(t => t.Name == Name);
                 top = DBHelpers.GetCompleteTopic(Name, db);
             }
             if (top == null)
@@ -396,7 +446,10 @@ namespace iFixit7
             //fill in internal collections
             this.Name = top.Name;
             this.Description = top.Description;
+            this.Contents = top.Contents;
             this.ImageURL = top.ImageURL;
+
+            this.BaseURL = "http://www.ifixit.com/Device/" + this.Name;
 
             //fill in guides
             GuideList.Clear();

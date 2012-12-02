@@ -1,0 +1,1 @@
+Internet icon taken from: http://www.pedrolamas.com/windows-phone/windows-phone-application-bar-icons-en/

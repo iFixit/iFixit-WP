@@ -34,12 +34,14 @@ namespace iFixit7
         public const string MagicSelectedTag = "SelectedCategory";
         public const string MagicTypeTag = "SelectedType";
         public const string SerialStore = "iFixitSerial.osl";
+        public const string LoadingScreenShown = "Load";
 
         //initial state variable keys
         public const string LastUpdateKey = ">>LAST_UPDATED<<";
         public const string InitializeWithLoadingScreen = ">>INIT_LOADING_SCREEN<<";
 
         private static int thumbCount = 0;
+        private bool rootHasBeenSavedInISO = false;
 
         public Category root { get; set; }
 
@@ -106,39 +108,6 @@ namespace iFixit7
 
             // POST LOADING SCREEN
 
-            //FIXME temporary: now check the last time the data was refreshed. If past threshold, refresh again
-            DateTime last = DateTime.MinValue;
-            if (IsolatedStorageSettings.ApplicationSettings.Contains(App.LastUpdateKey))
-            {
-                last = (DateTime)IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey];
-
-                Debug.WriteLine("got last use = " + last);
-            }
-
-            //this has asynchroneous components that will run while the UI loads and whatnot NetworkInterface.GetIsNetworkAvailable()
-            if ((last.AddDays(1.0) < DateTime.Now) && DeviceNetworkInformation.IsNetworkAvailable)
-            {
-                getAreas();
-            }
-            else
-            {
-                // clear loading screen
-                //(RootFrame.Content as MainPage).StopLoadingIndication();
-                PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen] = false;
-            }
-            // Create the database if it does not exist.
-            //the using statement guarntees that setup and teardown will always happen, and properly
-            using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
-            {
-                // Create the local database.
-                if (!tDB.DatabaseExists())
-                {
-                    tDB.CreateDatabase();
-
-                    // Save categories to the database.
-                    tDB.SubmitChanges();
-                }
-            }
         }
 
         public void getAreas()
@@ -191,7 +160,10 @@ namespace iFixit7
             _Worker.RunWorkerCompleted += (s, e) =>
             {
                 if (thumbCount == 0)
+                {
                     (RootFrame.Content as MainPage).StopLoadingIndication();
+                    PhoneApplicationService.Current.State[LoadingScreenShown] = true;
+                }
             };
             _Worker.RunWorkerAsync();
         }
@@ -220,6 +192,7 @@ namespace iFixit7
                         {
                             temp.initDataBinding();
                             temp.StopLoadingIndication();
+                            PhoneApplicationService.Current.State[LoadingScreenShown] = true;
                         }
                     }
                 });
@@ -232,6 +205,47 @@ namespace iFixit7
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             Debug.WriteLine("LAUNCHING");
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(SerialStore))
+                {
+                    myIsolatedStorage.DeleteFile(SerialStore);
+                }
+            }
+
+            //FIXME temporary: now check the last time the data was refreshed. If past threshold, refresh again
+            DateTime last = DateTime.MinValue;
+            if (IsolatedStorageSettings.ApplicationSettings.Contains(App.LastUpdateKey))
+            {
+                last = (DateTime)IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey];
+
+                Debug.WriteLine("got last use = " + last);
+            }
+
+            //this has asynchroneous components that will run while the UI loads and whatnot NetworkInterface.GetIsNetworkAvailable()
+            if ((last.AddDays(1.0) < DateTime.Now) && DeviceNetworkInformation.IsNetworkAvailable && !rootHasBeenSavedInISO)
+            {
+                getAreas();
+            }
+            else
+            {
+                // clear loading screen
+                //(RootFrame.Content as MainPage).StopLoadingIndication();
+                PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen] = false;
+            }
+            // Create the database if it does not exist.
+            //the using statement guarntees that setup and teardown will always happen, and properly
+            using (iFixitDataContext tDB = new iFixitDataContext(DBConnectionString))
+            {
+                // Create the local database.
+                if (!tDB.DatabaseExists())
+                {
+                    tDB.CreateDatabase();
+
+                    // Save categories to the database.
+                    tDB.SubmitChanges();
+                }
+            }
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -292,6 +306,13 @@ namespace iFixit7
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             Debug.WriteLine("CLOSING");
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(SerialStore))
+                {
+                    myIsolatedStorage.DeleteFile(SerialStore);
+                }
+            }
         }
 
         // Code to execute if a navigation fails

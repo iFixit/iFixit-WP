@@ -87,6 +87,14 @@ namespace iFixit7
                     NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
                 }
             }
+
+            if (PhoneApplicationService.Current.State.ContainsKey(App.LoadingScreenShown))
+            {
+                if ((bool)PhoneApplicationService.Current.State[App.LoadingScreenShown])
+                {
+                    this.StopLoadingIndication();
+                }
+            }
         }
 
         /*

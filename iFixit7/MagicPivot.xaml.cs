@@ -89,6 +89,11 @@ namespace iFixit7
             }
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            this.State[vm.selectedCategory.Name] = SmartPivot.SelectedIndex;
+        }
+
         /*
          * Called right as we are being navigated to
          */
@@ -105,8 +110,17 @@ namespace iFixit7
                 this.thisCat = (Category)PhoneApplicationService.Current.State[navParentName];
             Debug.WriteLine("Saving in current.state: " + this.thisCat);
             Debug.WriteLine("I'm going to try to pull a category out: " + thisCat.Name);
-            
+
             setupBinding(thisCat);
+            string key = vm.selectedCategory.Name;
+            if (key != null && this.State.ContainsKey(key))
+            {
+                int selectedTabIndex = (int)this.State[key];
+                if (0 <= selectedTabIndex && selectedTabIndex < vm.Columns.Count)
+                {
+                    SmartPivot.SelectedIndex = selectedTabIndex;
+                }
+            }
         }
 
         /*

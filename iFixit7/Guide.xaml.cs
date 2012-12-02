@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
+using Microsoft.Phone.Shell;
 
 namespace iFixit7
 {
@@ -65,6 +66,7 @@ namespace iFixit7
             public ObservableCollection<ColContent> ColHeaders { get; set; }
             public string GuideTitle { get; set; }
             public string GuideTopic { get; set; }
+            public string GuideID { get; set; }
 
             /*
              * Populate this VM with a pre-existing Guide
@@ -88,6 +90,7 @@ namespace iFixit7
 
                 this.GuideTitle = g.ShortTitle;
                 this.GuideTopic = g.Topic;
+                this.GuideID = g.GuideID;
 
                 //FIXME manually add info page
                 AddInfoTab(g);
@@ -201,11 +204,23 @@ namespace iFixit7
             {
                 int length = firstClose - firstOpen;
                 linkEnd = tb.VisibleText.Substring(firstOpen + 1, length - 1);
-                link = "http://www.ifixit.com" + linkEnd;
+                if (linkEnd.StartsWith("www.") || linkEnd.StartsWith("http://www."))
+                {
+                    link = linkEnd;
+                }
+                else
+                {
+                    link = "http://www.ifixit.com" + linkEnd;
+                }
                 WebBrowserTask wbt = new WebBrowserTask();
                 wbt.Uri = new Uri(link);
                 wbt.Show();
             }
+        }
+
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            this.State[vm.GuideID] = GuidePivot.SelectedIndex;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -217,11 +232,12 @@ namespace iFixit7
             //if the VM is already populated, don't reload it
             if (vm != null)
                 return;
-            
+            int numCols = -1;
+            string key = guideID;
             //if online, do an api call. The callback will be fired to populate the view
-            if (DeviceNetworkInformation.IsNetworkAvailable)
+            if (DeviceNetworkInformation.IsNetworkAvailable && !this.State.ContainsKey(key))
             {
-                Debug.WriteLine("onine. Querying for new guide content");
+                Debug.WriteLine("online. Querying for new guide content");
 
                 vm = new GuideViewModel(SourceGuide);
                 this.DataContext = vm;
@@ -245,6 +261,19 @@ namespace iFixit7
 
                     //hide the loading bar
                     LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
+            if (SourceGuide != null)
+            {
+                numCols = SourceGuide.Steps.Count + 1;
+            }
+            // if there is a saved index, re-navigate to it
+            if (key != null && this.State.ContainsKey(key))
+            {
+                int selectedTabIndex = (int)this.State[key];
+                if (0 <= selectedTabIndex && selectedTabIndex < numCols)
+                {
+                    GuidePivot.SelectedIndex = selectedTabIndex;
                 }
             }
         }

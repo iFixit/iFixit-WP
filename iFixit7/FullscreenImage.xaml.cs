@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace iFixit7
 {
@@ -30,6 +31,13 @@ namespace iFixit7
 
             if (SourceURI == "")
                 NavigationService.GoBack();
+
+            //make sure the image is in the cache or we are online
+            if (!DeviceNetworkInformation.IsNetworkAvailable && ImgCache.GetImageByURL(SourceURI) == null)
+            {
+                MessageBox.Show("There is no network connection, and the selected image is not cached for offline viewing.");
+                NavigationService.GoBack();
+            }
 
             this.DataContext = this;
         }

@@ -118,6 +118,19 @@ namespace iFixit7
             //if we cannot find the image, or opening iso storage fails
             return null;
         }
+
+        /*
+         * Get the local path to a cached image by URL
+         */
+        public static string GetLocalCachePathByURL(string url)
+        {
+            int lastSlash = url.LastIndexOf('/');
+            string guid = url.Substring(lastSlash + 1);
+
+            string fullPath = BASE_PATH + "\\" + guid + ".jpeg";
+
+            return fullPath;
+        }
     }
 
 

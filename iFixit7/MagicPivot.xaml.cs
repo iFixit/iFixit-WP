@@ -51,7 +51,11 @@ namespace iFixit7
             TextBlock t = new TextBlock();
 
             //string selected = (e.OriginalSource as TextBlock).Text as String;
-            string selected = ((sender as ListBox).SelectedItem as MagicPivotViewModel.ColumnContent.InnerColumnContent).Tag as String;
+            var selectedItem = (sender as ListBox).SelectedItem;
+            if( selectedItem == null)
+                return;
+
+            string selected = (selectedItem as MagicPivotViewModel.ColumnContent.InnerColumnContent).Tag as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
 
             //get the parent

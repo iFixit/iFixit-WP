@@ -216,7 +216,6 @@ namespace iFixit7
             }
             set
             {
-                Debug.WriteLine(this.ShortTitle + ": setting populated to " + value);
                 if (_populated != value)
                 {
                     NotifyPropertyChanging("Populated");
@@ -235,10 +234,8 @@ namespace iFixit7
             {
                 if (_populated || DeviceNetworkInformation.IsNetworkAvailable)
                 {
-                    Debug.WriteLine(this.ShortTitle + ": populated");
                     return 1.0;
                 }
-                Debug.WriteLine(this.ShortTitle + ": UNpopulated");
                 return 0.5;
             }
         }

@@ -116,6 +116,118 @@ namespace iFixit7
             }
         }
 
+        /*
+         * Insert the data from the JSON parser into the database
+         */
+        private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo)
+        {
+            //something is wrong and the device was not found. Bail
+            if (devInfo == null)
+            {
+                Debug.WriteLine("something went terribly wrong with a DeviceInfo. Bailing");
+                NavigationService.GoBack();
+                return false;
+            }
+
+            Topic top = null;
+            Debug.WriteLine("putting device info into DB...");
+
+            //try to get a topic of this name from the DB
+            //if it fails, make a new one. if it works, update the old
+            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
+            {
+                bool gotTopicFromDB = true;
+                top = DBHelpers.GetCompleteTopic(devInfo.topic_info.name, db);
+
+                if (top == null)
+                {
+                    top = new Topic();
+                    gotTopicFromDB = false;
+                }
+
+                //translate devInfo in a Topic()
+                //name is already the same
+                top.Name = devInfo.topic_info.name;
+                top.parentName = devInfo.title;
+                top.ImageURL = devInfo.image.text + ".medium";       //scales the image
+                top.Populated = true;
+
+                //top.Description = devInfo.description;
+                top.Description = prepHTML(devInfo.contents);
+                updateInfoBrowser();
+
+                //now do the same for all attached guides
+                foreach (DIGuides g in devInfo.guides)
+                {
+                    Debug.WriteLine("\tguide " + g.title);
+
+                    //search if the guide already exists, and get or update it
+                    Guide gOld = null;
+                    gOld = db.GuidesTable.FirstOrDefault(other => other.Title == g.title);
+                    if (gOld == null)
+                    {
+                        gOld = new Guide();
+                        db.GuidesTable.InsertOnSubmit(gOld);
+                    }
+
+                    gOld.FillFieldsFromDeviceInfo(navTopicName, g);
+
+                    // hang it below the topic, it its collection of guides
+                    top.AddGuide(gOld);
+
+                    //FIXME do we need to specifically add this to the guide table? is that magic?
+                    db.SubmitChanges();
+                }
+
+                if (!gotTopicFromDB)
+                {
+                    db.TopicsTable.InsertOnSubmit(top);
+                }
+
+                //update the Topic() into the database
+                db.SubmitChanges();
+
+                //force the view model to update
+                infoVM.UpdateData();
+
+                //force the views to update
+                this.InfoStack.DataContext = infoVM;
+                this.GuidesStack.DataContext = infoVM;
+
+                //disable the loading bars
+                this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
+                this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
+
+            }
+
+            return true;
+        }
+
+        /*
+         * This fires whenever an item in the list of guides is tapped. Sender is a StackPanel, tag
+         * is guide ID
+         */
+        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            string guideTag = "";
+            guideTag = (sender as Grid).Tag.ToString();
+            double opacity = (sender as Grid).Opacity;
+
+            Debug.WriteLine("device info tapped guide id = " + guideTag);
+
+            //figure out if the guide can be navigated to
+            //if online or opacity is 1 (it has been cached), can navigate there
+            if (!InOfflineMode || opacity == 1.0)
+            {
+                NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
+            }
+            else
+            {
+                MessageBox.Show("This guide has not been cached for offline viewing.");
+            }
+        }
+
+
         private void updateInfoBrowser()
         {
             SetBrowserBackground();
@@ -198,123 +310,6 @@ namespace iFixit7
         {
             InfoBrowser.Background =
               (Brush)Application.Current.Resources["PhoneBackgroundBrush"];
-        }
-
-        /*
-         * Insert the data from the JSON parser into the database
-         */
-        private bool insertDevInfoIntoDB(DeviceInfoHolder devInfo)
-        {
-            //something is wrong and the device was not found. Bail
-            if (devInfo == null)
-            {
-                Debug.WriteLine("something went terribly wrong with a DeviceInfo. Bailing");
-                NavigationService.GoBack();
-                return false;
-            }
-
-            Topic top = null;
-            Debug.WriteLine("putting device info into DB...");
-
-            //try to get a topic of this name from the DB
-            //if it fails, make a new one. if it works, update the old
-            using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
-            {
-                bool gotTopicFromDB = true;
-                top = DBHelpers.GetCompleteTopic(devInfo.topic_info.name, db);
-
-                if (top == null)
-                {
-                    top = new Topic();
-                    gotTopicFromDB = false;
-                }
-
-                //translate devInfo in a Topic()
-                //name is already the same
-                top.Name = devInfo.topic_info.name;
-                top.parentName = devInfo.title;
-                top.ImageURL = devInfo.image.text + ".medium";       //scales the image
-                top.Populated = true;
-
-                //top.Description = devInfo.description;
-                top.Description = prepHTML(devInfo.contents);
-                updateInfoBrowser();
-
-                //trim if it is too long (LINQ doesnt like it...)
-                /*
-                if (top.Description.Length > 4000)
-                    top.Description = top.Description.Substring(0, 3999);
-                 */
-
-                //now do the same for all attached guides
-                foreach (DIGuides g in devInfo.guides)
-                {
-                    Debug.WriteLine("\tguide " + g.title);
-
-                    //search if the guide already exists, and get or update it
-                    Guide gOld = null;
-                    gOld = db.GuidesTable.FirstOrDefault(other => other.Title == g.title);
-                    if (gOld == null)
-                    {
-                        gOld = new Guide();
-                        db.GuidesTable.InsertOnSubmit(gOld);
-                    }
-
-                    gOld.FillFieldsFromDeviceInfo(navTopicName, g);
-
-                    // hang it below the topic, it its collection of guides
-                    top.AddGuide(gOld);
-
-                    //FIXME do we need to specifically add this to the guide table? is that magic?
-                    db.SubmitChanges();
-                }
-
-                if (!gotTopicFromDB)
-                {
-                    db.TopicsTable.InsertOnSubmit(top);
-                }
-
-                //update the Topic() into the database
-                db.SubmitChanges();
-
-                //force the view model to update
-                infoVM.UpdateData();
-
-                //force the views to update
-                this.InfoStack.DataContext = infoVM;
-                this.GuidesStack.DataContext = infoVM;
-
-                //disable the loading bars
-                this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
-                this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
-
-            }
-
-            return true;
-        }
-
-        /*
-         * This fires whenever an item in the list of guides is tapped. Sender is a StackPanel, tag
-         * is guide ID
-         */
-        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            string guideTag = "";
-            guideTag = (sender as Grid).Tag.ToString();
-            double opacity = (sender as Grid).Opacity;
-
-            Debug.WriteLine("device info tapped guide id = " + guideTag);
-
-            //figure out if the guide can be navigated to
-            //if online or opacity is 1 (it has been cached), can navigate there
-            if (!InOfflineMode || opacity == 1.0)
-            {
-                NavigationService.Navigate(new Uri("/Guide.xaml?GuideID=" + guideTag, UriKind.Relative));
-            }
-            else
-            {
-                MessageBox.Show("This guide has not been cached for offline viewing.");
-            }
         }
 
         /*

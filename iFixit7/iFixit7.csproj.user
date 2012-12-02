@@ -16,9 +16,6 @@
       <FlavorProperties GUID="{C089C8C0-30E0-4E22-80C0-CE093F111A43}">
         <SilverlightMobileCSProjectFlavor>
           <FullDeploy>False</FullDeploy>
-          <DebuggerType>Managed</DebuggerType>
-          <DebuggerAgentType>Managed</DebuggerAgentType>
-          <Tombstone>True</Tombstone>
         </SilverlightMobileCSProjectFlavor>
       </FlavorProperties>
     </VisualStudio>

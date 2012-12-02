@@ -80,6 +80,9 @@
     </Compile>
     <Compile Include="DataContext.cs" />
     <Compile Include="DBModels\Lines.cs" />
+    <Compile Include="DBModels\Part.cs" />
+    <Compile Include="DBModels\Prereq.cs" />
+    <Compile Include="DBModels\Tool.cs" />
     <Compile Include="DBModels\Topic.cs" />
     <Compile Include="DBModels\Category.cs" />
     <Compile Include="DBModels\Guide.cs" />
@@ -96,6 +99,7 @@
     <Compile Include="DeviceInfo.xaml.cs">
       <DependentUpon>DeviceInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="HtmlTextBlock.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -10,11 +10,52 @@ using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Microsoft.Phone.Shell;
+using iFixit7.DBModels;
+using System.Collections.Generic;
+using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows;
 
 namespace iFixit7
 {
+    public class GuideTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate InfoTab
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate StepTab
+        {
+            get;
+            set;
+        }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            TabContainer tab = item as TabContainer;
+            if (tab != null)
+            {
+                if (tab.Type == "Info")
+                {
+                    return InfoTab;
+                }
+                else if (tab.Type == "Step")
+                {
+                    return StepTab;
+                }
+            }
+
+            return base.SelectTemplate(item, container);
+        }
+    }
+
+    public class TabContainer
+    {
+        public string Type { get; set; }
+    }
+
     public partial class GuideView : PhoneApplicationPage, INotifyPropertyChanged, INotifyPropertyChanging
     {
         /*
@@ -22,8 +63,89 @@ namespace iFixit7
          */
         public class GuideViewModel
         {
+
+            public class InfoTab : TabContainer
+            {
+                public string Title { get; set; }
+                public string TitleImage { get; set; }
+                public string Introduction { get; set; }
+                public string Difficulty { get; set; }
+                public string diffText
+                {
+                    get
+                    {
+                        return "Difficulty: " + Difficulty;
+                    }
+                }
+                public string Author { get; set; }
+                public string authorText
+                {
+                    get
+                    {
+                        return "Author: " + Author;
+                    }
+                }
+                public List<Part> Parts { get; set; }
+                public List<Prereq> Prereqs { get; set; }
+                public List<Tool> Tools { get; set; }
+                public Visibility hasParts
+                {
+                    get
+                    {
+                        if (Parts != null && Parts.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+                public Visibility hasPrereqs
+                {
+                    get
+                    {
+                        if (Prereqs != null && Prereqs.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+                public Visibility hasTools
+                {
+                    get
+                    {
+                        if (Tools != null && Tools.Count > 0)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                }
+
+                public void createShortNames(string topic)
+                {
+                    if (Prereqs != null)
+                    {
+                        foreach (Prereq p in Prereqs)
+                        {
+                            p.shortName = p.text.Replace(topic + " ", "");
+                        }
+                    }
+                }
+            }
+
+
             //holds what goes in each column
-            public class ColContent
+            public class ColContent : TabContainer
             {
                 public string Title { get; set; }
                 public string EmbedURL { get; set; }
@@ -59,13 +181,13 @@ namespace iFixit7
                     {
                         Lines.Add(l);
                     }
+                    this.Type = "Step";
                 }
             }
 
             public Guide SourceGuide;
 
-            private ColContent infoTab = null;
-            public ObservableCollection<ColContent> ColHeaders { get; set; }
+            public ObservableCollection<TabContainer> ColHeaders { get; set; }
             public string GuideTitle { get; set; }
             public string GuideTopic { get; set; }
             public string GuideID { get; set; }
@@ -75,7 +197,7 @@ namespace iFixit7
              */
             public GuideViewModel(Guide g)
             {
-                ColHeaders = new ObservableCollection<ColContent>();
+                ColHeaders = new ObservableCollection<TabContainer>();
 
                 if (g == null)
                     return;
@@ -95,7 +217,7 @@ namespace iFixit7
                 this.GuideID = g.GuideID;
 
                 //FIXME manually add info page
-                AddInfoTab(g);
+                ColHeaders.Add(BuildInfoTab(g));
 
                 foreach(Step s in g.Steps)
                 {
@@ -108,26 +230,46 @@ namespace iFixit7
              * Not an ideal solution... Should probably build an entire PivotItem and insert it at the
              * start of GuidePivot.
              */
-            private void AddInfoTab(Guide g)
+            private InfoTab BuildInfoTab(Guide g)
             {
-                if (infoTab != null)
+                InfoTab infoTab = new InfoTab();
+                infoTab.Type = "Info";
+                infoTab.Title = "Info";
+                infoTab.TitleImage = g.TitleImage;
+
+                if (g.Introduction != null && g.Introduction.Length > 0)
                 {
-                    ColHeaders.Remove(infoTab);
+                    infoTab.Introduction = g.Introduction.Replace("<p>", "").Replace("</p>", "");
                 }
 
-                infoTab = new ColContent(new Step());
-                infoTab.Title = "Info";
-                infoTab.Image1 = g.TitleImage;
+                if (g.Difficulty != null && g.Difficulty.Length > 0)
+                {
+                    infoTab.Difficulty = g.Difficulty;
+                }
 
-                Lines l = new Lines();
-                l.Text = g.Summary;
-                l.ColorString = "white";
-                infoTab.Lines.Add(l);
+                if (g.Author != null && g.Author.Length > 0)
+                {
+                    infoTab.Author = g.Author;
+                }
+                
+                if (g.Parts != null && g.Parts.Length > 0)
+                {
+                    infoTab.Parts = g.parts;
+                }
 
-                ColHeaders.Add(infoTab);
+                if (g.Prereqs != null && g.Prereqs.Length > 0)
+                {
+                    infoTab.Prereqs = g.prereqs;
+                }
+
+                if (g.Tools != null && g.Tools.Length > 0)
+                {
+                    infoTab.Tools = g.tools;
+                }
+                infoTab.createShortNames(g.parentName);
+                return infoTab;
             }
         }
-
 
         //add handlers so when we change this, it updates in the main view
         private GuideViewModel _vm;
@@ -284,6 +426,7 @@ namespace iFixit7
                     LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
+            
             if (SourceGuide != null)
             {
                 numCols = SourceGuide.Steps.Count + 1;
@@ -298,6 +441,134 @@ namespace iFixit7
                 }
             }
         }
+
+        // =( don't judge me
+        //private PivotItem buildInfoPivotItem()
+        //{
+        //    PivotItem infoTabPivotItem = new PivotItem();
+        //    InfoTabModel itm = vm.infoTab;
+
+        //    // create pivot header
+        //    TextBlock title = new TextBlock();
+        //    title.Text = vm.infoTab.Title;
+        //    title.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //    Rectangle underline = new Rectangle();
+        //    underline.Fill = new SolidColorBrush(Colors.Orange);
+        //    underline.Height = 2;
+        //    underline.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+        //    StackPanel sp = new StackPanel();
+        //    sp.Children.Add(title);
+        //    sp.Children.Add(underline);
+        //    infoTabPivotItem.Header = sp;
+
+        //    // build the content section
+        //    StackPanel sp2 = new StackPanel();
+
+        //    if (itm.TitleImage != null)
+        //    {
+        //        // title image
+        //        Image i = new Image();
+        //        ImageCacheConverter c = new ImageCacheConverter();
+        //        i.Height = 45;
+        //        i.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+        //        i.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+        //        i.Stretch = Stretch.UniformToFill;
+        //        i.Source = c.Convert(itm.TitleImage, null, null, null) as ImageSource;
+        //        i.Margin = new System.Windows.Thickness(8, 4, 0, 0);
+        //        sp2.Children.Add(i);
+        //    }
+
+        //    if (itm.Introduction != null)
+        //    {
+        //        // introduction textblock
+        //        TextBlock intro = new TextBlock();
+        //        intro.Text = itm.Introduction;
+        //        intro.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(intro);
+        //    }
+
+        //    if (itm.Difficulty != null)
+        //    {
+        //        // difficulty textblock
+        //        TextBlock diff = new TextBlock();
+        //        diff.Text = itm.Difficulty;
+        //        diff.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(diff);
+        //    }
+
+        //    if (itm.Author != null)
+        //    {
+        //        // author textblock
+        //        TextBlock author = new TextBlock();
+        //        author.Text = itm.Author;
+        //        author.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(author);
+        //    }
+
+        //    if (itm.Tools != null)
+        //    {
+        //        // tools heading
+        //        TextBlock tools = new TextBlock();
+        //        tools.Text = "Required Tools";
+        //        tools.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(tools);
+
+        //        // tool html buttons
+        //        foreach (Tool t in itm.Tools)
+        //        {
+        //            HyperlinkButton hlb = new HyperlinkButton();
+        //            hlb.NavigateUri = new Uri(t.url);
+        //            hlb.Content = t.text;
+        //            hlb.TargetName = "_blank";
+        //            sp2.Children.Add(hlb);
+        //        }
+        //    }
+
+        //    // parts heading
+        //    if (itm.Parts != null)
+        //    {
+        //        TextBlock parts = new TextBlock();
+        //        parts.Text = "Required Parts";
+        //        parts.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(parts);
+
+        //        // parts html buttons
+        //        foreach (Part p in itm.Parts)
+        //        {
+        //            HyperlinkButton hlb = new HyperlinkButton();
+        //            hlb.NavigateUri = new Uri(p.url);
+        //            hlb.Content = p.text;
+        //            hlb.TargetName = "_blank";
+        //            sp2.Children.Add(hlb);
+        //        }
+        //    }
+
+        //    if (itm.Prereqs != null)
+        //    {
+        //        // prereqs heading
+        //        TextBlock prereqs = new TextBlock();
+        //        prereqs.Text = "Prerequisite Guides";
+        //        prereqs.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+        //        sp2.Children.Add(prereqs);
+
+        //        // prereqs html buttons
+        //        foreach (Prereq p in itm.Prereqs)
+        //        {
+        //            HyperlinkButton hlb = new HyperlinkButton();
+        //            hlb.NavigateUri = new Uri("/Guide.xaml?GuideID=" + p.guideid, UriKind.Relative);
+        //            hlb.Content = p.text;
+        //            hlb.TargetName = "_blank";
+        //            sp2.Children.Add(hlb);
+        //        }
+        //    }
+
+        //    ScrollViewer sv = new ScrollViewer();
+        //    sv.Content = sp2;
+        //    infoTabPivotItem.Content = sv;
+
+        //    return infoTabPivotItem;
+        //}
+
         public bool insertGuideIntoDB(GuideHolder guide){
             //convert the GuideHolder we got into a DB object
 
@@ -332,8 +603,11 @@ namespace iFixit7
             vm.UpdateContentFromGuide(SourceGuide);
             this.gTitle.Text = vm.GuideTitle;
             this.gTopic.Text = vm.GuideTopic;
-            this.DataContext = vm;
+            //PivotItem infoPivot = buildInfoPivotItem();
+            //GuidePivot.Items.Add(infoPivot);
 
+            this.DataContext = vm;
+            //GuidePivot.ItemsSource = temp;
             //hide the loading bar
             LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
             return true;

@@ -6,6 +6,10 @@ using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Diagnostics;
+using iFixit7.DBModels;
+using System.Runtime.Serialization;
+using System.IO;
+using System;
 
 namespace iFixit7
 {
@@ -35,6 +39,10 @@ namespace iFixit7
             this.GuideID = gh.guideid;
             this.TitleImage = gh.guide.image.standard;
 
+            this.Author = gh.guide.author.text;
+            this.Introduction = gh.guide.introduction;
+            this.Difficulty = gh.guide.difficulty;
+
             //do not change this after initial set
             //this.Thumbnail = gh.guide.image.medium;
 
@@ -48,6 +56,26 @@ namespace iFixit7
             }
 
             //this.Populated = true;
+            this.parts.Clear();
+            foreach (GHPart p in gh.guide.parts)
+            {
+                Part dbPart = new Part(p);
+                this.AddPart(dbPart);
+            }
+
+            this.prereqs.Clear();
+            foreach (GHPrereq p in gh.guide.prereqs)
+            {
+                Prereq dbPrereq = new Prereq(p);
+                this.AddPrereq(dbPrereq);
+            }
+
+            this.tools.Clear();
+            foreach (GHTool t in gh.guide.tools)
+            {
+                Tool dbTool = new Tool(t);
+                this.AddTool(dbTool);
+            }
         }
 
         /*
@@ -70,6 +98,15 @@ namespace iFixit7
         public int Id { get; set; }
 
         [Column]
+        public string Introduction { get; set; }
+
+        [Column]
+        public string Difficulty { get; set; }
+
+        [Column]
+        public string Author { get; set; }
+
+        [Column]
         public string parentName { get; set; }
 
         public List<Step> Steps = new List<Step>();
@@ -80,6 +117,78 @@ namespace iFixit7
             this.Steps.Add(s);
         }
 
+        public List<Part> parts = new List<Part>();
+        [Column]
+        public string Parts
+        {
+            get
+            {
+                return serializeList<Part>(parts);
+            }
+            set
+            {
+                string[] items = deserializeList<Part>(value);
+                foreach (string serPart in items)
+                {
+                    Part p = new Part(serPart);
+                    AddPart(p);
+                }
+            }
+        }
+
+        public void AddPart(Part p)
+        {
+            parts.Add(p);
+        }
+
+        public List<Prereq> prereqs = new List<Prereq>();
+        [Column]
+        public string Prereqs
+        {
+            get
+            {
+                return serializeList<Prereq>(prereqs);
+
+            }
+            set
+            {
+                string[] items = deserializeList<Prereq>(value);
+                foreach (string part in items)
+                {
+                    Prereq p = new Prereq(part);
+                    AddPrereq(p);
+                }
+            }
+        }
+
+        public void AddPrereq(Prereq p)
+        {
+            prereqs.Add(p);
+        }
+
+        public List<Tool> tools = new List<Tool>();
+        [Column]
+        public string Tools
+        {
+            get
+            {
+                return serializeList<Tool>(tools);
+            }
+            set
+            {
+                string[] items = deserializeList<Tool>(value);
+                foreach (string tool in items)
+                {
+                    Tool t = new Tool(tool);
+                    AddTool(t);
+                }
+            }
+        }
+
+        public void AddTool(Tool t)
+        {
+            tools.Add(t);
+        }
 
         private string _title;
         [Column]
@@ -96,10 +205,7 @@ namespace iFixit7
                     NotifyPropertyChanging("Title");
 
                     //strip HTML formatting the hard way http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
-                    var v = value.Replace("&quot;", "\"");
-                    v = v.Replace("&amp;", "&");
-                    v = v.Replace("&nbsp;", " ");
-                    _title = v;
+                    _title = UnescapeHtml(value);
                     NotifyPropertyChanged("Title");
                 }
             }
@@ -116,13 +222,9 @@ namespace iFixit7
                 {
                     //if _title.Length > XXX
                     //remove topic name (and leading space) from guide titles
-                    return _title.Replace(" " + _topic, "");
+                    return _title.Replace( _topic + " ", "");
                 }
                 return "";
-            }
-            set
-            {
-                ShortTitle = "";
             }
         }
 
@@ -285,6 +387,35 @@ namespace iFixit7
         [Column(IsVersion = true)]
         private Binary _version;
 
+        public static string UnescapeHtml(string s)
+        {
+            return s.Replace("&quot;", "\"").Replace("&amp;", "&").Replace("&nbsp;", " ");
+        }
+
+        private static string serializeList<T>(List<T> l)
+        {
+            string s = "";
+            foreach (T p in l)
+            {
+                s += p + ";";
+            }
+            return s;
+        }
+
+        private static string[] deserializeList<T>(string s)
+        {
+            string[] delim = { ";" };
+            return s.Split(delim, System.StringSplitOptions.RemoveEmptyEntries);
+            //List<T> list = new List<T>();
+            //foreach (string item in items)
+            //{
+            //    if (T == typeof(Prereq))
+            //    {
+            //        p = new Prereq(item);
+            //    }
+            //    list.Add(p);
+            //}
+        }
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

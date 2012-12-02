@@ -49,17 +49,11 @@ namespace iFixit7
             get; set;
         }
 
-        private Uri _url;
-        [DataMember]
         public Uri url
         {
             get
             {
                 return new Uri("http://www.ifixit.com/Device/" + _name.Replace(" ", "_"));
-            }
-            set
-            {
-                _url = value;
             }
         }
 

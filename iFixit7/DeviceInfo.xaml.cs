@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Phone.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Shell;
 
 namespace iFixit7
 {
@@ -74,6 +75,11 @@ namespace iFixit7
             //as far as I can think, this could only mean going back to the previous menus
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            this.State[InfoPano.Title.ToString()] = this.InfoPano.SelectedIndex;
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             //if there is already a VM, dont build a new one
@@ -113,6 +119,17 @@ namespace iFixit7
                 //disable the loading bars
                 this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
                 this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
+            // if there is a saved index, re-navigate to it
+            string key = InfoPano.Title.ToString();
+            if (this.State.ContainsKey(key))
+            {
+                int selectedTabIndex = (int) this.State[key];
+                if (0 <= selectedTabIndex && selectedTabIndex < InfoPano.Items.Count)
+                {
+                    InfoPano.DefaultItem = InfoPano.Items[selectedTabIndex];
+                }
             }
         }
 

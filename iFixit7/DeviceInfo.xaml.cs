@@ -128,7 +128,7 @@ namespace iFixit7
                 int selectedTabIndex = (int) this.State[key];
                 if (0 <= selectedTabIndex && selectedTabIndex < InfoPano.Items.Count)
                 {
-                    InfoPano.DefaultItem = InfoPano.Items[selectedTabIndex];
+                    InfoPano.SetValue(Panorama.SelectedItemProperty, InfoPano.Items[selectedTabIndex]);
                 }
             }
         }

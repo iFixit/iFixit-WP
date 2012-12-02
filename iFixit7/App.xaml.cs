@@ -59,6 +59,9 @@ namespace iFixit7
         {
             root = null;
 
+            // check for WAS_TOMBSTONED in isostore
+            //
+
             // Global handler for uncaught exceptions. 
             UnhandledException += Application_UnhandledException;
 
@@ -277,6 +280,10 @@ namespace iFixit7
                 DataContractSerializer ser = new DataContractSerializer(root.GetType());
                 ser.WriteObject(fileStream, root);
                 fileStream.Close();
+
+                // save that we've been tombstoned into the isostore so we can know not to getAreas later
+                //
+
             }
         }
 

@@ -222,10 +222,12 @@ namespace iFixit7
     }
     public class GHPart
     {
-        public string notes { get; set; }
         public string text { get; set; }
-        public string thumbnail { get; set; }
+        public string notes { get; set; }
+        public string type { get; set; }
+        public string quantity { get; set; }
         public string url { get; set; }
+        public string thumbnail { get; set; }
     }
     public class GHPrereq
     {

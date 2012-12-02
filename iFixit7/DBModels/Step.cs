@@ -73,7 +73,7 @@ namespace iFixit7
 
         public List<Lines> Lines = new List<Lines>();
 
-        public void AddCategory(Lines l)
+        public void AddLine(Lines l)
         {
             l.parentName = this.Title;
             this.Lines.Add(l);

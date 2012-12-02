@@ -179,8 +179,9 @@ namespace iFixit7
                     Debug.WriteLine("\tguide " + g.title);
 
                     //search if the guide already exists, and get or update it
-                    Guide gOld = null;
-                    gOld = db.GuidesTable.FirstOrDefault(other => other.Title == g.title);
+                    Guide gOld = new Guide();
+                    gOld.FillFieldsFromDeviceInfo(navTopicName, g);
+                    gOld = db.GuidesTable.FirstOrDefault(other => other.GuideID == gOld.GuideID);
                     if (gOld == null)
                     {
                         gOld = new Guide();

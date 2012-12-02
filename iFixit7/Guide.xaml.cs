@@ -176,7 +176,14 @@ namespace iFixit7
             {
                 int length = firstClose - firstOpen;
                 linkEnd = tb.VisibleText.Substring(firstOpen + 1, length - 1);
-                link = "http://www.ifixit.com" + linkEnd;
+                if (linkEnd.StartsWith("www.") || linkEnd.StartsWith("http://www."))
+                {
+                    link = linkEnd;
+                }
+                else
+                {
+                    link = "http://www.ifixit.com" + linkEnd;
+                }
                 WebBrowserTask wbt = new WebBrowserTask();
                 wbt.Uri = new Uri(link);
                 wbt.Show();

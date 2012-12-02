@@ -107,8 +107,15 @@ namespace iFixit7
 
             InfoPano.Title = navTopicName;
 
+            string key = InfoPano.Title.ToString();
+            bool resuming = false;
+            if (this.State.ContainsKey(key))
+            {
+                resuming = true;
+            }
+
             //API call to get the entire contents of the device info and populate it it returns (it calls populateUI
-            //on its own when the operation completes
+            //on its own when the operation completes  && !resuming
             if (DeviceNetworkInformation.IsNetworkAvailable)
             {
                 new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
@@ -127,12 +134,12 @@ namespace iFixit7
             }
 
             // if there is a saved index, re-navigate to it
-            string key = InfoPano.Title.ToString();
-            if (this.State.ContainsKey(key))
+            if(resuming)
             {
                 int selectedTabIndex = (int) this.State[key];
                 if (0 <= selectedTabIndex && selectedTabIndex < InfoPano.Items.Count)
                 {
+                    var t = InfoPano.Items[selectedTabIndex];
                     InfoPano.SetValue(Panorama.SelectedItemProperty, InfoPano.Items[selectedTabIndex]);
                 }
             }
@@ -175,9 +182,11 @@ namespace iFixit7
                 top.ImageURL = devInfo.image.text + ".medium";
                 top.Populated = true;
 
-                top.Description = devInfo.contents;
-                //TODO inject metatdata here like answers
-                top.Description = prepHTML(top.Description);
+                //TODO inject metatdata here like # answers
+                top.Description = "";
+                top.Description += "<h2>" + devInfo.guides.Length + " Guides</h2>";
+                top.Description += "<h2>" + devInfo.solutions.count + " Solutions</h2>";
+                top.Description += prepHTML(devInfo.contents);
 
                 //now do the same for all attached guides
                 foreach (DIGuides g in devInfo.guides)
@@ -377,6 +386,13 @@ namespace iFixit7
         {
             NavigationService.Navigate(new Uri("/FavoriteItems.xaml", UriKind.Relative));
         }
+
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            WebBrowserTask wbt = new WebBrowserTask();
+            wbt.Uri = new Uri(infoVM.BaseURL, UriKind.Absolute);
+            wbt.Show();
+        }
     }
 
     /*
@@ -390,6 +406,7 @@ namespace iFixit7
         public String ImageURL { get; set; }
         public String Contents { get; set; }
         public String Description { get; set; }
+        public String BaseURL { get; set; }
 
         //this is the list of guides
         public ObservableCollection<Guide> GuideList { get; set; }
@@ -400,6 +417,7 @@ namespace iFixit7
             ImageURL = "";
             Description = "";
             Contents = "";
+            BaseURL = "";
             GuideList = new ObservableCollection<Guide>();
 
             UpdateData();
@@ -416,7 +434,6 @@ namespace iFixit7
             Topic top = null;
             using (iFixitDataContext db = new iFixitDataContext(App.DBConnectionString))
             {
-                //top = db.TopicsTable.SingleOrDefault(t => t.Name == Name);
                 top = DBHelpers.GetCompleteTopic(Name, db);
             }
             if (top == null)
@@ -430,6 +447,8 @@ namespace iFixit7
             this.Description = top.Description;
             this.Contents = top.Contents;
             this.ImageURL = top.ImageURL;
+
+            this.BaseURL = "http://www.ifixit.com/Device/" + this.Name;
 
             //fill in guides
             GuideList.Clear();

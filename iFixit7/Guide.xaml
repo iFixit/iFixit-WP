@@ -20,7 +20,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding}">
         <Grid.Resources>
             <c:ImageCacheConverter x:Key="ImageCacheConverter"/>
-            
+
             <!-- this is a style to prevent list box items from showing selection when tapped -->
             <Style x:Key="ListBoxStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
@@ -37,7 +37,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -73,7 +73,7 @@
                     <ScrollViewer>
                         <StackPanel>
                             <ListBox x:Name="ListItem" ItemsSource="{Binding Lines}"
-                                 FontSize="{StaticResource PhoneFontSizeMedium}"
+                                 FontSize="{StaticResource PhoneFontSizeMedium}"  Tap="GuideLine_Tap"
                                      ItemContainerStyle="{StaticResource ListBoxStyle}"
                                  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
@@ -99,7 +99,7 @@
                                                  Width="8" Margin="0, 2" VerticalAlignment="Stretch" 
                                                  Fill="{Binding ColorBrush}"/>
                                             
-                                            <local:HtmlTextBlock Grid.Column="2" Tap="GuideLine_Tap"
+                                            <local:HtmlTextBlock Grid.Column="2"
                                                  Text="{Binding Text}" TextWrapping="Wrap"
                                                  Margin="8, 2, 2, 2"/>
                                             

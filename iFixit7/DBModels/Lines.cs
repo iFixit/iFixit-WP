@@ -116,12 +116,6 @@ namespace iFixit7
         {
             get
             {
-                //become trasparent if we are displaying the image overlay
-                //if (_colorString.Equals("icon_note") ||
-                //    _colorString.Equals("icon_reminder") ||
-                //    _colorString.Equals("icon_caution"))
-                //    return new SolidColorBrush(Colors.Transparent);
-
                 return new SolidColorBrush(Lines.ConvertToColor(_colorString));
             }
             set

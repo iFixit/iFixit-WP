@@ -10,6 +10,8 @@ using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Microsoft.Phone.Shell;
+using System.Windows.Media;
+using System.Windows;
 
 namespace iFixit7
 {
@@ -195,16 +197,26 @@ namespace iFixit7
         //occurs when a line is tapped
         private void GuideLine_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
-            int firstOpen = tb.VisibleText.IndexOf("<");
-            int firstClose = tb.VisibleText.IndexOf(">");
+            base.OnTap(e);
+
+            //WP7_Mango_HtmlTextBlockControl.HtmlTextBlock tb = sender as WP7_Mango_HtmlTextBlockControl.HtmlTextBlock;
+            var selectedOver = sender as ListBox;
+
+            if (selectedOver == null)
+                return;
+
+            Lines selected = selectedOver.SelectedItem as Lines;
+
+            int firstOpen = selected.Text.IndexOf("<a href=\"") + "<a href=\"".Length;
+            int firstClose = selected.Text.IndexOf("\"", firstOpen);
             string linkEnd;
             string link;
+
             if (firstOpen >= 0 && firstClose >= 0)
             {
                 int length = firstClose - firstOpen;
-                linkEnd = tb.VisibleText.Substring(firstOpen + 1, length - 1);
-                if (linkEnd.StartsWith("www.") || linkEnd.StartsWith("http://www."))
+                linkEnd = selected.Text.Substring(firstOpen, length);
+                if (linkEnd.Contains("www.") || linkEnd.Contains("http://"))
                 {
                     link = linkEnd;
                 }
@@ -212,10 +224,19 @@ namespace iFixit7
                 {
                     link = "http://www.ifixit.com" + linkEnd;
                 }
+
+                var t = (e.OriginalSource as TextBlock);
+                if (t != null)
+                {
+                    t.Foreground = App.Current.Resources["PhoneAccentBrush"] as Brush;
+                }
+
                 WebBrowserTask wbt = new WebBrowserTask();
                 wbt.Uri = new Uri(link);
                 wbt.Show();
             }
+
+            //selectedOver.Foreground = App.Current.Resources["PhoneForegroundBrush"] as Brush;
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)

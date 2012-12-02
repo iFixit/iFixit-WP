@@ -32,8 +32,6 @@ namespace iFixit7
                 NavigationService.GoBack();
 
             this.DataContext = this;
-
-            
         }
 
         /*
@@ -139,8 +137,10 @@ namespace iFixit7
          */
         private void TheImage_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
+            Debug.WriteLine("image loaded");
+
             MyImage.Visibility = System.Windows.Visibility.Visible;
+            LoadingBar.Visibility = System.Windows.Visibility.Collapsed;
         }
     }
 }

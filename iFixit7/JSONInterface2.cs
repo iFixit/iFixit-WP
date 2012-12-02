@@ -253,6 +253,13 @@ namespace iFixit7
 
         public string number { get; set; }  //int?
     }
+    public class GHStepLines
+    {
+        public string text { get; set; }
+        //these are colors
+        public string bullet { get; set; }
+        public int level { get; set; }
+    }
     public class GHStepMedia
     {
         public string type { get; set; }
@@ -262,13 +269,14 @@ namespace iFixit7
 
         //one for video (and embedded video) as well
         //video
-        //embed
+
+        public GHEmbed embed { get; set; }
     }
-    public class GHStepLines
+    public class GHEmbed
     {
-        public string text { get; set; }
-        //these are colors
-        public string bullet { get; set; }
-        public int level { get; set; }
+        public string url { get; set; }
+        public string type { get; set; }
+        public string width { get; set; }
+        public string height { get; set; }
     }
 }

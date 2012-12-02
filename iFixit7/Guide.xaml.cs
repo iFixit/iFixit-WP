@@ -23,6 +23,8 @@ namespace iFixit7
             public class ColContent
             {
                 public string Title { get; set; }
+                public string EmbedURL { get; set; }
+                public System.Windows.Visibility EmbedVisibility { get; set; }
                 public string Image1 { get; set; }
                 public string Image2 { get; set; }
                 public string Image3 { get; set; }
@@ -31,10 +33,23 @@ namespace iFixit7
                 public ColContent(Step s)
                 {
                     this.Title = "Step " + s.StepIndex;
-                    //FIXME this is probably bad. We are always assuming there is a .standard availible
-                    this.Image1 = s.Image1 + ".standard";
-                    this.Image2 = s.Image2 + ".standard";
-                    this.Image3 = s.Image3 + ".standard";
+
+                    //check type
+                    if (s.MediaType == Step.MediaType_Embed)
+                    {
+
+                        EmbedVisibility = System.Windows.Visibility.Visible;
+                        EmbedURL = s.EmbedURL;
+                    }
+                    //else if (s.MediaType == Step.MediaType_Image)
+                    else
+                    {
+                        EmbedVisibility = System.Windows.Visibility.Collapsed;
+                        //FIXME this is probably bad. We are always assuming there is a .standard availible
+                        this.Image1 = s.Image1 + ".standard";
+                        this.Image2 = s.Image2 + ".standard";
+                        this.Image3 = s.Image3 + ".standard";
+                    }
 
                     Lines = new ObservableCollection<Lines>();
                     foreach (Lines l in s.Lines)
@@ -142,6 +157,20 @@ namespace iFixit7
         }
 
         /*
+         * Fires when someone taps on the embedded frame
+         */
+        private void Embed_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (DeviceNetworkInformation.IsNetworkAvailable)
+            {
+                //open the browser
+                string target = (sender as Grid).Tag.ToString();
+                WebBrowserTask wbt = new WebBrowserTask() { Uri = new Uri(target, UriKind.Absolute) };
+                wbt.Show();
+            }
+        }
+
+        /*
          * Look at the tag from the sending Image to figure out which was touched.
          */
         private void Img_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -153,7 +182,6 @@ namespace iFixit7
             String srcUrl = (src.Source as BitmapImage).UriSource.ToString();
 
             //modify it to get the huge version
-            //srcUrl = srcUrl.Replace(".standard", ".huge");
             srcUrl = srcUrl.Replace(".standard", "");
             
             //FIXME navigate to fullscreen image w/ URL (just URL?)

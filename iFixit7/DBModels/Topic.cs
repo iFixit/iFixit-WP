@@ -112,6 +112,26 @@ namespace iFixit7
             }
         }
 
+        private string _contents = "";
+        //text
+        [DataMember]
+        public string Contents
+        {
+            get
+            {
+                return _contents;
+            }
+            set
+            {
+                if (_contents != value)
+                {
+                    NotifyPropertyChanging("Contents");
+                    _contents = value;
+                    NotifyPropertyChanged("Contents");
+                }
+            }
+        }
+
 
         /*
          * A column to store if this topic has been populated from the web yet (AKA cached)

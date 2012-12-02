@@ -66,9 +66,9 @@
                         <Image 
                                 x:Name="InfoImage" Source="{Binding ImageURL, Converter={StaticResource ImageCacheConverter}}"  />
 
-                        <phone:WebBrowser x:Name="InfoBrowser"
+                        <phone:WebBrowser x:Name="InfoBrowser" IsScriptEnabled="True" ScriptNotify="InfoBrowser_ScriptNotify"
                                           Width="{Binding ElementName=InfoStack, Path=ActualWidth}"
-                                          Height="500"/>
+                                          Visibility="Collapsed" IsHitTestVisible="False"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

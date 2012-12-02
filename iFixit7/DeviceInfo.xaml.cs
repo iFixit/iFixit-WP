@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Phone.Net.NetworkInformation;
+using Microsoft.Phone.Tasks;
 
 namespace iFixit7
 {
@@ -34,6 +35,36 @@ namespace iFixit7
 
             this.InfoStack.DataContext = infoVM;
             this.GuidesStack.DataContext = infoVM;
+
+            //add the script handler to the browser
+            //InfoBrowser.ScriptNotify += InfoBrowser_ScriptNotify;
+        }
+
+        /*
+         * This is what fires when a script in the browser raises an event
+         */
+        void InfoBrowser_ScriptNotify(object sender, NotifyEventArgs e)
+        {
+            Debug.WriteLine("e.value == " + e.Value);
+
+            int height = -1;
+
+            //if we got the resize info http://dan.clarke.name/2011/05/resizing-wp7-webbrowser-height-to-fit-content/
+            if (int.TryParse(e.Value, out height))
+            {
+                Debug.WriteLine("\tsetting browser height to " + height);
+                double newHeight = height * 1.5;
+
+                InfoBrowser.Height = newHeight;
+            }
+            //if we got a URL to navigate to
+            else if (Uri.IsWellFormedUriString(e.Value, UriKind.RelativeOrAbsolute))
+            {
+                Debug.WriteLine("\tnavigating to e.value");
+                WebBrowserTask webBrowserTask = new WebBrowserTask { Uri = new Uri(e.Value) };
+                webBrowserTask.Show();
+            }
+            
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -73,7 +104,7 @@ namespace iFixit7
             }
             else
             {
-                InfoBrowser.NavigateToString(infoVM.Description);
+                updateInfoBrowser();
 
                 //force the views to update
                 this.InfoStack.DataContext = infoVM;
@@ -83,6 +114,90 @@ namespace iFixit7
                 this.LoadingBarInfo.Visibility = System.Windows.Visibility.Collapsed;
                 this.LoadingBarGuides.Visibility = System.Windows.Visibility.Collapsed;
             }
+        }
+
+        private void updateInfoBrowser()
+        {
+            SetBrowserBackground();
+            InfoBrowser.NavigateToString(infoVM.Description);
+
+            //keep it hidden until content is visible
+            InfoBrowser.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        /*
+         * adds needed stuff to the HTML to be displayed in the browser
+         */
+        private string prepHTML(string baseHTML)
+        {
+            string o = "";
+            o += "<html><head>";
+
+            //prevent zooming
+            o += "<meta name='viewport' content='user-scalable=no'/>";
+
+            //inject the theme
+            o += "<style type='text/css'>" +
+                "body {{font-size:1.0em;background-color:" + FetchBackgroundColor() + ";" +
+                "color:" + FetchFontColor() + ";}} " + "</style>";
+
+            //inject the script to pass link taps out of the browser
+            o += "<script type='text/javascript'>";
+            o += @"function getLinks(){ 
+                a = document.getElementsByTagName('a');
+                    for(var i=0; i < a.length; i++){
+                    var msg = a[i].href;
+                    a[i].onclick = function() {notify(msg);
+                    };
+                    }
+                    }
+                    function notify(msg) {
+                    window.external.Notify(msg);
+                    event.returnValue=false;
+                    return false;
+                }";
+
+            //inject the script to find height
+            o += @"function Scroll() {
+                            var elem = document.getElementById('content');
+                            window.external.Notify(elem.scrollHeight + '');
+                        }
+                    ";
+
+            o += @"window.onload = function() {
+                    Scroll();
+                    getLinks();
+                }";
+
+            o += "</script>";
+            o += "</head>";
+            o += "<body><div id='content'>";
+            //o += "<img src='" + infoVM.ImageURL + "'>";
+            o += baseHTML.Trim();
+            o += "</div></body>";
+            o += "</html>";
+            return o;
+        }
+        private string FetchBackgroundColor()
+        {
+            return IsBackgroundBlack() ? "#000;" : "#fff";
+        }
+
+        private string FetchFontColor()
+        {
+            return IsBackgroundBlack() ? "#fff;" : "#000";
+        }
+
+        private bool IsBackgroundBlack()
+        {
+            return ((Visibility)Application.Current
+                .Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
+        }
+
+        private void SetBrowserBackground()
+        {
+            InfoBrowser.Background =
+              (Brush)Application.Current.Resources["PhoneBackgroundBrush"];
         }
 
         /*
@@ -121,10 +236,9 @@ namespace iFixit7
                 top.ImageURL = devInfo.image.text + ".medium";       //scales the image
                 top.Populated = true;
 
-                //FIXME string can only be a max of 4k long!
                 //top.Description = devInfo.description;
-                top.Description = "<html><body>" + devInfo.contents + "</body></html>";
-                InfoBrowser.NavigateToString(top.Description);
+                top.Description = prepHTML(devInfo.contents);
+                updateInfoBrowser();
 
                 //trim if it is too long (LINQ doesnt like it...)
                 /*

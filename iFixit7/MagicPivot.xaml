@@ -33,13 +33,13 @@
             <controls:Pivot.ItemTemplate>
                 <DataTemplate>
                     <ListBox ItemsSource="{Binding ColContent, Mode=OneWay}" x:Name="CategoryChildList" 
-                             FontSize="{StaticResource PhoneFontSizeLarge}"
+                             FontSize="{StaticResource PhoneFontSizeLarge}" Tap="tb_Tap"
                              VerticalAlignment="Stretch">
                         
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name, Mode=OneWay}" Tag="{Binding Tag, Mode=OneWay}"
-                                           Tap="tb_Tap" Margin="0, 4"/>
+                                           HorizontalAlignment="Stretch"  Margin="0, 4"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

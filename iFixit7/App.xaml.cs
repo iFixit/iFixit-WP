@@ -247,8 +247,6 @@ namespace iFixit7
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(SerialStore, FileMode.Open);
                         DataContractSerializer ser = new DataContractSerializer(typeof(Category));
                         root = ser.ReadObject(fileStream) as Category;
-                        ser = new DataContractSerializer(RootFrame.GetType());
-                        RootFrame = ser.ReadObject(fileStream) as PhoneApplicationFrame;
                         fileStream.Close();
                     }
                 }
@@ -261,6 +259,11 @@ namespace iFixit7
         {
             //save state from PhoneApplicationService.Current.State
             Debug.WriteLine("DEACTIVATING");
+
+            //check if there is anything to serialize
+            if (root == null)
+                return;
+
             // Create virtual store and file stream. Check for duplicate files
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -273,8 +276,6 @@ namespace iFixit7
 
                 DataContractSerializer ser = new DataContractSerializer(root.GetType());
                 ser.WriteObject(fileStream, root);
-                ser = new DataContractSerializer(RootFrame.GetType());
-                ser.WriteObject(fileStream, RootFrame);
                 fileStream.Close();
             }
         }

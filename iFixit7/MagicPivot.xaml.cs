@@ -49,15 +49,10 @@ namespace iFixit7
         {
             //figure out if the sender is a text block (it should be). Filters out tapping whitespace.
             TextBlock t = new TextBlock();
-            if (e.OriginalSource.GetType() != t.GetType())
-            {
-                return;
-            }
 
             //string selected = (e.OriginalSource as TextBlock).Text as String;
-            string selected = (e.OriginalSource as TextBlock).Tag as String;
+            string selected = ((sender as ListBox).SelectedItem as MagicPivotViewModel.ColumnContent.InnerColumnContent).Tag as String;
             Debug.WriteLine("MagicPivot tapped > [" + selected + "]");
-
 
             //get the parent
             MagicPivotViewModel.ColumnContent col = vm.Columns[vm.TabIndex];
@@ -139,24 +134,10 @@ namespace iFixit7
             if (cc.ColContent.Count > 0 || cc.TypeRefs.Count > 0)
                 return;
 
-            //var _Worker = new BackgroundWorker();
-            //_Worker.DoWork += (s, d) =>
-            //{
-                cc.setColumnContent();
-            //};
-            //_Worker.RunWorkerCompleted += (s, d) =>
-            //{
-                    vm.TabIndex = SmartPivot.SelectedIndex;
-                    Debug.WriteLine("Set content for " + cc.ColumnHeader + ". got " + cc.ColContent.Count + " items");
-            //};
-            //_Worker.RunWorkerAsync();
+            cc.setColumnContent();
 
-            //this.DataContext = null;
-            //this.DataContext = vm;
-
-            //var thing = myPivot.DataContext;
-            //myPivot.DataContext = null;
-            //myPivot.DataContext = this;
+            vm.TabIndex = SmartPivot.SelectedIndex;
+            Debug.WriteLine("Set content for " + cc.ColumnHeader + ". got " + cc.ColContent.Count + " items");
         }
 
         private void ApplicationBarIconButton_Click(object sender, EventArgs e)

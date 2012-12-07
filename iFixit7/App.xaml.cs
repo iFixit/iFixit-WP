@@ -37,7 +37,6 @@ namespace iFixit7
         public const string LoadingScreenShown = "Load";
 
         //initial state variable keys
-        public const string LastUpdateKey = ">>LAST_UPDATED<<";
         public const string InitializeWithLoadingScreen = ">>INIT_LOADING_SCREEN<<";
 
         private static int thumbCount = 0;
@@ -105,10 +104,6 @@ namespace iFixit7
             }
             catch (Exception ex)
             { }
-
-            //new JSONInterface2().populateDeviceInfo(navTopicName, insertDevInfoIntoDB);
-            //FIXME REMOVE
-            JSONInterface2.populateCollectionView(fillCollection);
         }
 
         public bool fillCollection(CVCollection[] c)
@@ -143,7 +138,6 @@ namespace iFixit7
                 root = tree;
 
                 //now async get images for all root categories
-                //List<Category> cats = DBHelpers.GetCompleteCategory("root", db).Categories;
                 List<Category> cats = root.Categories;
                 thumbCount = 0;
                 foreach (Category c in cats)
@@ -219,24 +213,17 @@ namespace iFixit7
                 }
             }
 
-            //FIXME temporary: now check the last time the data was refreshed. If past threshold, refresh again
-            DateTime last = DateTime.MinValue;
-            if (IsolatedStorageSettings.ApplicationSettings.Contains(App.LastUpdateKey))
-            {
-                last = (DateTime)IsolatedStorageSettings.ApplicationSettings[App.LastUpdateKey];
-
-                Debug.WriteLine("got last use = " + last);
-            }
-
             //this has asynchroneous components that will run while the UI loads and whatnot NetworkInterface.GetIsNetworkAvailable()
-            if ((last.AddDays(1.0) < DateTime.Now) && DeviceNetworkInformation.IsNetworkAvailable && !rootHasBeenSavedInISO)
+            if (DeviceNetworkInformation.IsNetworkAvailable && !rootHasBeenSavedInISO)
             {
                 getAreas();
+
+                //in the future
+                //JSONInterface2.populateCollectionView(fillCollection);
             }
             else
             {
                 // clear loading screen
-                //(RootFrame.Content as MainPage).StopLoadingIndication();
                 PhoneApplicationService.Current.State[App.InitializeWithLoadingScreen] = false;
             }
             // Create the database if it does not exist.

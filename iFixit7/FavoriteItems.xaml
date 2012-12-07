@@ -69,4 +69,12 @@
         </ListBox>
     </Grid>
 
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <!-- if we make this transparent (opacity), then our view lays out under it which is UX bad -->
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False" >
+            <shell:ApplicationBarIconButton IconUri="/Images/delete.png" Text="Clear Cache"
+                                            Click="DeleteCached_Tap"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
 </phone:PhoneApplicationPage>
